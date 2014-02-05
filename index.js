@@ -25,8 +25,8 @@ var bufferLoader = {
 
       request.onload = function() {
         // Asynchronously decode the audio file data in request.response
-        context.decodeAudioData(
-          request.response,
+        context.decodeAudioData(request.response,
+
           function(buffer) {
             if (!buffer) {
               alert('error decoding file data: ' + url);
@@ -34,12 +34,14 @@ var bufferLoader = {
             }
             callback(buffer);
           },
+
           function(error) {
             console.error('decodeAudioData error', error);
           }
         );
 
       };
+
       request.onerror = function() {
         alert('bufferLoader: XMLHttpRequest error');
       };
@@ -47,6 +49,6 @@ var bufferLoader = {
       request.send();
     }
   }
-  };
+};
 
 exports = module.exports = Object.create({}, bufferLoader);
