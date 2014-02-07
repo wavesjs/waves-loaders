@@ -3,12 +3,16 @@
  * WAVE audio library module for buffer loading.
  */
 
+
+/** 
+ * Buffer loader object with potentially several loading methods.
+ * @public
+ */
 var bufferLoader = {
 
   /**
-   * Main method: load
-   * @method Request an audio file, decode it in an AudioBuffer
-   * and pass it to a callback.
+   * Request an audio file, decode it in an AudioBuffer and pass it to a callback.
+   * @public
    * @param {AudioContext} context Web Audio API AudioContext
    * @param {URL} url of the audio file to load
    * @param {Function} callback Function when loading finished.
@@ -51,4 +55,6 @@ var bufferLoader = {
   }
 };
 
+
+// CommonJS object export
 exports = module.exports = Object.create({}, bufferLoader);
