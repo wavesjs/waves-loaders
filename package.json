@@ -7,14 +7,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/vectorsize/buffer-loader.git"
-  },
-  "author": "Karim Barkati, Victor Saiz",
-  "license": "BSD-3",
-  "bugs": {
-    "url": "https://github.com/vectorsize/buffer-loader/issues"
-  },
-  "homepage": "https://github.com/vectorsize/buffer-loader"
+  "authors": ["Karim Barkati", "Victor Saiz"],
+  "license": "BSD-3"
 }
