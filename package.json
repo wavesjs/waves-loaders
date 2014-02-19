@@ -2,7 +2,7 @@
   "name": "buffer-loader",
   "exports": "bufferLoader",
   "version": "0.1.0",
-  "description": "web audio API buffer loader",
+  "description": "Web audio API buffer loader",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
