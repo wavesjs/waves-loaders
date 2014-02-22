@@ -2,17 +2,26 @@
  * @fileOverview
  * WAVE audio library module for buffer loading.
  * @author Karim Barkati and Victor Saiz
- * @version 0.2.0
+ * @version 0.2.1
  */
 
 "use strict";
 /* global module, console */
+
 
 /** 
  * Buffer loader object with several loading methods.
  * @public
  */
 var bufferLoader = {
+
+  // Attributes for loadAll closure.
+  bufferList: {
+    writable: true
+  },
+  loadCount: {
+    writable: true
+  },
 
   /**
    * Main wrapper function for loading.
@@ -72,55 +81,6 @@ var bufferLoader = {
   },
 
   /**
-   * Load all audio files at once,
-   * decode them in an array of AudioBuffers,
-   * and return a single callback when all loadings finished.
-   * @public
-   * @param fileURLs The URLs array of the audio files to load.
-   * @param callback The callback function when total loading finished.
-   * @param audioContext The Web Audio API AudioContext.
-   * @todo Parallelize instead of cascade loading.
-   */
-  loadAll: {
-    enumerable: true,
-    value: function(fileURLs, callback, audioContext) {
-      var urlsCount = fileURLs.length;
-      var bufferList = [];
-      var i = 0;
-
-      var that = this;
-      var successCallback = function successCallback(buffer) {
-        if (!buffer) {
-          throw 'error decoding data: ' + buffer;
-        }
-        bufferList[i] = buffer;
-
-        // Cascade file loading.
-        i = i + 1;
-        if (i < urlsCount) {
-          that.fileLoadingRequest(fileURLs[i], decodeCallback).send();
-        } else {
-          callback(bufferList); // When all files are loaded.
-        }
-      };
-
-      var errorCallback = function errorCallback(error) {
-        console.error('decodeAudioData error', error);
-      };
-
-      var decodeCallback = function decodeCallback(requestCallback) {
-        audioContext.decodeAudioData(
-          requestCallback.response, // returned audio data array
-          successCallback,
-          errorCallback
-        );
-      };
-
-      this.fileLoadingRequest(fileURLs[0], decodeCallback).send();
-    }
-  },
-
-  /**
    * Load each audio file asynchronously,
    * decode it in an AudioBuffer,
    * and execute the callback for each.
@@ -135,9 +95,74 @@ var bufferLoader = {
       var urlsCount = fileURLs.length;
 
       for (var i = 0; i < urlsCount; ++i) {
-        // this.filesLoadingRequest(fileURLs[i], decodeCallback, i).send();
         this.loadBuffer(fileURLs[i], callback, audioContext);
       }
+    }
+  },
+
+  /**
+   * Load all audio files at once in a single array,
+   * decode them in an array of AudioBuffers,
+   * and return a single callback when all loadings finished.
+   * @public
+   * @param fileURLs The URLs array of the audio files to load.
+   * @param callback The callback function when total loading finished.
+   * @param audioContext The Web Audio API AudioContext.
+   */
+  loadAll: {
+    enumerable: true,
+    value: function(fileURLs, callback, audioContext) {
+      var urlsCount = fileURLs.length;
+      this.loadCount = 0;
+      this.bufferList = [];
+      for (var i = 0; i < urlsCount; ++i) {
+        this.loadBufferAtIndex(fileURLs[i], callback, audioContext, i, urlsCount);
+      }
+    }
+  },
+
+  /**
+   * Load a single audio file,
+   * decode it in an AudioBuffer
+   * and store it in a buffer list at provided index.
+   * @private
+   * @param fileURL The URL of the audio file to load.
+   * @param callback The callback function when loading finished.
+   * @param audioContext The Web Audio API AudioContext.
+   */
+  loadBufferAtIndex: {
+    enumerable: false,
+    value: function(fileURL, callback, audioContext, index, urlsCount) {
+
+      var that = this;
+
+      var successCallback = function successCallback(buffer) {
+        if (!buffer) {
+          throw 'error decoding data: ' + buffer;
+        }
+        that.loadCount++;
+        if (that.loadCount < urlsCount) {
+          that.bufferList[index] = buffer;
+        } else {
+          that.bufferList[index] = buffer;
+          callback(that.bufferList); // When all files are loaded.
+        }
+      };
+
+      var errorCallback = function errorCallback(error) {
+        console.error('decodeAudioData error', error);
+      };
+
+      var decodeCallback = function decodeCallback(requestCallback) {
+
+        audioContext.decodeAudioData(
+          requestCallback.response, // returned audio data array
+          successCallback,
+          errorCallback
+        );
+      };
+
+      this.fileLoadingRequest(fileURL, decodeCallback).send();
     }
   },
 
@@ -169,66 +194,6 @@ var bufferLoader = {
       return request;
     }
   },
-
-  /**
-   * Load an numbered file asynchronously
-   * and pass it to a callback as an 'arraybuffer'
-   * with the index.
-   * @private
-   */
-  numberedFileLoadingRequest: {
-    enumerable: false,
-    value: function(url, callback, index) {
-
-      // Load buffer asynchronously
-      var request = new XMLHttpRequest();
-      request.open("GET", url, true);
-      request.responseType = "arraybuffer";
-
-      request.onreadystatechange = function() {
-        if (request.readyState != 4) return;
-        if (request.status != 200 && request.status != 304) {
-          throw 'HTTP error ' + request.status;
-        }
-
-        console.log("index: ", index, request);
-        callback(request, index);
-      };
-
-      if (request.readyState == 4) return;
-      return request;
-    }
-  },
-
-  /**
-   * Load a file asynchronously
-   * and pass it to a callback as an 'arraybuffer'.
-   * Note: unused attempt for a parallel loading, passing the buffer index.
-   * @private
-   */
-  filesLoadingRequest: {
-    enumerable: false,
-    value: function(url, callback, index) {
-
-      // Load buffer asynchronously
-      var request = new XMLHttpRequest();
-      request.open("GET", url, true);
-      request.responseType = "arraybuffer";
-
-      request.onreadystatechange = function() {
-        if (request.readyState != 4) return;
-        if (request.status != 200 && request.status != 304) {
-          throw 'HTTP error ' + request.status;
-        }
-
-        console.log(request);
-        callback(request);
-      };
-
-      if (request.readyState == 4) return;
-      return request;
-    }
-  }
 
 };
 
