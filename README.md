@@ -1,4 +1,6 @@
-# bufferLoader
+# The `bufferLoader` object
+
+> WAVE audio library module for buffer loading.
 
 The `bufferLoader` object provides several sound file loading methods:
 
