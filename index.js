@@ -46,7 +46,7 @@ var bufferLoader = {
   /**
    * Load a single audio file,
    * decode it in an AudioBuffer
-   * and pass it to a callback.
+   * and pass it to the callback.
    * @public
    * @param fileURL The URL of the audio file to load.
    * @param callback The callback function when loading finished.
@@ -121,79 +121,79 @@ var bufferLoader = {
     }
   },
 
-  /**
-   * Load a single audio file,
-   * decode it in an AudioBuffer
-   * and store it in a buffer list at provided index.
-   * @private
-   * @param fileURL The URL of the audio file to load.
-   * @param callback The callback function when loading finished.
-   * @param audioContext The Web Audio API AudioContext.
-   */
-  loadBufferAtIndex: {
-    enumerable: false,
-    value: function(fileURL, callback, audioContext, index, urlsCount) {
+    /**
+     * Load a single audio file,
+     * decode it in an AudioBuffer
+     * and store it in a buffer list at provided index.
+     * @private
+     * @param fileURL The URL of the audio file to load.
+     * @param callback The callback function when loading finished.
+     * @param audioContext The Web Audio API AudioContext.
+     */
+    loadBufferAtIndex: {
+      enumerable: false,
+      value: function(fileURL, callback, audioContext, index, urlsCount) {
 
-      var that = this;
+        var that = this;
 
-      var successCallback = function successCallback(buffer) {
-        if (!buffer) {
-          throw 'error decoding data: ' + buffer;
-        }
-        that.loadCount++;
-        if (that.loadCount < urlsCount) {
-          that.bufferList[index] = buffer;
-        } else {
-          that.bufferList[index] = buffer;
-          callback(that.bufferList); // When all files are loaded.
-        }
-      };
+        var successCallback = function successCallback(buffer) {
+          if (!buffer) {
+            throw 'error decoding data: ' + buffer;
+          }
+          that.loadCount++;
+          if (that.loadCount < urlsCount) {
+            that.bufferList[index] = buffer;
+          } else {
+            that.bufferList[index] = buffer;
+            callback(that.bufferList); // When all files are loaded.
+          }
+        };
 
-      var errorCallback = function errorCallback(error) {
-        console.error('decodeAudioData error', error);
-      };
+        var errorCallback = function errorCallback(error) {
+          console.error('decodeAudioData error', error);
+        };
 
-      var decodeCallback = function decodeCallback(requestCallback) {
+        var decodeCallback = function decodeCallback(requestCallback) {
 
-        audioContext.decodeAudioData(
-          requestCallback.response, // returned audio data array
-          successCallback,
-          errorCallback
-        );
-      };
+          audioContext.decodeAudioData(
+            requestCallback.response, // returned audio data array
+            successCallback,
+            errorCallback
+          );
+        };
 
-      this.fileLoadingRequest(fileURL, decodeCallback).send();
-    }
-  },
+        this.fileLoadingRequest(fileURL, decodeCallback).send();
+      }
+    },
 
-  /**
-   * Load a file asynchronously
-   * and pass it to a callback as an 'arraybuffer'.
-   * @private
-   */
-  fileLoadingRequest: {
-    enumerable: false,
-    value: function(url, callback) {
+    /**
+     * Load a file asynchronously
+     * and pass it to a callback as an 'arraybuffer'.
+     * @private
+     */
+    fileLoadingRequest: {
+      enumerable: false,
+      value: function(url, callback) {
 
-      // Load buffer asynchronously
-      var request = new XMLHttpRequest();
-      request.open("GET", url, true);
-      request.responseType = "arraybuffer";
+        // Load buffer asynchronously
+        var request = new XMLHttpRequest();
+        request.open("GET", url, true);
+        request.responseType = "arraybuffer";
 
-      request.onreadystatechange = function() {
-        if (request.readyState != 4) return;
-        if (request.status != 200 && request.status != 304) {
-          throw 'HTTP error ' + request.status;
-        }
+        request.onreadystatechange = function() {
+          if (request.readyState != 4) return;
+          if (request.status != 200 && request.status != 304) {
+            throw 'HTTP error ' + request.status;
+          }
 
-        console.log(request);
-        callback(request);
-      };
+          console.log(request);
+          callback(request);
+        };
 
-      if (request.readyState == 4) return;
-      return request;
-    }
-  },
+        if (request.readyState == 4) return;
+        return request;
+      }
+    },
 
 };
 
