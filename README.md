@@ -12,7 +12,7 @@ The `bufferLoader` object provides several sound file loading methods:
 
 ## Example
 
-```
+```js
   // we need an audio context to decode the file
   var audioContext = new webkitAudioContext();
 
