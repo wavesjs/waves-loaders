@@ -1,4 +1,4 @@
-# The `bufferLoader` object
+# Buffer loader module
 
 > WAVE audio library module for buffer loading.
 
@@ -14,10 +14,10 @@ The `bufferLoader` object provides several sound file loading methods:
 
 ```js
   // we need an audio context to decode the file
-  var audioContext = new webkitAudioContext();
+  var audioContext = new AudioContext();
 
   // load the file passing the path, callback and context
-  bufferLoader.load('snd/bach.mp3', onLoaded, audioContext);
+  bufferLoader.load('sound/file/path', onLoaded, audioContext);
 
   // do something with the loaded audio buffer
   function onLoaded(buffer){
@@ -35,3 +35,11 @@ Method | Description
 `bufferLoader.loadBuffer(fileURL, callback, audioContext)` | Load a single audio file, decode it in an AudioBuffer and pass it to the callback (`callback(buffer)`).
 `bufferLoader.loadEach(fileURLs, callback, audioContext)` | Load each audio file asynchronously, decode it in an AudioBuffer, and execute the callback for each right after its decoding (`callback(buffer)`).
 `bufferLoader.loadAll(fileURLs, callback, audioContext)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a single callback when all loadings finished (`callback(buffersArray)`).
+
+## License
+
+This module is released under the [BSD-3-Clause license](http://opensource.org/licenses/BSD-3-Clause).
+
+## Acknowledgments
+
+This code is part of the WAVE project (http://wave.ircam.fr), funded by ANR (The French National Research Agency), *ContInt* program, 2012-2015.

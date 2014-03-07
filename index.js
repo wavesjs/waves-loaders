@@ -6,7 +6,7 @@
  */
 
 "use strict";
-/* global module, console */
+/* global module */
 
 
 /** 
@@ -186,7 +186,6 @@ var bufferLoader = {
           throw 'HTTP error ' + request.status;
         }
 
-        console.log(request);
         callback(request);
       };
 
