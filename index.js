@@ -2,7 +2,7 @@
  * @fileOverview
  * WAVE audio library module for buffer loading.
  * @author Karim Barkati and Victor Saiz
- * @version 0.2.1
+ * @version 0.2.2
  */
 
 "use strict";
@@ -64,7 +64,7 @@ var bufferLoader = {
       };
 
       var errorCallback = function errorCallback(error) {
-        console.error('decodeAudioData error', error);
+        throw 'decodeAudioData error: ' + error;
       };
 
       var decodeCallback = function decodeCallback(requestCallback) {
@@ -150,7 +150,7 @@ var bufferLoader = {
       };
 
       var errorCallback = function errorCallback(error) {
-        console.error('decodeAudioData error', error);
+        throw 'decodeAudioData error: ' + error;
       };
 
       var decodeCallback = function decodeCallback(requestCallback) {
