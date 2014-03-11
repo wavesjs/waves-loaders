@@ -1,6 +1,6 @@
 var assert = chai.assert;
 
-var audioContext = new webkitAudioContext();
+var audioContext = new webkitAudioContext() || new AudioContext();
 
 describe("Load some sounds: synth.wav and sound.wav", function() {
   var self = this;
@@ -110,10 +110,21 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     }, audioContext);
   });
   
-  it('My sound is not correct, error was detected', function(done) {
+  it('My sound is not correct, error "decodeAudioData" was detected', function(done) {
     this.timeout(myTimeout);
     try {
       bufferLoader.load('./nothing.txt', function(audioBuffer) {
+      console.log(audioBuffer);
+      }, audioContext);
+    } catch(e) {
+      done();
+    }
+  });
+  
+  it('My path is not correct, error "404" was detected', function(done) {
+    this.timeout(myTimeout);
+    try {
+      bufferLoader.load('./nothing', function(audioBuffer) {
       console.log(audioBuffer);
       }, audioContext);
     } catch(e) {
