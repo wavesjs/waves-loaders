@@ -22,7 +22,7 @@ The `bufferLoader` object provides several sound file loading methods:
   // do something with the loaded audio buffer
   function onLoaded(buffer){
     console.log(buffer)
-  });
+  };
 ```
 
 ## API
