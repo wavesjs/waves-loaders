@@ -36,6 +36,28 @@ Method | Description
 `bufferLoader.loadEach(fileURLs, callback, audioContext)` | Load each audio file asynchronously, decode it in an AudioBuffer, and execute the callback for each right after its decoding (`callback(buffer)`).
 `bufferLoader.loadAll(fileURLs, callback, audioContext)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a single callback when all loadings finished (`callback(buffersArray)`).
 
+## Tests
+
+If grunt is not installed
+
+```bash
+$ npm install -g grunt-cli
+```
+
+Install all depencies in the module folder 
+
+```bash
+$ npm install
+```
+
+Run the server on 9001 port (you can change the port in the Grunfile.js)
+
+```bash
+$ grunt test
+```
+
+Run the test via the web browser on `http://localhost:9001/tests`
+
 ## License
 
 This module is released under the [BSD-3-Clause license](http://opensource.org/licenses/BSD-3-Clause).
