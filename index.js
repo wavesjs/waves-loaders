@@ -2,7 +2,7 @@
  * @fileOverview
  * WAVE audio library module for buffer loading.
  * @author Karim Barkati and Victor Saiz
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 
@@ -207,5 +207,5 @@ var createBufferLoader = function createBufferLoader() {
 };
 
 
-// CommonJS object export
-exports = createBufferLoader();
+// CommonJS function export
+module.exports = createBufferLoader;

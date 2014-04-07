@@ -1,7 +1,7 @@
 {
   "name": "buffer-loader",
-  "exports": "bufferLoader",
-  "version": "0.1.0",
+  "exports": "createBufferLoader",
+  "version": "1.0.1",
   "description": "Web audio API buffer loader",
   "main": "index.js",
   "scripts": {
