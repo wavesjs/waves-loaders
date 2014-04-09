@@ -17,7 +17,8 @@ The `bufferLoader` object provides several sound file loading methods:
   var audioContext = new AudioContext();
 
   // load the file passing the path, callback and context
-  bufferLoader.load('sound/file/path', onLoaded, audioContext);
+  var myBufferLoader = createBufferLoader();
+  myBufferLoader.load('sound/file/path', onLoaded, audioContext);
 
   // do something with the loaded audio buffer
   function onLoaded(buffer){
