@@ -1,6 +1,7 @@
 var assert = chai.assert;
 
-var audioContext = new webkitAudioContext() || new AudioContext();
+window.AudioContext = window.AudioContext||window.webkitAudioContext;
+var audioContext = new AudioContext();
 
 describe("Load some sounds: synth.wav and sound.wav", function() {
   var self = this;
@@ -80,8 +81,8 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   it('My sounds were loaded with "loadAll"', function(done) {
     this.timeout(myTimeout);
     myBufferLoader.loadAll(['./synth.wav', '../node_modules/snd-dep/sound.wav'], function(audioBuffers) {
-      assert.equal(myAudioBuffers[0].length, audioBuffers[0].length, 'buffer1 is not ok');
-      assert.equal(myAudioBuffers[1].length, audioBuffers[1].length, 'buffer2 is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffers[0].length, 1, 'buffer1 is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffers[1].length, 1, 'buffer2 is not ok');
       done();
     }, audioContext);
   });
@@ -89,8 +90,8 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   it('My sounds were loaded with "loadAll" in reverse order', function(done) {
     this.timeout(myTimeout);
     myBufferLoader.loadAll(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffers) {
-      assert.equal(myAudioBuffers[0].length, audioBuffers[1].length, 'buffer1 is not ok');
-      assert.equal(myAudioBuffers[1].length, audioBuffers[0].length, 'buffer2 is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffers[1].length, 1, 'buffer1 is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffers[0].length, 1, 'buffer2 is not ok');
       done();
     }, audioContext);
   });
@@ -98,8 +99,8 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   it('My sounds were loaded with "load"', function(done) {
     this.timeout(myTimeout);
     myBufferLoader.load(['./synth.wav', '../node_modules/snd-dep/sound.wav'], function(audioBuffers) {
-      assert.equal(myAudioBuffers[0].length, audioBuffers[0].length, 'buffer1 is not ok');
-      assert.equal(myAudioBuffers[1].length, audioBuffers[1].length, 'buffer2 is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffers[0].length, 1, 'buffer1 is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffers[1].length, 1, 'buffer2 is not ok');
       done();
     }, audioContext);
   });
@@ -107,8 +108,8 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   it('My sounds were loaded with "load" in reverse order', function(done) {
     this.timeout(myTimeout);
     myBufferLoader.load(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffers) {
-      assert.equal(myAudioBuffers[0].length, audioBuffers[1].length, 'buffer1 is not ok');
-      assert.equal(myAudioBuffers[1].length, audioBuffers[0].length, 'buffer2 is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffers[1].length, 1, 'buffer1 is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffers[0].length, 1, 'buffer2 is not ok');
       done();
     }, audioContext);
   });
@@ -119,7 +120,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     var isSecondIsLoaded = false;
     
     myBufferLoader.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      assert.equal(myAudioBuffers[1].length, audioBuffer.length, 'myBufferLoader is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
       isFirstIsLoaded = true;
       if(isSecondIsLoaded) {
         console.log("second loaded, first loaded");
@@ -128,7 +129,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     }, audioContext);
     
     myBufferLoader2.load('./synth.wav', function(audioBuffer) {
-      assert.equal(myAudioBuffers[0].length, audioBuffer.length, 'myBufferLoader2 is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader2 is not ok');
       isSecondIsLoaded = true;
       if(isFirstIsLoaded) {
         console.log("first loaded, second loaded"); 
@@ -143,7 +144,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     var isSecondIsLoaded = false;
     
     myBufferLoader.load('./synth.wav', function(audioBuffer) {
-      assert.equal(myAudioBuffers[0].length, audioBuffer.length, 'myBufferLoader is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
       isFirstIsLoaded = true;
       if(isSecondIsLoaded) {
         console.log("second loaded, first loaded");
@@ -152,7 +153,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     }, audioContext);
     
     myBufferLoader2.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      assert.equal(myAudioBuffers[1].length, audioBuffer.length, 'myBufferLoader2 is not ok');
+      assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader2 is not ok');
       isSecondIsLoaded = true;
       if(isFirstIsLoaded) {
         console.log("first loaded, second loaded"); 
@@ -164,10 +165,10 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   it('Cascad loading', function(done) {
     this.timeout(myTimeout);
     myBufferLoader.load('./synth.wav', function(audioBuffer) {
-      assert.equal(myAudioBuffers[0].length, audioBuffer.length, 'myBufferLoader is not ok');
+      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
       
       myBufferLoader.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-        assert.equal(myAudioBuffers[1].length, audioBuffer.length, 'myBufferLoader in cascad is not ok');
+        assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader in cascad is not ok');
         done();
       }, audioContext);
       
