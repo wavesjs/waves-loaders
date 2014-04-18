@@ -6,23 +6,25 @@
 </head>
 <body>
   <div id="mocha"></div>
-  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/blanket/test/vendor/mocha.js"></script>
   <script src="../node_modules/chai/chai.js"></script>
 
+  
+
+  
+  
+  
+  <!-- Code coverage -->
+  <script type="text/javascript"  data-cover-adapter="../node_modules/blanket/src/adapters/mocha-blanket.js"  data-cover-flags="debug" src="../node_modules/blanket/dist/qunit/blanket.js"> </script>
+  <script type="text/javascript" src="../node_modules/blanket/src/adapters/mocha-blanket.js" data-cover></script>
+  
   <script>
     mocha.setup('bdd')
-    mocha.reporter('html');
   </script>
+  <!-- Lib -->
+  <script src="../buffer-loader.js" data-cover></script>
+  <!-- Test -->
+  <script src="./tests.js" data-cover></script>
 
-  <!-- Tests -->
-  <script src="../buffer-loader.js"></script>
-  <script src="./tests.js"></script>
-
-  <script>
-    // Only tests run in real browser, injected script run if options.run == true
-    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
-      mocha.run();
-    }
-  </script>
 </body>
 </html>
