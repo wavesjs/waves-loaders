@@ -8,13 +8,18 @@ The `bufferLoader` object provides several sound file loading methods:
 - `loadBuffer`
 - `loadAll`
 
+## Requirements
+
+- [Q](https://github.com/kriskowal/q) version 1.0.x - [a Promise implementation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 ## Example
 
-Requirement : q.js (https://github.com/kriskowal/q)
+Load q.js and buffer-loader.js, for instance in your html file by using:
 
-Load q.js and buffer-loader.js (for instance in your html file by using <script src="q.js"></script> and <script src="buffer-loader.js"></script>)
-
+```html
+    <script src="q.js"></script>
+    <script src="buffer-loader.min.js"></script>
+```
 
 ```js
   // we need an audio context to decode the file
