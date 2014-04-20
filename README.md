@@ -6,24 +6,31 @@ The `bufferLoader` object provides several sound file loading methods:
 
 - `load`
 - `loadBuffer`
-- `loadEach`
 - `loadAll`
 
 
 ## Example
 
+Requirement : q.js (https://github.com/kriskowal/q)
+
+Load q.js and buffer-loader.js (for instance in your html file by using <script src="q.js"></script> and <script src="buffer-loader.js"></script>)
+
+
 ```js
   // we need an audio context to decode the file
   var audioContext = new AudioContext();
 
-  // load the file passing the path, callback and context
+  // load the file passing the path
   var myBufferLoader = createBufferLoader();
-  myBufferLoader.load('sound/file/path', onLoaded, audioContext);
+  myBufferLoader.load('sound/file/path').then(
+      function(buffer){
+        // do something with the loaded audio buffer
+      },
+      function(error){
+        // catch an error during loading process, or decodeAudioData
+      }
+  );
 
-  // do something with the loaded audio buffer
-  function onLoaded(buffer){
-    console.log(buffer)
-  };
 ```
 
 ## API
@@ -32,10 +39,9 @@ The `bufferLoader` object exposes the following API:
 
 Method | Description
 --- | ---
- `bufferLoader.load(fileURLs, callback, audioContext)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths; `loadEach` has to be called explicitely.
-`bufferLoader.loadBuffer(fileURL, callback, audioContext)` | Load a single audio file, decode it in an AudioBuffer and pass it to the callback (`callback(buffer)`).
-`bufferLoader.loadEach(fileURLs, callback, audioContext)` | Load each audio file asynchronously, decode it in an AudioBuffer, and execute the callback for each right after its decoding (`callback(buffer)`).
-`bufferLoader.loadAll(fileURLs, callback, audioContext)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a single callback when all loadings finished (`callback(buffersArray)`).
+`bufferLoader.load(fileURLs)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths, and returns a Promise.
+`bufferLoader.loadBuffer(fileURL)` | Load a single audio file, decode it in an AudioBuffer and returns a Promise.
+`bufferLoader.loadAll(fileURLs)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and returns a Promise.
 
 ## Tests
 
@@ -45,7 +51,7 @@ If grunt is not installed
 $ npm install -g grunt-cli
 ```
 
-Install all depencies in the module folder 
+Install all depencies in the module folder
 
 ```bash
 $ npm install

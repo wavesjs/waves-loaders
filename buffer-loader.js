@@ -22,26 +22,20 @@
 
    var bufferLoaderObject = {
 
-    audioContext: {
-      writable: true
-    },
-
     /**
      * Main wrapper function for loading.
      * Switch between loadBuffer and loadAll;
      * loadEach has to be called explicitely.
      * @public
      * @param fileURLs The URLs of the audio files to load.
-     * @param audioContext The Web Audio API AudioContext.
      */
      load: {
       enumerable: true,
-      value: function(fileURLs, audioContext) {
-        this.audioContext = audioContext;
+      value: function(fileURLs) {
         if (Array.isArray(fileURLs)) {
-          return this.loadAll(fileURLs, this.audioContext);
+          return this.loadAll(fileURLs);
         } else {
-          return this.loadBuffer(fileURLs, this.audioContext);
+          return this.loadBuffer(fileURLs);
         }
       }
     },
@@ -51,11 +45,10 @@
      * decode it in an AudioBuffer and return Promise
      * @public
      * @param fileURL The URL of the audio file to load.
-     * @param audioContext The Web Audio API AudioContext.
      */
      loadBuffer: {
       enumerable: true,
-      value: function(fileURL, audioContext) {
+      value: function(fileURL) {
         return this.fileLoadingRequest(fileURL)
         .then(
           this.decodeAudioData,
@@ -71,11 +64,10 @@
      * and return a Promise
      * @public
      * @param fileURLs The URLs array of the audio files to load.
-     * @param audioContext The Web Audio API AudioContext.
      */
      loadAll: {
       enumerable: true,
-      value: function(fileURLs, audioContext) {
+      value: function(fileURLs) {
         var urlsCount = fileURLs.length;
         var promises = [];
         var that = this;
@@ -102,8 +94,9 @@
     },
 
     /**
-     * Load a file asynchronously using a Promise.
+     * Load a file asynchronously returning a Promise.
      * @private
+     * @param url The url of the audio file to load.
      */
      fileLoadingRequest: {
       enumerable: false,
@@ -139,15 +132,16 @@
     },
 
     /**
-     * Decode Audio Data using a Promise
+     * Decode Audio Data returning a Promise
      * @private
+     * @param arraybuffer The arraybuffer of the loaded audio file.
      */
      decodeAudioData: {
       enumerable: false,
       value: function(arraybuffer) {
         var deferred = Q.defer();
         var promise = new Q.fcall(function(resolve, reject){
-          audioContext.decodeAudioData(
+          window.audioContext.decodeAudioData(
             arraybuffer, // returned audio data array
             function successCallback(buffer) {
               deferred.resolve(buffer);
