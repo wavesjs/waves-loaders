@@ -27,7 +27,7 @@ Load q.js and buffer-loader.js (for instance in your html file by using <script 
         // do something with the loaded audio buffer
       },
       function(error){
-        // catch an error during loading process, or decodeAudioData
+        // catch an error during loading or decodeAudioData process
       }
   );
 
