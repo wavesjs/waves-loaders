@@ -3,202 +3,99 @@ var assert = chai.assert;
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 var audioContext = new AudioContext();
 
+
 describe("Load some sounds: synth.wav and sound.wav", function() {
-  var self = this;
 
-  var myAudioBuffers = [{ //synth.wav
-    duration: 1.7874829931972789,
-    gain: 1,
-    length: 78828,
-    numberOfChannels: 1,
-    sampleRate: 44100
-  }, { //sound.wav
-    duration: 3.633605442176871, 
-    gain: 1,
-    length: 160242,
-    numberOfChannels: 2,
-    sampleRate: 44100
-  }];
-
-  var myTimeout = 200000;
   var myBufferLoader = createBufferLoader();
-  var myBufferLoader2 = createBufferLoader();
+  var validArrayBuffer; // to have access to a valid buffer
 
-  it('My sound was loaded with "load"', function(done) {
-    this.timeout(myTimeout);
-    
-    myBufferLoader.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      console.log(audioBuffer);
-      assert.isObject(audioBuffer, 'audioBuffer is not an object');
-      done();
-    }, audioContext);
+  it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done){
+    myBufferLoader.fileLoadingRequest('./synth.wav').then(
+      function(buffer){
+        // should be sure it's the right buffer
+        validArrayBuffer = buffer;
+        done();
+      }
+      );
   });
-  
-  it('My sound was loaded with "loadBuffer"', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.loadBuffer('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      assert.isObject(audioBuffer, 'audioBuffer is not an object');
-      done();
 
-    }, audioContext);
-  });
- 
-  /*
-  If an order notion will be developped
-  it('My sounds were loaded with "loadEach"', function(done) {
-    this.timeout(myTimeout);
-    var count = 0;
-    bufferLoader.loadEach(['./synth.wav', '../node_modules/snd-dep/sound.wav'], function(audioBuffer) {
-      assert.equal(myAudioBuffers[count].length, audioBuffer.length, 'buffer' + count + ' is not ok');
-      count++;
-      if(count == 2)
-        done();
-    }, audioContext);
-  });
-  
-  it('My sounds were loaded with "loadEach" in reverse order', function(done) {
-    this.timeout(myTimeout);
-    var count = 1;
-    bufferLoader.loadEach(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffer) {
-      assert.equal(myAudioBuffers[count].length, audioBuffer.length, 'buffer' + count + ' is not ok');
-      count--;
-      if(count == -1)
-        done();
-    }, audioContext);
-  });*/
-  
-  it('My sounds were loaded with "loadEach" in reverse order', function(done) {
-    this.timeout(myTimeout);
-    var count = 0;
-    myBufferLoader.loadEach(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffer) {
-      assert.isObject(audioBuffer, 'audioBuffer is not an object');
-      count++;
-      if(count == 2)
-        done();
-    }, audioContext);
-  });
-  
-  it('My sounds were loaded with "loadAll"', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.loadAll(['./synth.wav', '../node_modules/snd-dep/sound.wav'], function(audioBuffers) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffers[0].length, 1, 'buffer1 is not ok');
-      assert.closeTo(myAudioBuffers[1].length, audioBuffers[1].length, 1, 'buffer2 is not ok');
-      done();
-    }, audioContext);
-  });
-  
-  it('My sounds were loaded with "loadAll" in reverse order', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.loadAll(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffers) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffers[1].length, 1, 'buffer1 is not ok');
-      assert.closeTo(myAudioBuffers[1].length, audioBuffers[0].length, 1, 'buffer2 is not ok');
-      done();
-    }, audioContext);
-  });
-  
-  it('My sounds were loaded with "load"', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.load(['./synth.wav', '../node_modules/snd-dep/sound.wav'], function(audioBuffers) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffers[0].length, 1, 'buffer1 is not ok');
-      assert.closeTo(myAudioBuffers[1].length, audioBuffers[1].length, 1, 'buffer2 is not ok');
-      done();
-    }, audioContext);
-  });
-  
-  it('My sounds were loaded with "load" in reverse order', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.load(['../node_modules/snd-dep/sound.wav', './synth.wav'], function(audioBuffers) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffers[1].length, 1, 'buffer1 is not ok');
-      assert.closeTo(myAudioBuffers[1].length, audioBuffers[0].length, 1, 'buffer2 is not ok');
-      done();
-    }, audioContext);
-  });
-  
-  it('2 sounds loaded by 2 buffer loader', function(done) {
-    this.timeout(myTimeout);
-    var isFirstIsLoaded = false;
-    var isSecondIsLoaded = false;
-    
-    myBufferLoader.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
-      isFirstIsLoaded = true;
-      if(isSecondIsLoaded) {
-        console.log("second loaded, first loaded");
+  it('Test fileLoadingRequest function with a wrong url, Promise implementation for XMLHttpRequest', function(done){
+    myBufferLoader.fileLoadingRequest('./synt.wav').then(
+      function(buffer){
+      },
+      function(error){
+        assert.equal(error.message, 'Not Found'); //or
         done();
       }
-    }, audioContext);
-    
-    myBufferLoader2.load('./synth.wav', function(audioBuffer) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader2 is not ok');
-      isSecondIsLoaded = true;
-      if(isFirstIsLoaded) {
-        console.log("first loaded, second loaded"); 
-        done();
-      }
-    }, audioContext);
+      );
   });
-  
-  it('2 sounds loaded by 2 buffer loader reverse sound files', function(done) {
-    this.timeout(myTimeout);
-    var isFirstIsLoaded = false;
-    var isSecondIsLoaded = false;
-    
-    myBufferLoader.load('./synth.wav', function(audioBuffer) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
-      isFirstIsLoaded = true;
-      if(isSecondIsLoaded) {
-        console.log("second loaded, first loaded");
-        done();
-      }
-    }, audioContext);
-    
-    myBufferLoader2.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-      assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader2 is not ok');
-      isSecondIsLoaded = true;
-      if(isFirstIsLoaded) {
-        console.log("first loaded, second loaded"); 
-        done();
-      }
-    }, audioContext);
-  });
-  
-  it('Cascad loading', function(done) {
-    this.timeout(myTimeout);
-    myBufferLoader.load('./synth.wav', function(audioBuffer) {
-      assert.closeTo(myAudioBuffers[0].length, audioBuffer.length, 1, 'myBufferLoader is not ok');
-      
-      myBufferLoader.load('../node_modules/snd-dep/sound.wav', function(audioBuffer) {
-        assert.closeTo(myAudioBuffers[1].length, audioBuffer.length, 1, 'myBufferLoader in cascad is not ok');
-        done();
-      }, audioContext);
-      
-    }, audioContext);
-    
-  });
-  
-  
-  /*
-  Waiting for promises
-  it('My sound is not correct, error "decodeAudioData" was detected', function(done) {
-    this.timeout(myTimeout);
-    try {
-      myBufferLoader.load('./nothing.txt', function(audioBuffer) {
-      console.log(audioBuffer);
-      }, audioContext);
-    } catch(e) {
-      done();
-    }
-  });
-  
-  it('My path is not correct, error "404" was detected', function(done) {
-    this.timeout(myTimeout);
-    try {
-      myBufferLoader.load('./nothing', function(audioBuffer) {
-      console.log(audioBuffer);
-      }, audioContext);
-    } catch(e) {
-      done();
-    }
-  });*/
 
+  it('Test decodeAudioData function with valid arraybuffer', function(done){
+    myBufferLoader.decodeAudioData(validArrayBuffer).then(
+      function(buffer){
+        done();
+      },
+      function(error){
+      }
+      );
+  });
+
+  it('Test decodeAudioData function with invalid arraybuffer', function(done){
+    myBufferLoader.decodeAudioData(new ArrayBuffer(0)).then(
+      function(buffer){
+      },
+      function(error){
+        done();
+      }
+      );
+  });
+
+  it('Test loadBuffer function with valid url', function(done){
+    myBufferLoader.loadBuffer('./synth.wav').then(
+      function(buffer){
+        done();
+      },
+      function(error){
+      }
+      );
+  });
+
+  it('Test loadBuffer function with invalid url', function(done){
+    myBufferLoader.loadBuffer('./synh.wav').then(
+      function(buffer){
+      },
+      function(error){
+        done();
+      }
+      );
+  });
+
+  it('Test loadAll function with valid url', function(done){
+    myBufferLoader.loadAll(['./synth.wav', './synth.wav']).then(
+      function(buffer){
+        done();
+      },
+      function(error){
+      }
+      );
+  });
+
+  it('Test loadAll function with invalid url', function(done){
+    myBufferLoader.loadAll(['./synth.wav', './synh.wav']).then(
+      function(buffer){
+      },
+      function(error){
+        done();
+      }
+      );
+  });
+
+  it("Test load function", function (done) {
+    // We should here spy the loadBuffer property
+    // var spy = sinon.spy(myBufferLoader, "loadBuffer");
+    // and then assert true for spy.calledOnce
+    // but this is not allowed by sinon.js
+    // as sinon.js spy for ES5 property descriptors are not available.
+    done();
+  });
 });

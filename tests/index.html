@@ -8,16 +8,17 @@
   <div id="mocha"></div>
   <script src="../node_modules/blanket/test/vendor/mocha.js"></script>
   <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/sinon/pkg/sinon-1.9.1.js"></script>
 
   <!-- Code coverage -->
-  <script type="text/javascript"  data-cover-adapter="../node_modules/blanket/src/adapters/mocha-blanket.js"  data-cover-flags="debug" src="../node_modules/blanket/dist/qunit/blanket.js"> </script>
-  <script type="text/javascript" src="../node_modules/blanket/src/adapters/mocha-blanket.js" data-cover></script>
-  
+  <script type="text/javascript"  data-cover-adapter="../node_modules/blanket/src/adapters/mocha-blanket.js"  src="../node_modules/blanket/dist/qunit/blanket.js"> </script>
+
   <script>
     mocha.setup('bdd')
   </script>
-  
+
   <!-- Lib -->
+  <script src="../node_modules/q/q.js"></script>
   <script src="../buffer-loader.js" data-cover></script>
   <!-- Test -->
   <script src="./tests.js" data-cover></script>
