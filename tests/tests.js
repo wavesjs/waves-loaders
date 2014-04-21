@@ -10,11 +10,21 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   var validArrayBuffer; // to have access to a valid buffer
 
   it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done){
+    var progress_steps = [];
     myBufferLoader.fileLoadingRequest('./synth.wav').then(
       function(buffer){
-        // should be sure it's the right buffer
+        // should be sure it's the right buffer, well, we guess it is.
         validArrayBuffer = buffer;
+        // we check that the progress event finally reached 1.
+        assert.equal(progress_steps[progress_steps.length - 1], 1);
         done();
+      },
+      function(error){
+
+      },
+      function (progress) {
+        // we keep track of progress
+        progress_steps.push(progress);
       }
       );
   });
@@ -24,7 +34,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
       function(buffer){
       },
       function(error){
-        assert.equal(error.message, 'Not Found'); //or
+        assert.equal(error.message, 'Not Found');
         done();
       }
       );
@@ -71,11 +81,18 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   });
 
   it('Test loadAll function with valid url', function(done){
+    var progress_steps = {0: [], 1: []};
     myBufferLoader.loadAll(['./synth.wav', './synth.wav']).then(
       function(buffer){
+        // check that all the progress events finally reached 1.
+        assert.equal(progress_steps[0][progress_steps[0].length - 1], 1);
+        assert.equal(progress_steps[1][progress_steps[1].length - 1], 1);
         done();
       },
       function(error){
+      },
+      function (progress) {
+        progress_steps[progress.index].push(progress.value);
       }
       );
   });

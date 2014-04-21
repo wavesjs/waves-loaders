@@ -33,8 +33,15 @@ Load q.js and buffer-loader.js, for instance in your html file by using:
       },
       function(error){
         // catch an error during loading or decodeAudioData process
+      },
+      function(progress){
+        // do something with the progress value, value between 0.0 and 1
       }
   );
+
+  // same method for loading multiple files
+  // except that the progress is this time an object which has an index key corresponding to the file index in the array passed to load,
+  // and a value key, same value as for single file loading, between 0.0 and 1, corresponding to the file loading progress.
 
 ```
 
