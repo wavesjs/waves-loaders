@@ -106,7 +106,7 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
       }
       );
   });
-
+  /* TODO
   it("Test load function", function (done) {
     // We should here spy the loadBuffer property
     // var spy = sinon.spy(myBufferLoader, "loadBuffer");
@@ -115,4 +115,5 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
     // as sinon.js spy for ES5 property descriptors are not available.
     done();
   });
+  */
 });

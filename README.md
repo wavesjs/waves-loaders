@@ -51,9 +51,9 @@ The `bufferLoader` object exposes the following API:
 
 Method | Description
 --- | ---
-`bufferLoader.load(fileURLs)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths, and returns a Promise.
-`bufferLoader.loadBuffer(fileURL)` | Load a single audio file, decode it in an AudioBuffer and returns a Promise.
-`bufferLoader.loadAll(fileURLs)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and returns a Promise.
+`bufferLoader.load(fileURLs)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths, and return a Promise.
+`bufferLoader.loadBuffer(fileURL)` | Load a single audio file, decode it in an AudioBuffer and return a Promise.
+`bufferLoader.loadAll(fileURLs)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
 
 ## Tests
 

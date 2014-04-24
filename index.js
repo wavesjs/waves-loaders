@@ -2,7 +2,7 @@
  * @fileOverview
  * WAVE audio library module for buffer loading.
  * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
- * @version 1.0.1
+ * @version 2.0.0
  */
 
 
@@ -22,11 +22,10 @@
    var bufferLoaderObject = {
 
     /**
-     * Main wrapper function for loading.
-     * Switch between loadBuffer and loadAll;
-     * loadEach has to be called explicitely.
+     * Main wrapper function for audio buffer loading.
+     * Switch between loadBuffer and loadAll.
      * @public
-     * @param fileURLs The URLs of the audio files to load.
+     * @param fileURLs The URL(s) of the audio files to load. Accepts a URL to the audio file location or an array of URLs.
      */
      load: {
       enumerable: true,
@@ -41,9 +40,9 @@
 
     /**
      * Load a single audio file,
-     * decode it in an AudioBuffer and return Promise
+     * decode it in an AudioBuffer, return a Promise
      * @public
-     * @param fileURL The URL of the audio file to load.
+     * @param fileURL The URL of the audio file location to load.
      */
      loadBuffer: {
       enumerable: true,
@@ -93,9 +92,9 @@
     },
 
     /**
-     * Load a file asynchronously returning a Promise.
+     * Load a file asynchronously, return a Promise.
      * @private
-     * @param url The url of the audio file to load.
+     * @param url The URL of the audio file to load.
      */
      fileLoadingRequest: {
       enumerable: false,
@@ -131,9 +130,9 @@
     },
 
     /**
-     * Decode Audio Data returning a Promise
+     * Decode Audio Data, return a Promise
      * @private
-     * @param arraybuffer The arraybuffer of the loaded audio file.
+     * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
      */
      decodeAudioData: {
       enumerable: false,
