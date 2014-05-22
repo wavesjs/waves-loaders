@@ -1,8 +1,8 @@
 /** 
  * @fileOverview
  * WAVE audio library module for buffer loading.
- * @author Karim Barkati and Victor Saiz
- * @version 1.0.1
+ * @author Karim.Barkati@ircam.fr, Norbert.Schnell@ircam.fr, Victor.Saiz@ircam.fr
+ * @version 1.2.0
  */
 
 
@@ -11,14 +11,15 @@
  * Function invocation pattern for object creation.
  * @public
  */
-
 var createBufferLoader = function createBufferLoader() {
   'use strict';
+
+  // Ensure global availability of an "audioContext" instance of web audio AudioContext.
+  window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
   /**
    * ECMAScript5 property descriptors object.
    */
-
   var bufferLoaderObject = {
 
     // Attributes for loadAll closure.
@@ -32,19 +33,18 @@ var createBufferLoader = function createBufferLoader() {
     /**
      * Main wrapper function for loading.
      * Switch between loadBuffer and loadAll;
-     * loadEach has to be called explicitely.
+     * loadEach has to be called explicitly.
      * @public
      * @param fileURLs The URLs of the audio files to load.
-     * @param callback The callback function.
-     * @param audioContext The Web Audio API AudioContext.
+     * @param toplevelCallback The callback function.
      */
     load: {
       enumerable: true,
-      value: function(fileURLs, callback, audioContext) {
+      value: function(fileURLs, toplevelCallback) {
         if (Array.isArray(fileURLs)) {
-          this.loadAll(fileURLs, callback, audioContext);
+          this.loadAll(fileURLs, toplevelCallback);
         } else {
-          this.loadBuffer(fileURLs, callback, audioContext);
+          this.loadBuffer(fileURLs, toplevelCallback);
         }
       }
     },
@@ -55,18 +55,17 @@ var createBufferLoader = function createBufferLoader() {
      * and pass it to the callback.
      * @public
      * @param fileURL The URL of the audio file to load.
-     * @param callback The callback function when loading finished.
-     * @param audioContext The Web Audio API AudioContext.
+     * @param toplevelCallback The callback function when loading finished.
      */
     loadBuffer: {
       enumerable: true,
-      value: function(fileURL, callback, audioContext) {
+      value: function(fileURL, toplevelCallback) {
 
         var successCallback = function successCallback(buffer) {
           if (!buffer) {
             throw 'error decoding data: ' + buffer;
           }
-          callback(buffer);
+          toplevelCallback(buffer);
         };
 
         var errorCallback = function errorCallback(error) {
@@ -92,16 +91,15 @@ var createBufferLoader = function createBufferLoader() {
      * and execute the callback for each.
      * @public
      * @param fileURLs The URLs array of the audio files to load.
-     * @param callback The callback function when a loading finished.
-     * @param audioContext The Web Audio API AudioContext.
+     * @param toplevelCallback The callback function when a loading finished.
      */
     loadEach: {
       enumerable: true,
-      value: function(fileURLs, callback, audioContext) {
+      value: function(fileURLs, toplevelCallback) {
         var urlsCount = fileURLs.length;
 
         for (var i = 0; i < urlsCount; ++i) {
-          this.loadBuffer(fileURLs[i], callback, audioContext);
+          this.loadBuffer(fileURLs[i], toplevelCallback);
         }
       }
     },
@@ -112,17 +110,16 @@ var createBufferLoader = function createBufferLoader() {
      * and return a single callback when all loadings finished.
      * @public
      * @param fileURLs The URLs array of the audio files to load.
-     * @param callback The callback function when total loading finished.
-     * @param audioContext The Web Audio API AudioContext.
+     * @param toplevelCallback The callback function when total loading finished.
      */
     loadAll: {
       enumerable: true,
-      value: function(fileURLs, callback, audioContext) {
+      value: function(fileURLs, toplevelCallback) {
         var urlsCount = fileURLs.length;
         this.loadCount = 0;
         this.bufferList = [];
         for (var i = 0; i < urlsCount; ++i) {
-          this.loadBufferAtIndex(fileURLs[i], callback, audioContext, i, urlsCount);
+          this.loadBufferAtIndex(fileURLs[i], toplevelCallback, i, urlsCount);
         }
       }
     },
@@ -133,12 +130,11 @@ var createBufferLoader = function createBufferLoader() {
      * and store it in a buffer list at provided index.
      * @private
      * @param fileURL The URL of the audio file to load.
-     * @param callback The callback function when loading finished.
-     * @param audioContext The Web Audio API AudioContext.
+     * @param toplevelCallback The callback function when loading finished.
      */
     loadBufferAtIndex: {
       enumerable: false,
-      value: function(fileURL, callback, audioContext, index, urlsCount) {
+      value: function(fileURL, toplevelCallback, index, urlsCount) {
 
         var that = this;
 
@@ -151,7 +147,7 @@ var createBufferLoader = function createBufferLoader() {
             that.bufferList[index] = buffer;
           } else {
             that.bufferList[index] = buffer;
-            callback(that.bufferList); // When all files are loaded.
+            toplevelCallback(that.bufferList); // When all files are loaded.
           }
         };
 
