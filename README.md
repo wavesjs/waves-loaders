@@ -40,13 +40,14 @@ Load buffer-loader.js (or the minified version) in your html file by using:
       }
   );
 
-  // Use the same load method to load multiple files,
-  // by passing an array of urls ['url/to/file1', 'url/to/file2', ...].
-  // The progress is then an object, eg. {index: 4, value: 0.2}, where
-  // index corresponds to the file index in the array of files,
-  // and value, between 0.0 and 1, corresponds to the file loading progress.
-
 ```
+
+Use the same ```load``` method to load multiple files, by passing
+an array of urls ['url/to/file1', 'url/to/file2', ...].
+The progress is then an object, eg. {index: 4, value: 0.2},
+where index corresponds to the file index in the array of files,
+and value, between 0.0 and 1, corresponds to the file loading progress.
+
 
 ## API
 
