@@ -1,11 +1,11 @@
-/** 
+/**
  * @fileOverview
  * WAVE audio library module for buffer loading.
- * @author Karim.Barkati@ircam.fr, Norbert.Schnell@ircam.fr, Victor.Saiz@ircam.fr
- * @version 1.2.0
+ * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
+ * @version 3.0.0
  */
 
-
+var Q = require('q');
 
 /**
  * Function invocation pattern for object creation.
@@ -13,6 +13,7 @@
  */
 var createBufferLoader = function createBufferLoader() {
   'use strict';
+  window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
   // Ensure global availability of an "audioContext" instance of web audio AudioContext.
   window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
@@ -22,179 +23,136 @@ var createBufferLoader = function createBufferLoader() {
    */
   var bufferLoaderObject = {
 
-    // Attributes for loadAll closure.
-    bufferList: {
-      writable: true
-    },
-    loadCount: {
-      writable: true
-    },
-
     /**
-     * Main wrapper function for loading.
-     * Switch between loadBuffer and loadAll;
-     * loadEach has to be called explicitly.
+     * Main wrapper function for audio buffer loading.
+     * Switch between loadBuffer and loadAll.
      * @public
-     * @param fileURLs The URLs of the audio files to load.
-     * @param toplevelCallback The callback function.
+     * @param fileURLs The URL(s) of the audio files to load. Accepts a URL to the audio file location or an array of URLs.
      */
     load: {
       enumerable: true,
-      value: function(fileURLs, toplevelCallback) {
+      value: function(fileURLs) {
         if (Array.isArray(fileURLs)) {
-          this.loadAll(fileURLs, toplevelCallback);
+          return this.loadAll(fileURLs);
         } else {
-          this.loadBuffer(fileURLs, toplevelCallback);
+          return this.loadBuffer(fileURLs);
         }
       }
     },
 
     /**
      * Load a single audio file,
-     * decode it in an AudioBuffer
-     * and pass it to the callback.
+     * decode it in an AudioBuffer, return a Promise
      * @public
-     * @param fileURL The URL of the audio file to load.
-     * @param toplevelCallback The callback function when loading finished.
+     * @param fileURL The URL of the audio file location to load.
      */
     loadBuffer: {
       enumerable: true,
-      value: function(fileURL, toplevelCallback) {
-
-        var successCallback = function successCallback(buffer) {
-          if (!buffer) {
-            throw 'error decoding data: ' + buffer;
-          }
-          toplevelCallback(buffer);
-        };
-
-        var errorCallback = function errorCallback(error) {
-          throw 'decodeAudioData error: ' + error;
-        };
-
-        var decodeCallback = function decodeCallback(requestCallback) {
-
-          audioContext.decodeAudioData(
-            requestCallback.response, // returned audio data array
-            successCallback,
-            errorCallback
-          );
-        };
-
-        this.fileLoadingRequest(fileURL, decodeCallback).send();
-      }
-    },
-
-    /**
-     * Load each audio file asynchronously,
-     * decode it in an AudioBuffer,
-     * and execute the callback for each.
-     * @public
-     * @param fileURLs The URLs array of the audio files to load.
-     * @param toplevelCallback The callback function when a loading finished.
-     */
-    loadEach: {
-      enumerable: true,
-      value: function(fileURLs, toplevelCallback) {
-        var urlsCount = fileURLs.length;
-
-        for (var i = 0; i < urlsCount; ++i) {
-          this.loadBuffer(fileURLs[i], toplevelCallback);
-        }
+      value: function(fileURL) {
+        return this.fileLoadingRequest(fileURL)
+          .then(
+            this.decodeAudioData,
+            function(error) {
+              throw error;
+            });
       }
     },
 
     /**
      * Load all audio files at once in a single array,
      * decode them in an array of AudioBuffers,
-     * and return a single callback when all loadings finished.
+     * and return a Promise
      * @public
      * @param fileURLs The URLs array of the audio files to load.
-     * @param toplevelCallback The callback function when total loading finished.
      */
     loadAll: {
       enumerable: true,
-      value: function(fileURLs, toplevelCallback) {
+      value: function(fileURLs) {
         var urlsCount = fileURLs.length;
-        this.loadCount = 0;
-        this.bufferList = [];
-        for (var i = 0; i < urlsCount; ++i) {
-          this.loadBufferAtIndex(fileURLs[i], toplevelCallback, i, urlsCount);
-        }
-      }
-    },
-
-    /**
-     * Load a single audio file,
-     * decode it in an AudioBuffer
-     * and store it in a buffer list at provided index.
-     * @private
-     * @param fileURL The URL of the audio file to load.
-     * @param toplevelCallback The callback function when loading finished.
-     */
-    loadBufferAtIndex: {
-      enumerable: false,
-      value: function(fileURL, toplevelCallback, index, urlsCount) {
-
+        var promises = [];
         var that = this;
 
-        var successCallback = function successCallback(buffer) {
-          if (!buffer) {
-            throw 'error decoding data: ' + buffer;
-          }
-          that.loadCount++;
-          if (that.loadCount < urlsCount) {
-            that.bufferList[index] = buffer;
-          } else {
-            that.bufferList[index] = buffer;
-            toplevelCallback(that.bufferList); // When all files are loaded.
-          }
-        };
-
-        var errorCallback = function errorCallback(error) {
-          throw 'decodeAudioData error: ' + error;
-        };
-
-        var decodeCallback = function decodeCallback(requestCallback) {
-
-          audioContext.decodeAudioData(
-            requestCallback.response, // returned audio data array
-            successCallback,
-            errorCallback
+        for (var i = 0; i < urlsCount; ++i) {
+          promises.push(this.fileLoadingRequest(fileURLs[i]));
+        }
+        // We use Q instead of Promises to get the progress handler provided by Q
+        return Q.all(promises)
+          .then(
+            function get_all_the_things(arraybuffers) {
+              return Q.all(arraybuffers.map(function(arraybuffer) {
+                return that.decodeAudioData(arraybuffer);
+              }));
+            },
+            function(error) {
+              throw error; // TODO: better error handler
+            },
+            function(progress) {
+              return progress;
+            }
           );
-        };
-
-        this.fileLoadingRequest(fileURL, decodeCallback).send();
       }
     },
 
     /**
-     * Load a file asynchronously
-     * and pass it to a callback as an 'arraybuffer'.
+     * Load a file asynchronously, return a Promise.
      * @private
+     * @param url The URL of the audio file to load.
      */
     fileLoadingRequest: {
       enumerable: false,
-      value: function(url, callback) {
+      value: function(url) {
+        var deferred = Q.defer();
 
-        // Load buffer asynchronously
-        var request = new XMLHttpRequest();
-        request.open("GET", url, true);
-        request.responseType = "arraybuffer";
+        var promise = new Q.fcall(function(resolve, reject) {
+          // Load buffer asynchronously
+          var request = new XMLHttpRequest();
 
-        request.onreadystatechange = function() {
-          if (request.readyState != 4) return;
-          if (request.status != 200 && request.status != 304) {
-            throw 'HTTP error ' + request.status;
-          }
-
-          callback(request);
-        };
-
-        if (request.readyState == 4) return;
-        return request;
+          request.open('GET', url, true);
+          request.responseType = "arraybuffer";
+          request.onload = function() {
+            // Test request.status value, as 404 will also get there
+            if (request.status === 200 || request.status === 304) {
+              deferred.resolve(request.response);
+            } else {
+              deferred.reject(new Error(request.statusText));
+            }
+          };
+          request.onprogress = function(evt) {
+            deferred.notify(evt.loaded / evt.total);
+          };
+          // Manage network errors
+          request.onerror = function() {
+            deferred.reject(new Error("Network Error"));
+          };
+          request.send();
+        });
+        return deferred.promise;
       }
     },
+
+    /**
+     * Decode Audio Data, return a Promise
+     * @private
+     * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
+     */
+    decodeAudioData: {
+      enumerable: false,
+      value: function(arraybuffer) {
+        var deferred = Q.defer();
+        var promise = new Q.fcall(function(resolve, reject) {
+          window.audioContext.decodeAudioData(
+            arraybuffer, // returned audio data array
+            function successCallback(buffer) {
+              deferred.resolve(buffer);
+            },
+            function errorCallback(error) {
+              deferred.reject(new Error("DecodeAudioData error"));
+            }
+          );
+        });
+        return deferred.promise;
+      }
+    }
   };
 
   // Instantiate an object.

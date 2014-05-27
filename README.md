@@ -6,22 +6,48 @@ The `bufferLoader` object provides several sound file loading methods:
 
 - `load`
 - `loadBuffer`
-- `loadEach`
 - `loadAll`
 
+## Requirements
+
+- [Q](https://github.com/kriskowal/q) version 1.0.x - [a Promise implementation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+(Q is already included in the buffer-loader.js and buffer-loader.min.js ready to use files).
 
 ## Example
 
-```js
-  // load the file passing the path and your callback
-  var myBufferLoader = createBufferLoader();
-  myBufferLoader.load('sound/file/path', onLoaded);
+Load buffer-loader.js (or the minified version) in your html file by using:
 
-  // do something with the loaded audio buffer
-  function onLoaded(buffer){
-    console.log(buffer)
-  };
+```html
+    <script src="buffer-loader.min.js"></script>
 ```
+
+```js
+  // We need an audio context to decode the file
+  // By default, buffer-loader search for audioContext in the window.
+  var audioContext = new AudioContext();
+
+  // Load the file passing the path
+  var myBufferLoader = createBufferLoader();
+  myBufferLoader.load('sound/file/url').then(
+      function(buffer){
+        // Do something with the loaded audio buffer
+      },
+      function(error){
+        // Catch an error during the loading or decodeAudioData process
+      },
+      function(progress){
+        // Do something with the progress value, value between 0.0 and 1
+      }
+  );
+
+```
+
+Use the same ```load``` method to load multiple files, by passing
+an array of urls ['url/to/file1', 'url/to/file2', ...].
+The progress is then an object, eg. {index: 4, value: 0.2},
+where index corresponds to the file index in the array of files,
+and value, between 0.0 and 1, corresponds to the file loading progress.
+
 
 ## API
 
@@ -29,10 +55,9 @@ The `bufferLoader` object exposes the following API:
 
 Method | Description
 --- | ---
-`bufferLoader.load(fileURLs, callback)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths; `loadEach` has to be called explicitly.
-`bufferLoader.loadBuffer(fileURL, callback)` | Load a single audio file, decode it in an AudioBuffer and pass it to the callback (`callback(buffer)`).
-`bufferLoader.loadEach(fileURLs, callback)` | Load each audio file asynchronously, decode it in an AudioBuffer, and execute the callback for each right after its decoding (`callback(buffer)`).
-`bufferLoader.loadAll(fileURLs, callback)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a single callback when all loadings finished (`callback(buffersArray)`).
+`bufferLoader.load(fileURLs)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths, and return a Promise.
+`bufferLoader.loadBuffer(fileURL)` | Load a single audio file, decode it in an AudioBuffer and return a Promise.
+`bufferLoader.loadAll(fileURLs)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
 
 ## Tests
 
@@ -42,7 +67,7 @@ If grunt is not installed
 $ npm install -g grunt-cli
 ```
 
-Install all dependencies in the module folder 
+Install all depencies in the module folder
 
 ```bash
 $ npm install
