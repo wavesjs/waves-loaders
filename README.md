@@ -11,7 +11,7 @@ The `bufferLoader` object provides several sound file loading methods:
 ## Requirements
 
 - [Q](https://github.com/kriskowal/q) version 1.0.x - [a Promise implementation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-Q is already included in the buffer-loader.js and buffer-loader.min.js ready to use files.
+(Q is already included in the buffer-loader.js and buffer-loader.min.js ready to use files).
 
 ## Example
 
