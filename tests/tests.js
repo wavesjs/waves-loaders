@@ -3,7 +3,6 @@ var assert = chai.assert;
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioContext = new AudioContext();
 
-
 describe("Load some sounds: synth.wav and sound.wav", function() {
 
   var myBufferLoader = createBufferLoader();

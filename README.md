@@ -11,37 +11,40 @@ The `bufferLoader` object provides several sound file loading methods:
 ## Requirements
 
 - [Q](https://github.com/kriskowal/q) version 1.0.x - [a Promise implementation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+Q is already included in the buffer-loader.js and buffer-loader.min.js ready to use files.
 
 ## Example
 
-Load q.js and buffer-loader.js, for instance in your html file by using:
+Load buffer-loader.js (or the minified version) in your html file by using:
 
 ```html
-    <script src="q.js"></script>
     <script src="buffer-loader.min.js"></script>
 ```
 
 ```js
-  // we need an audio context to decode the file
+  // We need an audio context to decode the file
+  // By default, buffer-loader search for audioContext in the window.
   var audioContext = new AudioContext();
 
-  // load the file passing the path
+  // Load the file passing the path
   var myBufferLoader = createBufferLoader();
-  myBufferLoader.load('sound/file/path').then(
+  myBufferLoader.load('sound/file/url').then(
       function(buffer){
-        // do something with the loaded audio buffer
+        // Do something with the loaded audio buffer
       },
       function(error){
-        // catch an error during loading or decodeAudioData process
+        // Catch an error during the loading or decodeAudioData process
       },
       function(progress){
-        // do something with the progress value, value between 0.0 and 1
+        // Do something with the progress value, value between 0.0 and 1
       }
   );
 
-  // same method for loading multiple files
-  // except that the progress is this time an object which has an index key corresponding to the file index in the array passed to load,
-  // and a value key, same value as for single file loading, between 0.0 and 1, corresponding to the file loading progress.
+  // Use the same load method to load multiple files,
+  // by passing an array of urls ['url/to/file1', 'url/to/file2', ...].
+  // The progress is then an object, eg. {index: 4, value: 0.2}, where
+  // index corresponds to the file index in the array of files,
+  // and value, between 0.0 and 1, corresponds to the file loading progress.
 
 ```
 

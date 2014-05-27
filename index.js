@@ -2,24 +2,25 @@
  * @fileOverview
  * WAVE audio library module for buffer loading.
  * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
- * @version 2.0.0
+ * @version 3.0.0
  */
 
-
+var Q = require('q');
 
 /**
  * Function invocation pattern for object creation.
  * @public
  */
 
- var createBufferLoader = function createBufferLoader() {
+var createBufferLoader = function createBufferLoader() {
   'use strict';
+  window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
   /**
    * ECMAScript5 property descriptors object.
    */
 
-   var bufferLoaderObject = {
+  var bufferLoaderObject = {
 
     /**
      * Main wrapper function for audio buffer loading.
@@ -27,7 +28,7 @@
      * @public
      * @param fileURLs The URL(s) of the audio files to load. Accepts a URL to the audio file location or an array of URLs.
      */
-     load: {
+    load: {
       enumerable: true,
       value: function(fileURLs) {
         if (Array.isArray(fileURLs)) {
@@ -44,15 +45,15 @@
      * @public
      * @param fileURL The URL of the audio file location to load.
      */
-     loadBuffer: {
+    loadBuffer: {
       enumerable: true,
       value: function(fileURL) {
         return this.fileLoadingRequest(fileURL)
-        .then(
-          this.decodeAudioData,
-          function(error){
-            throw error;
-          });
+          .then(
+            this.decodeAudioData,
+            function(error) {
+              throw error;
+            });
       }
     },
 
@@ -63,7 +64,7 @@
      * @public
      * @param fileURLs The URLs array of the audio files to load.
      */
-     loadAll: {
+    loadAll: {
       enumerable: true,
       value: function(fileURLs) {
         var urlsCount = fileURLs.length;
@@ -75,18 +76,18 @@
         }
         // We use Q instead of Promises to get the progress handler provided by Q
         return Q.all(promises)
-        .then(
-          function get_all_the_things(arraybuffers) {
-            return Q.all(arraybuffers.map(function(arraybuffer) {
-              return that.decodeAudioData(arraybuffer);
-            }));
-          },
-          function(error){
-            throw error;  // TODO: better error handler
-          },
-          function (progress){
-            return progress;
-          }
+          .then(
+            function get_all_the_things(arraybuffers) {
+              return Q.all(arraybuffers.map(function(arraybuffer) {
+                return that.decodeAudioData(arraybuffer);
+              }));
+            },
+            function(error) {
+              throw error; // TODO: better error handler
+            },
+            function(progress) {
+              return progress;
+            }
           );
       }
     },
@@ -96,12 +97,12 @@
      * @private
      * @param url The URL of the audio file to load.
      */
-     fileLoadingRequest: {
+    fileLoadingRequest: {
       enumerable: false,
       value: function(url) {
         var deferred = Q.defer();
 
-        var promise = new Q.fcall(function(resolve, reject){
+        var promise = new Q.fcall(function(resolve, reject) {
           // Load buffer asynchronously
           var request = new XMLHttpRequest();
 
@@ -111,12 +112,11 @@
             // Test request.status value, as 404 will also get there
             if (request.status === 200 || request.status === 304) {
               deferred.resolve(request.response);
-            }
-            else {
+            } else {
               deferred.reject(new Error(request.statusText));
             }
           };
-          request.onprogress = function(evt){
+          request.onprogress = function(evt) {
             deferred.notify(evt.loaded / evt.total);
           };
           // Manage network errors
@@ -134,11 +134,11 @@
      * @private
      * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
      */
-     decodeAudioData: {
+    decodeAudioData: {
       enumerable: false,
       value: function(arraybuffer) {
         var deferred = Q.defer();
-        var promise = new Q.fcall(function(resolve, reject){
+        var promise = new Q.fcall(function(resolve, reject) {
           window.audioContext.decodeAudioData(
             arraybuffer, // returned audio data array
             function successCallback(buffer) {
@@ -147,7 +147,7 @@
             function errorCallback(error) {
               deferred.reject(new Error("DecodeAudioData error"));
             }
-            );
+          );
         });
         return deferred.promise;
       }
