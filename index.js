@@ -13,8 +13,6 @@ var Q = require('q');
  */
 var createBufferLoader = function createBufferLoader() {
   'use strict';
-  window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
-
   // Ensure global availability of an "audioContext" instance of web audio AudioContext.
   window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
