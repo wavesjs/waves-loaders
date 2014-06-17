@@ -5,7 +5,7 @@
  * @version 3.0.0
  */
 
-var Q = require('q');
+var Promise = require("native-promise-only");
 
 /**
  * Function invocation pattern for object creation.
@@ -71,21 +71,18 @@ var createBufferLoader = function createBufferLoader() {
         var that = this;
 
         for (var i = 0; i < urlsCount; ++i) {
-          promises.push(this.fileLoadingRequest(fileURLs[i]));
+          promises.push(this.fileLoadingRequest(fileURLs[i], i));
         }
-        // We use Q instead of Promises to get the progress handler provided by Q
-        return Q.all(promises)
+
+        return Promise.all(promises)
           .then(
             function get_all_the_things(arraybuffers) {
-              return Q.all(arraybuffers.map(function(arraybuffer) {
+              return Promise.all(arraybuffers.map(function(arraybuffer) {
                 return that.decodeAudioData(arraybuffer);
               }));
             },
             function(error) {
               throw error; // TODO: better error handler
-            },
-            function(progress) {
-              return progress;
             }
           );
       }
@@ -98,33 +95,39 @@ var createBufferLoader = function createBufferLoader() {
      */
     fileLoadingRequest: {
       enumerable: false,
-      value: function(url) {
-        var deferred = Q.defer();
-
-        var promise = new Q.fcall(function(resolve, reject) {
+      value: function(url, index) {
+        var self = this;
+        var promise = new Promise(function(resolve, reject) {
           // Load buffer asynchronously
           var request = new XMLHttpRequest();
+          var that = this;
 
           request.open('GET', url, true);
           request.responseType = "arraybuffer";
           request.onload = function() {
             // Test request.status value, as 404 will also get there
             if (request.status === 200 || request.status === 304) {
-              deferred.resolve(request.response);
+              resolve(request.response);
             } else {
-              deferred.reject(new Error(request.statusText));
+              reject(new Error(request.statusText));
             }
           };
           request.onprogress = function(evt) {
-            deferred.notify(evt.loaded / evt.total);
+            if(self.progressCallback){
+              if(index !== undefined){
+                self.progressCallback({index: index, value: evt.loaded / evt.total});
+              }else{
+                self.progressCallback(evt.loaded / evt.total);
+              }
+            }
           };
           // Manage network errors
           request.onerror = function() {
-            deferred.reject(new Error("Network Error"));
+            reject(new Error("Network Error"));
           };
           request.send();
         });
-        return deferred.promise;
+        return promise;
       }
     },
 
@@ -136,25 +139,34 @@ var createBufferLoader = function createBufferLoader() {
     decodeAudioData: {
       enumerable: false,
       value: function(arraybuffer) {
-        var deferred = Q.defer();
-        var promise = new Q.fcall(function(resolve, reject) {
+        var promise = new Promise(function(resolve, reject) {
           window.audioContext.decodeAudioData(
             arraybuffer, // returned audio data array
             function successCallback(buffer) {
-              deferred.resolve(buffer);
+              resolve(buffer);
             },
             function errorCallback(error) {
-              deferred.reject(new Error("DecodeAudioData error"));
+              reject(new Error("DecodeAudioData error"));
             }
           );
         });
-        return deferred.promise;
+        return promise;
       }
-    }
-  };
+    },
+    /**
+     * Set the callback function to get the progress of file loading process.
+     * This is only for the file loading progress as decodeAudioData doesn't
+     * expose a decode progress value.
+     * @public
+     */
+    progressCallback: {
+      get: function(){ return this.progressCb; },
+      set: function(value){ this.progressCb = value; },
+    },
 
+  };
   // Instantiate an object.
-  var instance = Object.create({}, bufferLoaderObject);
+  var instance = Object.create({progressCb: undefined}, bufferLoaderObject);
   return instance;
 };
 

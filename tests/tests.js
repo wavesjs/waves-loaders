@@ -6,26 +6,22 @@ var audioContext = new AudioContext();
 describe("Load some sounds: synth.wav and sound.wav", function() {
 
   var myBufferLoader = createBufferLoader();
-  var validArrayBuffer; // to have access to a valid buffer
+  var validArrayBuffer; // To have access to a valid buffer in tests
 
   it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done){
-    var progress_steps = [];
+    var progression = 0;
+    function onProgress(val){
+      progression = val;
+    }
+    myBufferLoader.progressCallback = onProgress;
     myBufferLoader.fileLoadingRequest('./synth.wav').then(
       function(buffer){
-        // should be sure it's the right buffer, well, we guess it is.
+        // Should be sure it's the right buffer, well, we guess it is.
         validArrayBuffer = buffer;
-        // we check that the progress event finally reached 1.
-        assert.equal(progress_steps[progress_steps.length - 1], 1);
+        // We check that the progress event finally reached 1.
+        assert.equal(progression, 1);
         done();
-      },
-      function(error){
-
-      },
-      function (progress) {
-        // we keep track of progress
-        progress_steps.push(progress);
-      }
-      );
+      });
   });
 
   it('Test fileLoadingRequest function with a wrong url, Promise implementation for XMLHttpRequest', function(done){
@@ -80,20 +76,20 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
   });
 
   it('Test loadAll function with valid url', function(done){
-    var progress_steps = {0: [], 1: []};
+    var progress_steps = [];
+    function onProgress(val){
+      progress_steps[val.index] = val.value;
+    }
+    myBufferLoader.progressCallback = onProgress;
     myBufferLoader.loadAll(['./synth.wav', './synth.wav']).then(
       function(buffer){
-        // check that all the progress events finally reached 1.
-        assert.equal(progress_steps[0][progress_steps[0].length - 1], 1);
-        assert.equal(progress_steps[1][progress_steps[1].length - 1], 1);
+        // Check that all the progress events finally reached 1.
+        assert.equal(progress_steps[0], 1);
+        assert.equal(progress_steps[1], 1);
         done();
       },
       function(error){
-      },
-      function (progress) {
-        progress_steps[progress.index].push(progress.value);
-      }
-      );
+      });
   });
 
   it('Test loadAll function with invalid url', function(done){
@@ -102,17 +98,21 @@ describe("Load some sounds: synth.wav and sound.wav", function() {
       },
       function(error){
         done();
-      }
-      );
+      });
   });
-  /* TODO
+  /*
   it("Test load function", function (done) {
-    // We should here spy the loadBuffer property
-    // var spy = sinon.spy(myBufferLoader, "loadBuffer");
-    // and then assert true for spy.calledOnce
-    // but this is not allowed by sinon.js
-    // as sinon.js spy for ES5 property descriptors are not available.
-    done();
-  });
-  */
+    // TODO: We should here spy the loadBuffer property
+    myBufferLoader.loadBuffer = sinon.spy();
+    myBufferLoader.loadBuffer('./synth.wav').then(
+      function(buffer){
+        // And then assert true for spy.calledOnce.
+        // But this is not allowed by sinon.js
+        // as sinon.js spy for ES5 property descriptors are not available.
+        // console.log(myBufferLoader.loadBuffer.calledOnce);
+        // The problem here is the use of value in the property description.
+        done();
+      }
+    );
+  });*/
 });

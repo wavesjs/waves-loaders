@@ -8,11 +8,6 @@ The `bufferLoader` object provides several sound file loading methods:
 - `loadBuffer`
 - `loadAll`
 
-## Requirements
-
-- [Q](https://github.com/kriskowal/q) version 1.0.x - [a Promise implementation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-(Q is already included in the buffer-loader.js and buffer-loader.min.js ready to use files).
-
 ## Example
 
 Load buffer-loader.js (or the minified version) in your html file by using:
@@ -28,15 +23,15 @@ Load buffer-loader.js (or the minified version) in your html file by using:
 
   // Load the file passing the path
   var myBufferLoader = createBufferLoader();
+  myBufferLoader.progressCallback = function(val){
+    // Do something with the progress value
+  }
   myBufferLoader.load('sound/file/url').then(
       function(buffer){
         // Do something with the loaded audio buffer
       },
       function(error){
         // Catch an error during the loading or decodeAudioData process
-      },
-      function(progress){
-        // Do something with the progress value, value between 0.0 and 1
       }
   );
 

@@ -1,16 +1,21 @@
 {
   "name": "buffer-loader",
   "exports": "createBufferLoader",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Web audio API buffer loader",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "authors": ["Karim Barkati", "Victor Saiz", "Emmanuel Fréard", "Samuel Goldszmidt"],
+  "authors": [
+    "Karim Barkati",
+    "Victor Saiz",
+    "Emmanuel Fréard",
+    "Samuel Goldszmidt"
+  ],
   "license": "BSD-3",
   "dependencies": {
-    "q": "1.0.x"
+    "native-promise-only": "^0.4.1-g"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
