@@ -56,10 +56,10 @@ Method | Description
 
 ## Tests
 
-If grunt is not installed
+If gulp is not installed
 
 ```bash
-$ npm install -g grunt-cli
+$ npm install -g gulp
 ```
 
 Install all depencies in the module folder
@@ -71,7 +71,7 @@ $ npm install
 Run the server on 9001 port (you can change the port in the Grunfile.js)
 
 ```bash
-$ grunt test
+$ gulp test
 ```
 
 Run the test via the web browser on `http://localhost:9001/tests`
