@@ -7,8 +7,6 @@
 
 'use strict';
 
-var Promise = require("native-promise-only");
-
 // Ensure global availability of an "audioContext" instance of web audio AudioContext.
 window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 

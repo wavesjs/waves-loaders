@@ -15,7 +15,6 @@
   ],
   "license": "BSD-3",
   "dependencies": {
-    "native-promise-only": "^0.4.1-g"
   },
   "devDependencies": {
     "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",

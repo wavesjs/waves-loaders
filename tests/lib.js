@@ -8,8 +8,6 @@
 
 'use strict';
 
-var Promise = _dereq_("native-promise-only");
-
 // Ensure global availability of an "audioContext" instance of web audio AudioContext.
 window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
@@ -157,6 +155,6 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
 // CommonJS function export
 module.exports = BufferLoader;
 
-},{"native-promise-only":"bwMhdl"}]},{},[1])
+},{}]},{},[1])
 (1)
 });
