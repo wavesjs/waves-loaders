@@ -22,7 +22,7 @@ Load buffer-loader.js (or the minified version) in your html file by using:
   var audioContext = new AudioContext();
 
   // Load the file passing the path
-  var myBufferLoader = createBufferLoader();
+  var myBufferLoader = new BufferLoader();
   myBufferLoader.progressCallback = function(val){
     // Do something with the progress value
   }

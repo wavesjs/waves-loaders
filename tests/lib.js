@@ -1,3 +1,4 @@
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.BufferLoader=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /**
  * @fileOverview
  * Audio buffer loader.
@@ -7,7 +8,7 @@
 
 'use strict';
 
-var Promise = require("native-promise-only");
+var Promise = _dereq_("native-promise-only");
 
 // Ensure global availability of an "audioContext" instance of web audio AudioContext.
 window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
@@ -155,3 +156,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
 
 // CommonJS function export
 module.exports = BufferLoader;
+
+},{"native-promise-only":"bwMhdl"}]},{},[1])
+(1)
+});

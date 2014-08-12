@@ -12,11 +12,11 @@ var Promise = require("native-promise-only");
 // Ensure global availability of an "audioContext" instance of web audio AudioContext.
 window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
-var BufferLoader = (function(){var DP$0 = Object.defineProperty;
+class BufferLoader {
 
-  function BufferLoader() {
+  constructor() {
     this.progressCb = undefined;
-  }Object.defineProperties(BufferLoader.prototype, {progressCallback: {"get": progressCallback$get$0, "set": progressCallback$set$0, "configurable": true, "enumerable": true}});DP$0(BufferLoader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
+  }
 
   /**
    * Main wrapper function for audio buffer loading.
@@ -24,7 +24,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @public
    * @param fileURLs The URL(s) of the audio files to load. Accepts a URL to the audio file location or an array of URLs.
    */
-  BufferLoader.prototype.load = function(fileURLs) {
+  load(fileURLs) {
     if (Array.isArray(fileURLs)) {
       return this.loadAll(fileURLs);
     } else {
@@ -38,7 +38,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @public
    * @param fileURL The URL of the audio file location to load.
    */
-  BufferLoader.prototype.loadBuffer = function(fileURL) {
+  loadBuffer(fileURL) {
     return this.fileLoadingRequest(fileURL)
       .then(
         this.decodeAudioData,
@@ -54,7 +54,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @public
    * @param fileURLs The URLs array of the audio files to load.
    */
-  BufferLoader.prototype.loadAll = function(fileURLs) {
+  loadAll(fileURLs) {
     var urlsCount = fileURLs.length,
       promises = [],
       that = this;
@@ -80,7 +80,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @private
    * @param url The URL of the audio file to load.
    */
-  BufferLoader.prototype.fileLoadingRequest = function(url, index) {
+  fileLoadingRequest(url, index) {
     var self = this;
     var promise = new Promise(
       function(resolve, reject) {
@@ -123,7 +123,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @private
    * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
    */
-  BufferLoader.prototype.decodeAudioData = function(arraybuffer) {
+  decodeAudioData(arraybuffer) {
     var promise = new Promise(function(resolve, reject) {
       window.audioContext.decodeAudioData(
         arraybuffer, // returned audio data array
@@ -143,14 +143,14 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
    */
-  function progressCallback$get$0() {
+  get progressCallback() {
     return this.progressCb;
   }
-  function progressCallback$set$0(callback) {
+  set progressCallback(callback) {
     this.progressCb = callback;
   }
 
-;return BufferLoader;})();
+}
 
 
 // CommonJS function export
