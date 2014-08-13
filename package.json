@@ -15,9 +15,10 @@
   ],
   "license": "BSD-3",
   "dependencies": {
+    "audio-context": "git://github.com/ircam-rnd/audio-context.git#master"
   },
   "devDependencies": {
-    "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",
+    "module-boilerplate": "git://github.com/ircam-rnd/module-boilerplate.git#master",
     "fs-utils" : "0.4.3",
     "browserify": "~4.1.2",
     "mocha": "~1.17.1",
@@ -29,6 +30,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ircam-RnD/buffer-loader"
+    "url": "https://github.com/ircam-rnd/buffer-loader"
   }
 }

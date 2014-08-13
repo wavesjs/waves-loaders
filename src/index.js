@@ -8,7 +8,7 @@
 'use strict';
 
 //make an AudioContext instance globally availbe
-require("../audio-context");
+require("audio-context");
 
 class BufferLoader {
 
