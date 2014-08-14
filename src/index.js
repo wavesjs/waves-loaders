@@ -7,8 +7,8 @@
 
 'use strict';
 
-// Ensure global availability of an "audioContext" instance of web audio AudioContext.
-window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
+//make an AudioContext instance globally availbe
+require("audio-context");
 
 require("native-promise-only");
 
