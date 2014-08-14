@@ -4,8 +4,12 @@
   "version": "3.0.0",
   "description": "Web audio API buffer loader",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "scripts": {},
+  "config": {
+    "blanket": {
+      "pattern": "index.js",
+      "data-cover-never": "node_modules"
+    }
   },
   "authors": [
     "Karim Barkati",
@@ -15,17 +19,20 @@
   ],
   "license": "BSD-3",
   "dependencies": {
+    "native-promise-only": "^0.7.6-a"
   },
   "devDependencies": {
-    "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",
-    "fs-utils" : "0.4.3",
-    "browserify": "~4.1.2",
-    "mocha": "~1.17.1",
-    "chai": "~1.9.0",
     "blanket": "~1.1.6",
+    "browserify": "~4.1.2",
+    "chai": "~1.9.0",
+    "fs-utils": "0.4.3",
     "gulp": "~3.8.2",
+    "gulp-mocha": "^0.5.2",
+    "mocha": "~1.17.1",
+    "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",
     "sinon": "~1.9.1",
-    "snd-dep": "git+https://github.com/vectorsize/snd-dep.git#master"
+    "w3c-xmlhttprequest": "git+https://github.com/Ircam-RnD/node-xmlhttprequest",
+    "web-audio-api": "git+https://github.com/sebpiq/node-web-audio-api.git"
   },
   "repository": {
     "type": "git",

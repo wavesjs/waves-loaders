@@ -62,19 +62,23 @@ If gulp is not installed
 $ npm install -g gulp
 ```
 
-Install all depencies in the module folder
+Install all dependencies in the module folder
 
 ```bash
 $ npm install
 ```
 
-Run the server on 9001 port (you can change the port in the Grunfile.js)
+Run the test suite
 
 ```bash
-$ gulp test
+$ mocha tests/tests.js
 ```
 
-Run the test via the web browser on `http://localhost:9001/tests`
+Generate the coverage report
+
+```bash
+mocha -r blanket -R html-cov > coverage.html tests/tests.js
+``
 
 ## License
 

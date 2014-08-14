@@ -10,6 +10,8 @@
 // Ensure global availability of an "audioContext" instance of web audio AudioContext.
 window.audioContext = window.audioContext || new AudioContext() || new webkitAudioContext();
 
+require("native-promise-only");
+
 var BufferLoader = (function(){var DP$0 = Object.defineProperty;
 
   function BufferLoader() {
@@ -84,7 +86,6 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
       function(resolve, reject) {
         // Load buffer asynchronously
         var request = new XMLHttpRequest();
-
         request.open('GET', url, true);
         request.responseType = "arraybuffer";
         request.onload = function() {
@@ -96,6 +97,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
           }
         };
         request.onprogress = function(evt) {
+          //console.log(evt);
           if (self.progressCallback) {
             if (index !== undefined) {
               self.progressCallback({
