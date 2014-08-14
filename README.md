@@ -78,7 +78,7 @@ Generate the coverage report
 
 ```bash
 mocha -r blanket -R html-cov > coverage.html tests/tests.js
-``
+```
 
 ## License
 

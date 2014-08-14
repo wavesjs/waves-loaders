@@ -7,9 +7,7 @@
 
 'use strict';
 
-//make an AudioContext instance globally availbe
-require("audio-context");
-
+require("audio-context"); //make an AudioContext instance globally available
 require("native-promise-only");
 
 var BufferLoader = (function(){var DP$0 = Object.defineProperty;
@@ -97,7 +95,6 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
           }
         };
         request.onprogress = function(evt) {
-          //console.log(evt);
           if (self.progressCallback) {
             if (index !== undefined) {
               self.progressCallback({
