@@ -9,12 +9,14 @@
 
 require("audio-context"); //make an AudioContext instance globally available
 require("native-promise-only");
+var events = require('events');
 
-var BufferLoader = (function(){var DP$0 = Object.defineProperty;
+var BufferLoader = (function(super$0){var DP$0 = Object.defineProperty;var MIXIN$0 = function(t,s){for(var p in s){if(s.hasOwnProperty(p)){DP$0(t,p,Object.getOwnPropertyDescriptor(s,p));}}return t};MIXIN$0(BufferLoader, super$0);
 
   function BufferLoader() {
+    super$0.call(this);
     this.progressCb = undefined;
-  }Object.defineProperties(BufferLoader.prototype, {progressCallback: {"get": progressCallback$get$0, "set": progressCallback$set$0, "configurable": true, "enumerable": true}});DP$0(BufferLoader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
+  }BufferLoader.prototype = Object.create(super$0.prototype, {"constructor": {"value": BufferLoader, "configurable": true, "writable": true}, progressCallback: {"get": progressCallback$get$0, "set": progressCallback$set$0, "configurable": true, "enumerable": true} });DP$0(BufferLoader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
 
   /**
    * Main wrapper function for audio buffer loading.
@@ -78,38 +80,40 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
    * @private
    * @param url The URL of the audio file to load.
    */
-  BufferLoader.prototype.fileLoadingRequest = function(url, index) {
-    var self = this;
+  BufferLoader.prototype.fileLoadingRequest = function(url, index) {var this$0 = this;
     var promise = new Promise(
-      function(resolve, reject) {
+      function(resolve, reject)  {
         // Load buffer asynchronously
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
+        request.index = index;
+        this$0.emit('xmlhttprequest', request);
         request.responseType = "arraybuffer";
-        request.onload = function() {
+        request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there
           if (request.status === 200 || request.status === 304) {
             resolve(request.response);
           } else {
             reject(new Error(request.statusText));
           }
-        };
-        request.onprogress = function(evt) {
-          if (self.progressCallback) {
+        });
+        request.addEventListener('progress', function(evt)  {
+          if (this$0.progressCallback) {
             if (index !== undefined) {
-              self.progressCallback({
+              this$0.progressCallback({
                 index: index,
                 value: evt.loaded / evt.total
               });
             } else {
-              self.progressCallback(evt.loaded / evt.total);
+              this$0.progressCallback(evt.loaded / evt.total);
             }
           }
-        };
+        });
         // Manage network errors
-        request.onerror = function() {
+        request.addEventListener('error', function() {
           reject(new Error("Network Error"));
-        };
+        });
+
         request.send();
       });
     return promise;
@@ -147,7 +151,7 @@ var BufferLoader = (function(){var DP$0 = Object.defineProperty;
     this.progressCb = callback;
   }
 
-;return BufferLoader;})();
+;return BufferLoader;})(events.EventEmitter);
 
 
 // CommonJS function export

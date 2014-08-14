@@ -13,6 +13,8 @@ BufferLoader = require('../index.js');
 
 var assert = chai.assert;
 var audioContext = new AudioContext();
+var synth = 'http://localhost:8080/synth.wav'
+var synt = 'http://localhost:8080/synt.wav'
 
 
 describe("Load some sounds", function() {
@@ -26,7 +28,7 @@ describe("Load some sounds", function() {
       progression = val;
     }
     myBufferLoader.progressCallback = onProgress;
-    myBufferLoader.fileLoadingRequest('http://localhost:8080/synth.wav').then(
+    myBufferLoader.fileLoadingRequest(synth).then(
       function(buffer) {
         // Should be sure it's the right buffer, well, we guess it is.
         validArrayBuffer = buffer;
@@ -37,7 +39,7 @@ describe("Load some sounds", function() {
   });
 
   it('Test fileLoadingRequest function with a wrong url, Promise implementation for XMLHttpRequest', function(done) {
-    myBufferLoader.fileLoadingRequest('http://localhost:8080/synt.wav').then(
+    myBufferLoader.fileLoadingRequest(synt).then(
       function(buffer) {},
       function(error) {
         assert.equal(error.message, 'Not Found');
@@ -66,7 +68,7 @@ describe("Load some sounds", function() {
   });
 
   it('Test loadBuffer function with valid url', function(done) {
-    myBufferLoader.loadBuffer('http://localhost:8080/synth.wav').then(
+    myBufferLoader.loadBuffer(synth).then(
       function(buffer) {
         done();
       },
@@ -75,7 +77,7 @@ describe("Load some sounds", function() {
   });
 
   it('Test loadBuffer function with invalid url', function(done) {
-    myBufferLoader.loadBuffer('http://localhost:8080/synh.wav').then(
+    myBufferLoader.loadBuffer(synt).then(
       function(buffer) {},
       function(error) {
         done();
@@ -90,7 +92,7 @@ describe("Load some sounds", function() {
       progress_steps[val.index] = val.value;
     }
     myBufferLoader.progressCallback = onProgress;
-    myBufferLoader.loadAll(['http://localhost:8080/synth.wav', 'http://localhost:8080/synth.wav']).then(
+    myBufferLoader.loadAll([synth, synth]).then(
       function(buffer) {
         // Check that all the progress events is not 0.
         assert.isTrue(progress_steps[0] > 0);
@@ -101,7 +103,7 @@ describe("Load some sounds", function() {
   });
 
   it('Test loadAll function with invalid url', function(done) {
-    myBufferLoader.loadAll(['http://localhost:8080/synth.wav', 'http://localhost:8080/synh.wav']).then(
+    myBufferLoader.loadAll([synth, synt]).then(
       function(buffer) {},
       function(error) {
         done();
@@ -120,12 +122,23 @@ describe("Load some sounds", function() {
 
   it("Test load function for more than one url", function(done) {
     sinon.spy(myBufferLoader, 'loadAll');
-    myBufferLoader.load(['http://localhost:8080/synth.wav', 'http://localhost:8080/synth.wav']).then(
+    myBufferLoader.load([synth, synth]).then(
       function(buffer) {
         assert.isTrue(myBufferLoader.loadAll.calledOnce);
         done();
       }
     );
+  });
+
+  it("Test emit xmlhttprequest event for each new request", function(done) {
+    var xmlhttprequestCalls = 0;
+    myBufferLoader.on('xmlhttprequest', function(request) {
+      xmlhttprequestCalls += 1;
+    });
+    myBufferLoader.load([synth, synth]).then(function(buffer) {
+      assert.equal(xmlhttprequestCalls, 2);
+      done();
+    });
   });
 
 });

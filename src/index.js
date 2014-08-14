@@ -9,10 +9,12 @@
 
 require("audio-context"); //make an AudioContext instance globally available
 require("native-promise-only");
+var events = require('events');
 
-class BufferLoader {
+class BufferLoader extends events.EventEmitter {
 
   constructor() {
+    super();
     this.progressCb = undefined;
   }
 
@@ -79,37 +81,39 @@ class BufferLoader {
    * @param url The URL of the audio file to load.
    */
   fileLoadingRequest(url, index) {
-    var self = this;
     var promise = new Promise(
-      function(resolve, reject) {
+      (resolve, reject) => {
         // Load buffer asynchronously
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
+        request.index = index;
+        this.emit('xmlhttprequest', request);
         request.responseType = "arraybuffer";
-        request.onload = function() {
+        request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there
           if (request.status === 200 || request.status === 304) {
             resolve(request.response);
           } else {
             reject(new Error(request.statusText));
           }
-        };
-        request.onprogress = function(evt) {
-          if (self.progressCallback) {
+        });
+        request.addEventListener('progress', (evt) => {
+          if (this.progressCallback) {
             if (index !== undefined) {
-              self.progressCallback({
+              this.progressCallback({
                 index: index,
                 value: evt.loaded / evt.total
               });
             } else {
-              self.progressCallback(evt.loaded / evt.total);
+              this.progressCallback(evt.loaded / evt.total);
             }
           }
-        };
+        });
         // Manage network errors
-        request.onerror = function() {
+        request.addEventListener('error', function() {
           reject(new Error("Network Error"));
-        };
+        });
+
         request.send();
       });
     return promise;
