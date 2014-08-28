@@ -9,15 +9,28 @@ require("native-promise-only");
 window = global;
 
 require('./static-server.js');
-BufferLoader = require('../index.js');
+
+Loader = require('../index.js').Loader;
+BufferLoader = require('../index.js').BufferLoader;
+PolyLoader = require('../index.js').PolyLoader;
 
 var assert = chai.assert;
 var audioContext = new AudioContext();
-var synth = 'http://localhost:8080/synth.wav'
-var synt = 'http://localhost:8080/synt.wav'
+var synth = 'http://localhost:8080/synth.wav';
+var synt = 'http://localhost:8080/synt.wav';
+var json = 'http://localhost:8080/test.json';
 
 
-describe("Load some sounds", function() {
+describe("Loader", function() {
+  var loader = new Loader();
+  it("Should load json file with a Promise", function(done) {
+    loader.load(json).then(function(json) {
+      done();
+    }, function(error) {});
+  });
+});
+
+describe("BufferLoader", function() {
   var myBufferLoader = new BufferLoader();
   var validArrayBuffer; // To have access to a valid buffer in tests
 
@@ -67,8 +80,8 @@ describe("Load some sounds", function() {
     );
   });
 
-  it('Test loadBuffer function with valid url', function(done) {
-    myBufferLoader.loadBuffer(synth).then(
+  it('Test loadOne function with valid url', function(done) {
+    myBufferLoader.loadOne(synth).then(
       function(buffer) {
         done();
       },
@@ -76,8 +89,8 @@ describe("Load some sounds", function() {
     );
   });
 
-  it('Test loadBuffer function with invalid url', function(done) {
-    myBufferLoader.loadBuffer(synt).then(
+  it('Test loadOne function with invalid url', function(done) {
+    myBufferLoader.loadOne(synt).then(
       function(buffer) {},
       function(error) {
         done();
@@ -111,10 +124,10 @@ describe("Load some sounds", function() {
   });
 
   it("Test load function for one url", function(done) {
-    sinon.spy(myBufferLoader, 'loadBuffer');
+    sinon.spy(myBufferLoader, 'loadOne');
     myBufferLoader.load('http://localhost:8080/synth.wav').then(
       function(buffer) {
-        assert.isTrue(myBufferLoader.loadBuffer.calledOnce);
+        assert.isTrue(myBufferLoader.loadOne.calledOnce);
         done();
       }
     );
@@ -142,3 +155,19 @@ describe("Load some sounds", function() {
   });
 
 });
+
+describe("PolyLoader", function() {
+  var polyLoader = new PolyLoader();
+  it("Should load correctly audio files and json files", function(done) {
+    polyLoader.load([json, synth, json, synth]).then(
+      function(files){
+        done()
+      },
+      function(error){
+        console.log(error);
+      }
+
+    )
+    //done();
+  })
+})

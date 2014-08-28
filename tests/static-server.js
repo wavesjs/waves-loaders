@@ -13,6 +13,7 @@ http.createServer(function(request, response) {
     var filename = libpath.join(path, uri);
 
     fs.exists(filename, function(exists) {
+
         if (!exists) {
             response.writeHead(404, {
                 "Content-Type": "text/plain"

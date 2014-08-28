@@ -2,11 +2,8 @@
 
 > WAVE audio library module for buffer loading.
 
-The `bufferLoader` object provides several sound file loading methods:
+The `bufferLoader` object provides several sound file `load` method.
 
-- `load`
-- `loadBuffer`
-- `loadAll`
 
 ## Example
 
@@ -50,9 +47,7 @@ The `bufferLoader` object exposes the following API:
 
 Method | Description
 --- | ---
-`bufferLoader.load(fileURLs)` | Main wrapper function for loading. Switch between `loadBuffer` for a single path and `loadAll` for an array of paths, and return a Promise.
-`bufferLoader.loadBuffer(fileURL)` | Load a single audio file, decode it in an AudioBuffer and return a Promise.
-`bufferLoader.loadAll(fileURLs)` | Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
+`bufferLoader.load(fileURLs)` | Main wrapper function for loading. If fileURLs is a String, it loads a single audio file, decode it in an AudioBuffer and return a Promise. If fileURLs is an Array, it loads all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
 
 ## Tests
 
