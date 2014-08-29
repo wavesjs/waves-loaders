@@ -32,7 +32,8 @@ describe("Loader", function() {
 
 describe("BufferLoader", function() {
   var myBufferLoader = new BufferLoader();
-  var validArrayBuffer; // To have access to a valid buffer in tests
+  var validArrayBuffer; // To have access to a valid arraybuffer in tests
+  var validBuffer; // To have access to a valid buffer in tests
 
   it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done) {
     var progression = 0;
@@ -65,6 +66,7 @@ describe("BufferLoader", function() {
     validArrayBuffer.numBuffers = 2;
     myBufferLoader.decodeAudioData(validArrayBuffer).then(
       function(buffer) {
+        validBuffer = buffer;
         done();
       },
       function(error) {}
@@ -123,6 +125,11 @@ describe("BufferLoader", function() {
       });
   });
 
+  it("Test load function without any parameters", function(done) {
+    chai.expect(myBufferLoader.load).to.throw('Missing parameter');
+    done();
+  });
+
   it("Test load function for one url", function(done) {
     sinon.spy(myBufferLoader, 'loadOne');
     myBufferLoader.load('http://localhost:8080/synth.wav').then(
@@ -154,20 +161,43 @@ describe("BufferLoader", function() {
     });
   });
 
+  it("Should wrap around extension correctly", function(done){
+    var wrapAroundExtension = 1;
+    myBufferLoader.wrapAroundExtension = wrapAroundExtension;
+    var outputBuffer = myBufferLoader.__wrapAround(validBuffer);
+    var initialLength = validBuffer.length;
+    assert.equal(outputBuffer.length, initialLength+validBuffer.sampleRate * wrapAroundExtension);
+    for(var ch = 0; ch<validBuffer.numberOfChannels; ch++){
+      inChArray = validBuffer.getChannelData(ch);
+      outChArray = outputBuffer.getChannelData(ch);
+      for(var i=0; i<validBuffer.sampleRate * wrapAroundExtension; i++){
+        assert.equal(outChArray[initialLength+i], inChArray[i]);
+      }
+    }
+    done();
+  });
+
 });
 
 describe("PolyLoader", function() {
   var polyLoader = new PolyLoader();
   it("Should load correctly audio files and json files", function(done) {
     polyLoader.load([json, synth, json, synth]).then(
-      function(files){
-        done()
+      function(files) {
+        assert.equal(files.length, 4);
+        // should assert files are correct ...
+        done();
       },
-      function(error){
-        console.log(error);
-      }
-
-    )
-    //done();
-  })
-})
+      function(error) {}
+    );
+  });
+  it("Should load correctly one type of files (only jsons, or only audios)", function(done) {
+    polyLoader.load([json, json]).then(
+      function(files) {
+        assert.equal(files.length, 2);
+        done();
+      },
+      function(error) {}
+    );
+  });
+});
