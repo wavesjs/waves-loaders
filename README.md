@@ -1,9 +1,6 @@
-# Buffer loader module
+# Audio Buffer loader module
 
-> WAVE audio library module for buffer loading.
-
-The `bufferLoader` object provides several sound file `load` method.
-
+> WAVE audio library module for audio buffer loading.
 
 ## Example
 
@@ -19,7 +16,7 @@ Load buffer-loader.js (or the minified version) in your html file by using:
   var audioContext = new AudioContext();
 
   // Load the file passing the path
-  var myBufferLoader = new BufferLoader();
+  var myBufferLoader = new AudioBufferLoader();
   myBufferLoader.progressCallback = function(val){
     // Do something with the progress value
   }
