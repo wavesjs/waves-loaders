@@ -3,16 +3,16 @@
  * @fileOverview
  * Audio buffer loader.
  * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
- * @version 5.0.0
+ * @version 6.0.0
  */
 
 'use strict';
 
-require("audio-context"); //make an AudioContext instance globally available
-require("native-promise-only");
 var _ = require('lodash'),
   events = require('events'),
   path = require('path');
+require("audio-context");
+require("native-promise-only");
 
 
 /**
@@ -23,6 +23,7 @@ function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
+
 class Loader extends events.EventEmitter {
 
   constructor(responseType = "") {
@@ -32,10 +33,10 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Main wrapper function for audio buffer loading.
+   * Main wrapper function for promise file loading.
    * Switch between loadOne and loadAll.
    * @public
-   * @param fileURLs The URL(s) of the audio files to load. Accepts a URL to the audio file location or an array of URLs.
+   * @param fileURLs The URL(s) of the files to load. Accepts a URL to the file location or an array of URLs.
    */
   load(fileURLs = throwIfMissing()) {
     if (fileURLs == undefined) throw (new Error("load needs at least a url to load"));
@@ -49,15 +50,14 @@ class Loader extends events.EventEmitter {
   /**
    * Load a single file, return a Promise
    * @public
-   * @param fileURL The URL of the audio file location to load.
+   * @param fileURL The URL of the file location to load.
    */
   loadOne(fileURL) {
     return this.fileLoadingRequest(fileURL);
   }
 
   /**
-   * Load all files at once in a single array
-   * and return a Promise
+   * Load all files at once in a single array and return a Promise
    * @public
    * @param fileURLs The URLs array of the files to load.
    */
@@ -75,7 +75,8 @@ class Loader extends events.EventEmitter {
   /**
    * Load a file asynchronously, return a Promise.
    * @private
-   * @param url The URL of the audio file to load.
+   * @param url The URL of the file to load
+   * @param index The index of the file in the array of files to load
    */
   fileLoadingRequest(url, index) {
     var promise = new Promise(
@@ -116,7 +117,7 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Set / Get the callback function to get the progress of file loading process.
+   * Set and Get the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
    */
@@ -130,15 +131,21 @@ class Loader extends events.EventEmitter {
 }
 
 
-class BufferLoader extends Loader {
+class AudioBufferLoader extends Loader {
 
   constructor() {
+    this.options = {'wrapAroundExtension': 0};
     this.responseType = 'arraybuffer';
-    this.wrapAroundExtension = 0;
   }
 
-  load(fileURLs = throwIfMissing(), wrapAroundExtension = 0) {
-    this.wrapAroundExtension = wrapAroundExtension;
+  /**
+   * Main wrapper function for promise file loading.
+   * @param wrapAroundExtension the length, in seconds to be copied from the begining
+   * at the end of the returned audiobuffer
+   */
+  load(fileURLs = throwIfMissing(), options = {}) {
+    this.options = options;
+    this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
     return super.load(fileURLs);
   }
 
@@ -186,7 +193,7 @@ class BufferLoader extends Loader {
       window.audioContext.decodeAudioData(
         arraybuffer, // returned audio data array
         (buffer) => {
-          if (this.wrapAroundExtension === 0) resolve(buffer);
+          if (this.options.wrapAroundExtension === 0) resolve(buffer);
           else resolve(this.__wrapAround(buffer));
         }, (error) => {
           reject(new Error("DecodeAudioData error"));
@@ -201,7 +208,7 @@ class BufferLoader extends Loader {
    * @inBuffer The input buffer
    */
   __wrapAround(inBuffer) {
-    var length = inBuffer.length + this.wrapAroundExtension * inBuffer.sampleRate,
+    var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate,
       outBuffer = window.audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate),
       arrayChData, arrayOutChData;
     for (var channel = 0; channel < inBuffer.numberOfChannels; channel++) {
@@ -218,14 +225,16 @@ class BufferLoader extends Loader {
 }
 
 
-class PolyLoader {
+class SuperLoader {
 
   constructor() {
-    this.bufferLoader = new BufferLoader();
+    this.bufferLoader = new AudioBufferLoader();
     this.loader = new Loader("json");
   }
 
-  load(fileURLs = throwIfMissing(), wrapAroundExtension = 0) {
+  load(fileURLs = throwIfMissing(), options = {}) {
+    this.options = options;
+    this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
     if (Array.isArray(fileURLs)) {
       var i = -1;
       var pos = [
@@ -246,7 +255,7 @@ class PolyLoader {
       var audioURLs = _.difference(fileURLs, otherURLs);
       var promises = [];
       if (otherURLs.length > 0) promises.push(this.loader.load(otherURLs));
-      if (audioURLs.length > 0) promises.push(this.bufferLoader.load(audioURLs, wrapAroundExtension));
+      if (audioURLs.length > 0) promises.push(this.bufferLoader.load(audioURLs, this.options));
 
       return new Promise((resolve, reject) => {
         Promise.all(promises).then(
@@ -276,6 +285,6 @@ class PolyLoader {
 // CommonJS function export
 module.exports = {
   Loader: Loader,
-  BufferLoader: BufferLoader,
-  PolyLoader: PolyLoader
+  AudioBufferLoader: AudioBufferLoader,
+  SuperLoader: SuperLoader
 };

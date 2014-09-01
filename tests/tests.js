@@ -11,8 +11,8 @@ window = global;
 require('./static-server.js');
 
 Loader = require('../index.js').Loader;
-BufferLoader = require('../index.js').BufferLoader;
-PolyLoader = require('../index.js').PolyLoader;
+AudioBufferLoader = require('../index.js').AudioBufferLoader;
+SuperLoader = require('../index.js').SuperLoader;
 
 var assert = chai.assert;
 var audioContext = new AudioContext();
@@ -30,8 +30,8 @@ describe("Loader", function() {
   });
 });
 
-describe("BufferLoader", function() {
-  var myBufferLoader = new BufferLoader();
+describe("AudioBufferLoader", function() {
+  var myBufferLoader = new AudioBufferLoader();
   var validArrayBuffer; // To have access to a valid arraybuffer in tests
   var validBuffer; // To have access to a valid buffer in tests
 
@@ -163,7 +163,8 @@ describe("BufferLoader", function() {
 
   it("Should wrap around extension correctly", function(done){
     var wrapAroundExtension = 1;
-    myBufferLoader.wrapAroundExtension = wrapAroundExtension;
+    myBufferLoader.options = {};
+    myBufferLoader.options.wrapAroundExtension = wrapAroundExtension;
     var outputBuffer = myBufferLoader.__wrapAround(validBuffer);
     var initialLength = validBuffer.length;
     assert.equal(outputBuffer.length, initialLength+validBuffer.sampleRate * wrapAroundExtension);
@@ -179,8 +180,8 @@ describe("BufferLoader", function() {
 
 });
 
-describe("PolyLoader", function() {
-  var polyLoader = new PolyLoader();
+describe("SuperLoader", function() {
+  var polyLoader = new SuperLoader();
   it("Should load correctly audio files and json files", function(done) {
     polyLoader.load([json, synth, json, synth]).then(
       function(files) {

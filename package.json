@@ -1,7 +1,8 @@
 {
   "name": "buffer-loader",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Web audio API buffer loader",
+  "exports": "loaders",
   "main": "index.js",
   "scripts": {},
   "config": {
@@ -39,5 +40,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ircam-rnd/buffer-loader"
+  },
+  "scripts": {
+    "test": "mocha tests/tests.js"
   }
 }
