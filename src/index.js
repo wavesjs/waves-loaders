@@ -1,12 +1,12 @@
 /* written in ECMAscript 6 */
 /**
- * @fileOverview
- * Audio buffer loader.
- * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
+ * @file AudioBuffer loader and utility loader
+ * @author Samuel Goldszmidt
+ * @author Karim Barkati
+ * @author Victor Saiz
+ * @author Emmanuel Fréard
  * @version 6.0.0
  */
-
-'use strict';
 
 var _ = require('lodash'),
   events = require('events'),
@@ -18,14 +18,24 @@ require("native-promise-only");
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
+ * @function
  */
 function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
 
+/**
+ * Loader
+ * @class
+ * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
+ */
 class Loader extends events.EventEmitter {
 
+  /**
+   * @constructs
+   * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
+   */
   constructor(responseType = "") {
     super();
     this.responseType = responseType;
@@ -33,10 +43,11 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Main wrapper function for promise file loading.
-   * Switch between loadOne and loadAll.
+   * @function - Method for a promise based file loading.
+   * Internally switch between loadOne and loadAll.
    * @public
-   * @param fileURLs The URL(s) of the files to load. Accepts a URL to the file location or an array of URLs.
+   * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @returns {Promise}
    */
   load(fileURLs = throwIfMissing()) {
     if (fileURLs == undefined) throw (new Error("load needs at least a url to load"));
@@ -48,18 +59,20 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Load a single file, return a Promise
-   * @public
-   * @param fileURL The URL of the file location to load.
+   * @function - Load a single file
+   * @private
+   * @param {string} fileURL - The URL of the file to load.
+   * @returns {Promise}
    */
   loadOne(fileURL) {
     return this.fileLoadingRequest(fileURL);
   }
 
   /**
-   * Load all files at once in a single array and return a Promise
-   * @public
-   * @param fileURLs The URLs array of the files to load.
+   * @function - Load all files at once in a single array and return a Promise
+   * @private
+   * @param {string[]} fileURLs - The URLs array of the files to load.
+   * @returns {Promise}
    */
   loadAll(fileURLs) {
     var urlsCount = fileURLs.length,
@@ -73,10 +86,11 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Load a file asynchronously, return a Promise.
+   * @function - Load a file asynchronously, return a Promise.
    * @private
-   * @param url The URL of the file to load
-   * @param index The index of the file in the array of files to load
+   * @param {string} url - The URL of the file to load
+   * @param {string} [index] - The index of the file in the array of files to load
+   * @returns {Promise}
    */
   fileLoadingRequest(url, index) {
     var promise = new Promise(
@@ -117,13 +131,21 @@ class Loader extends events.EventEmitter {
   }
 
   /**
-   * Set and Get the callback function to get the progress of file loading process.
+   * @function - Get the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
+   * @returns {Loader~progressCallback}
    */
   get progressCallback() {
     return this.progressCb;
   }
+
+  /**
+   * @function - Set the callback function to get the progress of file loading process.
+   * This is only for the file loading progress as decodeAudioData doesn't
+   * expose a decode progress value.
+   * @param {Loader~progressCallback} callback - The callback that handles the response.
+   */
   set progressCallback(callback) {
     this.progressCb = callback;
   }
@@ -131,17 +153,32 @@ class Loader extends events.EventEmitter {
 }
 
 
+/**
+ * AudioBufferLoader
+ * @class
+ * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
+ * Inherit from Loader class
+ */
 class AudioBufferLoader extends Loader {
 
+  /**
+   * @constructs
+   * Set the responseType to 'arraybuffer' and initialize options.
+   */
   constructor() {
-    this.options = {'wrapAroundExtension': 0};
+    this.options = {
+      "wrapAroundExtension": 0
+    };
     this.responseType = 'arraybuffer';
+    super(this.responseType);
   }
 
   /**
-   * Main wrapper function for promise file loading.
-   * @param wrapAroundExtension the length, in seconds to be copied from the begining
-   * at the end of the returned audiobuffer
+   * @function - Method for promise audio file loading and decoding.
+   * @param {(string|string[])} fileURLs - The URL(s) of the audio files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining
+   * at the end of the returned AudioBuffer
+   * @returns {Promise}
    */
   load(fileURLs = throwIfMissing(), options = {}) {
     this.options = options;
@@ -150,10 +187,10 @@ class AudioBufferLoader extends Loader {
   }
 
   /**
-   * Load a single audio file,
-   * decode it in an AudioBuffer, return a Promise
-   * @public
-   * @param fileURL The URL of the audio file location to load.
+   * @function - Load a single audio file, decode it in an AudioBuffer, return a Promise
+   * @private
+   * @param {string} fileURL - The URL of the audio file location to load.
+   * @returns {Promise}
    */
   loadOne(fileURL) {
     return super.loadOne(fileURL)
@@ -165,11 +202,10 @@ class AudioBufferLoader extends Loader {
   }
 
   /**
-   * Load all audio files at once in a single array,
-   * decode them in an array of AudioBuffers,
-   * and return a Promise
-   * @public
-   * @param fileURLs The URLs array of the audio files to load.
+   * @function - Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
+   * @private
+   * @param {string[]} fileURLs - The URLs array of the audio files to load.
+   * @returns {Promise}
    */
   loadAll(fileURLs) {
     return super.loadAll(fileURLs)
@@ -184,9 +220,10 @@ class AudioBufferLoader extends Loader {
   }
 
   /**
-   * Decode Audio Data, return a Promise
+   * @function - Decode Audio Data, return a Promise
    * @private
-   * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
+   * @param {arraybuffer} - The arraybuffer of the loaded audio file to be decoded.
+   * @returns {Promise}
    */
   decodeAudioData(arraybuffer) {
     return new Promise((resolve, reject) => {
@@ -203,9 +240,10 @@ class AudioBufferLoader extends Loader {
   }
 
   /**
-   * WrapAround, copy the begining input buffer to the end of an output buffer
+   * @function - WrapAround, copy the begining input buffer to the end of an output buffer
    * @private
-   * @inBuffer The input buffer
+   * @inBuffer {arraybuffer} - The input buffer
+   * @returns {arraybuffer} - The processed buffer (with frame copied from the begining to the end)
    */
   __wrapAround(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate,
@@ -215,8 +253,8 @@ class AudioBufferLoader extends Loader {
       arrayChData = inBuffer.getChannelData(channel);
       arrayOutChData = outBuffer.getChannelData(channel);
       _.forEach(arrayOutChData, function(sample, index) {
-        if(index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
-        else arrayOutChData[index] = arrayChData[index-inBuffer.length];
+        if (index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
+        else arrayOutChData[index] = arrayChData[index - inBuffer.length];
       });
     }
     return outBuffer;
@@ -225,13 +263,30 @@ class AudioBufferLoader extends Loader {
 }
 
 
+/**
+ * SuperLoader
+ * @class
+ * @classdesc Helper to load multiple type of files, and get them in their useful type, json for json files, AudioBuffer for audio files.
+ */
 class SuperLoader {
 
+  /**
+   * @constructs
+   * Use composition to setup appropriate file loaders
+   */
   constructor() {
     this.bufferLoader = new AudioBufferLoader();
     this.loader = new Loader("json");
   }
 
+
+  /**
+   * @function - Method for promise audio and json file loading (and decoding for audio).
+   * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining
+   * at the end of the returned AudioBuffer
+   * @returns {Promise}
+   */
   load(fileURLs = throwIfMissing(), options = {}) {
     this.options = options;
     this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
@@ -260,8 +315,8 @@ class SuperLoader {
       return new Promise((resolve, reject) => {
         Promise.all(promises).then(
           (datas) => {
-            // Need to reorder and flatten all of this !
-            // this is ugly
+            // Need to reorder and flatten all of these fulfilled promises
+            // @todo this is ugly
             if (datas.length === 1) {
               resolve(datas[0]);
             } else {

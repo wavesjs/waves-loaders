@@ -1,12 +1,12 @@
 var DP$0 = Object.defineProperty;var MIXIN$0 = function(t,s){for(var p in s){if(s.hasOwnProperty(p)){DP$0(t,p,Object.getOwnPropertyDescriptor(s,p));}}return t};/* written in ECMAscript 6 */
 /**
- * @fileOverview
- * Audio buffer loader.
- * @author Karim Barkati, Victor Saiz, Emmanuel Fréard, Samuel Goldszmidt
+ * @file AudioBuffer loader and utility loader
+ * @author Samuel Goldszmidt
+ * @author Karim Barkati
+ * @author Victor Saiz
+ * @author Emmanuel Fréard
  * @version 6.0.0
  */
-
-'use strict';
 
 var _ = require('lodash'),
   events = require('events'),
@@ -18,14 +18,24 @@ require("native-promise-only");
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
+ * @function
  */
 function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
 
-var Loader = (function(super$0){MIXIN$0(Loader, super$0);
+/**
+ * Loader
+ * @class
+ * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
+ */
+var Loader = (function(super$0){"use strict";MIXIN$0(Loader, super$0);
 
+  /**
+   * @constructs
+   * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
+   */
   function Loader() {var responseType = arguments[0];if(responseType === void 0)responseType = "";
     super$0.call(this);
     this.responseType = responseType;
@@ -33,10 +43,11 @@ var Loader = (function(super$0){MIXIN$0(Loader, super$0);
   }Loader.prototype = Object.create(super$0.prototype, {"constructor": {"value": Loader, "configurable": true, "writable": true}, progressCallback: {"get": progressCallback$get$0, "set": progressCallback$set$0, "configurable": true, "enumerable": true} });DP$0(Loader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
 
   /**
-   * Main wrapper function for promise file loading.
-   * Switch between loadOne and loadAll.
+   * @function - Method for a promise based file loading.
+   * Internally switch between loadOne and loadAll.
    * @public
-   * @param fileURLs The URL(s) of the files to load. Accepts a URL to the file location or an array of URLs.
+   * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @returns {Promise}
    */
   Loader.prototype.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();
     if (fileURLs == undefined) throw (new Error("load needs at least a url to load"));
@@ -48,18 +59,20 @@ var Loader = (function(super$0){MIXIN$0(Loader, super$0);
   }
 
   /**
-   * Load a single file, return a Promise
-   * @public
-   * @param fileURL The URL of the file location to load.
+   * @function - Load a single file
+   * @private
+   * @param {string} fileURL - The URL of the file to load.
+   * @returns {Promise}
    */
   Loader.prototype.loadOne = function(fileURL) {
     return this.fileLoadingRequest(fileURL);
   }
 
   /**
-   * Load all files at once in a single array and return a Promise
-   * @public
-   * @param fileURLs The URLs array of the files to load.
+   * @function - Load all files at once in a single array and return a Promise
+   * @private
+   * @param {string[]} fileURLs - The URLs array of the files to load.
+   * @returns {Promise}
    */
   Loader.prototype.loadAll = function(fileURLs) {
     var urlsCount = fileURLs.length,
@@ -73,10 +86,11 @@ var Loader = (function(super$0){MIXIN$0(Loader, super$0);
   }
 
   /**
-   * Load a file asynchronously, return a Promise.
+   * @function - Load a file asynchronously, return a Promise.
    * @private
-   * @param url The URL of the file to load
-   * @param index The index of the file in the array of files to load
+   * @param {string} url - The URL of the file to load
+   * @param {string} [index] - The index of the file in the array of files to load
+   * @returns {Promise}
    */
   Loader.prototype.fileLoadingRequest = function(url, index) {var this$0 = this;
     var promise = new Promise(
@@ -117,13 +131,21 @@ var Loader = (function(super$0){MIXIN$0(Loader, super$0);
   }
 
   /**
-   * Set and Get the callback function to get the progress of file loading process.
+   * @function - Get the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
+   * @returns {Loader~progressCallback}
    */
   function progressCallback$get$0() {
     return this.progressCb;
   }
+
+  /**
+   * @function - Set the callback function to get the progress of file loading process.
+   * This is only for the file loading progress as decodeAudioData doesn't
+   * expose a decode progress value.
+   * @param {Loader~progressCallback} callback - The callback that handles the response.
+   */
   function progressCallback$set$0(callback) {
     this.progressCb = callback;
   }
@@ -131,17 +153,32 @@ var Loader = (function(super$0){MIXIN$0(Loader, super$0);
 ;return Loader;})(events.EventEmitter);
 
 
-var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
+/**
+ * AudioBufferLoader
+ * @class
+ * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
+ * Inherit from Loader class
+ */
+var AudioBufferLoader = (function(super$0){"use strict";MIXIN$0(AudioBufferLoader, super$0);
 
+  /**
+   * @constructs
+   * Set the responseType to 'arraybuffer' and initialize options.
+   */
   function AudioBufferLoader() {
-    this.options = {'wrapAroundExtension': 0};
+    this.options = {
+      "wrapAroundExtension": 0
+    };
     this.responseType = 'arraybuffer';
+    super$0.call(this, this.responseType);
   }AudioBufferLoader.prototype = Object.create(super$0.prototype, {"constructor": {"value": AudioBufferLoader, "configurable": true, "writable": true} });DP$0(AudioBufferLoader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
 
   /**
-   * Main wrapper function for promise file loading.
-   * @param wrapAroundExtension the length, in seconds to be copied from the begining
-   * at the end of the returned audiobuffer
+   * @function - Method for promise audio file loading and decoding.
+   * @param {(string|string[])} fileURLs - The URL(s) of the audio files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining
+   * at the end of the returned AudioBuffer
+   * @returns {Promise}
    */
   AudioBufferLoader.prototype.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();var options = arguments[1];if(options === void 0)options = {};
     this.options = options;
@@ -150,10 +187,10 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
   }
 
   /**
-   * Load a single audio file,
-   * decode it in an AudioBuffer, return a Promise
-   * @public
-   * @param fileURL The URL of the audio file location to load.
+   * @function - Load a single audio file, decode it in an AudioBuffer, return a Promise
+   * @private
+   * @param {string} fileURL - The URL of the audio file location to load.
+   * @returns {Promise}
    */
   AudioBufferLoader.prototype.loadOne = function(fileURL) {
     return super$0.prototype.loadOne.call(this, fileURL)
@@ -165,11 +202,10 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
   }
 
   /**
-   * Load all audio files at once in a single array,
-   * decode them in an array of AudioBuffers,
-   * and return a Promise
-   * @public
-   * @param fileURLs The URLs array of the audio files to load.
+   * @function - Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
+   * @private
+   * @param {string[]} fileURLs - The URLs array of the audio files to load.
+   * @returns {Promise}
    */
   AudioBufferLoader.prototype.loadAll = function(fileURLs) {var this$0 = this;
     return super$0.prototype.loadAll.call(this, fileURLs)
@@ -184,9 +220,10 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
   }
 
   /**
-   * Decode Audio Data, return a Promise
+   * @function - Decode Audio Data, return a Promise
    * @private
-   * @param arraybuffer The arraybuffer of the loaded audio file to be decoded.
+   * @param {arraybuffer} - The arraybuffer of the loaded audio file to be decoded.
+   * @returns {Promise}
    */
   AudioBufferLoader.prototype.decodeAudioData = function(arraybuffer) {var this$0 = this;
     return new Promise(function(resolve, reject)  {
@@ -203,9 +240,10 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
   }
 
   /**
-   * WrapAround, copy the begining input buffer to the end of an output buffer
+   * @function - WrapAround, copy the begining input buffer to the end of an output buffer
    * @private
-   * @inBuffer The input buffer
+   * @inBuffer {arraybuffer} - The input buffer
+   * @returns {arraybuffer} - The processed buffer (with frame copied from the begining to the end)
    */
   AudioBufferLoader.prototype.__wrapAround = function(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate,
@@ -215,8 +253,8 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
       arrayChData = inBuffer.getChannelData(channel);
       arrayOutChData = outBuffer.getChannelData(channel);
       _.forEach(arrayOutChData, function(sample, index) {
-        if(index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
-        else arrayOutChData[index] = arrayChData[index-inBuffer.length];
+        if (index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
+        else arrayOutChData[index] = arrayChData[index - inBuffer.length];
       });
     }
     return outBuffer;
@@ -225,13 +263,30 @@ var AudioBufferLoader = (function(super$0){MIXIN$0(AudioBufferLoader, super$0);
 ;return AudioBufferLoader;})(Loader);
 
 
-var SuperLoader = (function(){
+/**
+ * SuperLoader
+ * @class
+ * @classdesc Helper to load multiple type of files, and get them in their useful type, json for json files, AudioBuffer for audio files.
+ */
+var SuperLoader = (function(){"use strict";
 
+  /**
+   * @constructs
+   * Use composition to setup appropriate file loaders
+   */
   function SuperLoader() {
     this.bufferLoader = new AudioBufferLoader();
     this.loader = new Loader("json");
   }DP$0(SuperLoader, "prototype", {"configurable": false, "enumerable": false, "writable": false});
 
+
+  /**
+   * @function - Method for promise audio and json file loading (and decoding for audio).
+   * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
+   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining
+   * at the end of the returned AudioBuffer
+   * @returns {Promise}
+   */
   SuperLoader.prototype.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();var options = arguments[1];if(options === void 0)options = {};
     this.options = options;
     this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
@@ -260,8 +315,8 @@ var SuperLoader = (function(){
       return new Promise(function(resolve, reject)  {
         Promise.all(promises).then(
           function(datas)  {
-            // Need to reorder and flatten all of this !
-            // this is ugly
+            // Need to reorder and flatten all of these fulfilled promises
+            // @todo this is ugly
             if (datas.length === 1) {
               resolve(datas[0]);
             } else {

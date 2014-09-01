@@ -1,4 +1,4 @@
-# Audio Buffer loader module
+# AudioBuffer loader module
 
 > WAVE audio library module for audio buffer loading.
 
@@ -16,11 +16,11 @@ Load buffer-loader.js (or the minified version) in your html file by using:
   var audioContext = new AudioContext();
 
   // Load the file passing the path
-  var myBufferLoader = new AudioBufferLoader();
-  myBufferLoader.progressCallback = function(val){
+  var myAudioBufferLoader = new loaders.AudioBufferLoader();
+  AudioBufferLoader.progressCallback = function(val){
     // Do something with the progress value
   }
-  myBufferLoader.load('sound/file/url').then(
+  AudioBufferLoader.load('sound/file/url').then(
       function(buffer){
         // Do something with the loaded audio buffer
       },
@@ -36,15 +36,6 @@ an array of urls ['url/to/file1', 'url/to/file2', ...].
 The progress is then an object, eg. {index: 4, value: 0.2},
 where index corresponds to the file index in the array of files,
 and value, between 0.0 and 1, corresponds to the file loading progress.
-
-
-## API
-
-The `bufferLoader` object exposes the following API:
-
-Method | Description
---- | ---
-`bufferLoader.load(fileURLs)` | Main wrapper function for loading. If fileURLs is a String, it loads a single audio file, decode it in an AudioBuffer and return a Promise. If fileURLs is an Array, it loads all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
 
 ## Tests
 
