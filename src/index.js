@@ -1,6 +1,6 @@
 /* written in ECMAscript 6 */
 /**
- * @file AudioBuffer loader and utility loader
+ * @file Loaders: AudioBuffer loader and utilities
  * @author Samuel Goldszmidt
  * @version 0.1.0
  */

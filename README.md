@@ -1,13 +1,11 @@
-# AudioBuffer loader module
-
-> WAVE audio library module for audio buffer loading.
+# AudioBuffer loader and other loader utilities module
 
 ## Example
 
-Load buffer-loader.js (or the minified version) in your html file by using:
+Load loaders.js (or the minified version) in your html file by using:
 
 ```html
-    <script src="buffer-loader.min.js"></script>
+    <script src="loaders.min.js"></script>
 ```
 
 ```js

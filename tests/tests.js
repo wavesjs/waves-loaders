@@ -5,7 +5,7 @@ AudioContext = require('web-audio-api').AudioContext;
 XMLHttpRequest = require('w3c-xmlhttprequest').XMLHttpRequest;
 require("native-promise-only");
 
-// Kind of hacks, may be a better solutions exist
+// Kind of hack, may be a better solutions exist
 window = global;
 
 var static = require('node-static');

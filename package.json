@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ircam-rnd/buffer-loader"
+    "url": "https://github.com/Ircam-RnD/loaders"
   },
   "scripts": {
     "test": "mocha tests/tests.js"
