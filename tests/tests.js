@@ -8,7 +8,16 @@ require("native-promise-only");
 // Kind of hacks, may be a better solutions exist
 window = global;
 
-require('./static-server.js');
+var static = require('node-static');
+
+// Set up a static file server for testing purposes (response to XMLHttpRequest)
+var fileServer = new static.Server('./tests');
+
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        fileServer.serve(request, response);
+    }).resume();
+}).listen(8080);
 
 Loader = require('../index.js').Loader;
 AudioBufferLoader = require('../index.js').AudioBufferLoader;

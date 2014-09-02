@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <script src="../buffer-loader.min.js"></script>
+  <script src="../loaders.min.js"></script>
   <script>
 
   // We need an audio context to decode the file
@@ -9,11 +9,11 @@
   var audioContext = new AudioContext();
 
   // Load the file passing the path
-  var myBufferLoader = new BufferLoader();
-  myBufferLoader.progressCallback = function(val){
+  var myAudioBufferLoader = new loaders.AudioBufferLoader();
+  myAudioBufferLoader.progressCallback = function(val){
     console.log(val);
   }
-  myBufferLoader.load('../tests/synth.wav').then(
+  myAudioBufferLoader.load('../tests/synth.wav').then(
       function(buffer){
         // Do something with the loaded audio buffer
         console.log(buffer);
