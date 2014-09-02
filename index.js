@@ -2,10 +2,7 @@ var DP$0 = Object.defineProperty;var MIXIN$0 = function(t,s){for(var p in s){if(
 /**
  * @file AudioBuffer loader and utility loader
  * @author Samuel Goldszmidt
- * @author Karim Barkati
- * @author Victor Saiz
- * @author Emmanuel Fréard
- * @version 6.0.0
+ * @version 0.1.0
  */
 
 var _ = require('lodash'),
