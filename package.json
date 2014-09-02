@@ -1,23 +1,10 @@
 {
-  "name": "buffer-loader",
-  "version": "6.0.0",
+  "name": "loaders",
+  "version": "0.1.0",
   "description": "Web Audio API audio buffer loader",
-  "exports": "loaders",
   "main": "index.js",
-  "scripts": {},
-  "config": {
-    "blanket": {
-      "pattern": "index.js",
-      "data-cover-never": "node_modules"
-    }
-  },
-  "authors": [
-    "Karim Barkati",
-    "Victor Saiz",
-    "Emmanuel Fréard",
-    "Samuel Goldszmidt"
-  ],
-  "license": "BSD-3",
+  "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "audio-context": "git://github.com/ircam-rnd/audio-context.git#master",
     "lodash": "^2.4.1",
@@ -43,5 +30,16 @@
   },
   "scripts": {
     "test": "mocha tests/tests.js"
-  }
+  },
+  "config": {
+    "blanket": {
+      "pattern": "index.js",
+      "data-cover-never": "node_modules"
+    }
+  },
+  "directories": {
+    "lib": "./src/",
+    "example": "  ./examples/"
+  },
+  "exports": "loaders"
 }

@@ -2,10 +2,7 @@
 /**
  * @file AudioBuffer loader and utility loader
  * @author Samuel Goldszmidt
- * @author Karim Barkati
- * @author Victor Saiz
- * @author Emmanuel Fréard
- * @version 6.0.0
+ * @version 0.1.0
  */
 
 var _ = require('lodash'),
