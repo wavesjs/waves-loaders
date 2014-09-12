@@ -1,7 +1,7 @@
 {
   "name": "loaders",
   "version": "0.1.1",
-  "description": "Web Audio API audio buffer loader",
+  "description": "AudioBuffer loader and other loader utilities module",
   "main": "index.js",
   "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
   "license": "BSD-3-Clause",
