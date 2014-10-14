@@ -239,7 +239,7 @@ class AudioBufferLoader extends Loader {
   /**
    * @function - WrapAround, copy the begining input buffer to the end of an output buffer
    * @private
-   * @inBuffer {arraybuffer} - The input buffer
+   * @param {arraybuffer} inBuffer {arraybuffer} - The input buffer
    * @returns {arraybuffer} - The processed buffer (with frame copied from the begining to the end)
    */
   __wrapAround(inBuffer) {
