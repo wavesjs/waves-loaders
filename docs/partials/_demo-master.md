@@ -1,8 +1,4 @@
-## loaders
-
-> AudioBuffer loader and other loader utilities module
-
-### Example
+## Example
 
 Load loaders.js (or the minified version) in your html file by using:
 
@@ -37,7 +33,7 @@ The progress is then an object, eg. {index: 4, value: 0.2},
 where index corresponds to the file index in the array of files,
 and value, between 0.0 and 1, corresponds to the file loading progress.
 
-### Tests
+## Tests
 
 If gulp is not installed
 
@@ -62,20 +58,3 @@ Generate the coverage report
 ```bash
 mocha -r blanket -R html-cov > coverage.html tests/tests.js
 ```
-
-### Usage
-Read the API documentation [here](https://github.com/Ircam-RnD/loaders/blob/master/docs/api.md)
-
-### Status
-
-This library is under heavy development and subject to change.  
-Every new API breaking change we will be adding snapshots to the repository so you can always fetch a working copy.
-
-## License
-This module is released under the [BSD-3-Clause license](http://opensource.org/licenses/BSD-3-Clause).
-
-## Acknowledgments
-This code is part of the [WAVE project](http://wave.ircam.fr),  
-funded by ANR (The French National Research Agency),  
-_ContInt_ program,  
-2012-2015.
