@@ -1,9 +1,13 @@
 var gulp = require('gulp');
 var packageJson = require('./package.json');
-var loadTasks = require('module-boilerplate');
-var exec = require('child_process').exec;
 
-loadTasks(gulp, packageJson);
+require('./node_modules/module-boilerplate/load-dependencies')(packageJson);
+
+tasks = require('./node_modules/module-boilerplate/tasks.json');
+
+for(var i in tasks) {
+  require('./node_modules/module-boilerplate/tasks/' + tasks[i])(gulp, packageJson);
+}
 
 gulp.task('coverage', function() {
   exec('mocha -r blanket -R html-cov > coverage.html tests/tests.js');
