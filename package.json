@@ -2,7 +2,7 @@
   "name": "loaders",
   "version": "0.1.1",
   "description": "AudioBuffer loader and other loader utilities module",
-  "main": "index.js",
+  "main": "loaders.js",
   "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
