@@ -19,9 +19,9 @@ require('http').createServer(function (request, response) {
     }).resume();
 }).listen(8080);
 
-Loader = require('../index.js').Loader;
-AudioBufferLoader = require('../index.js').AudioBufferLoader;
-SuperLoader = require('../index.js').SuperLoader;
+Loader = require('../loaders.js').Loader;
+AudioBufferLoader = require('../loaders.js').AudioBufferLoader;
+SuperLoader = require('../loaders.js').SuperLoader;
 
 var assert = chai.assert;
 var audioContext = new AudioContext();
@@ -31,9 +31,10 @@ var json = 'http://localhost:8080/test.json';
 
 
 describe("Loader", function() {
-  var loader = new Loader();
+  var loader = new Loader('json');
   it("Should load json file with a Promise", function(done) {
     loader.load(json).then(function(json) {
+      assert.equal(json.foo, 'bar');
       done();
     }, function(error) {});
   });

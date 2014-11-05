@@ -1,7 +1,8 @@
+/*
 var gulp = require('gulp');
 var packageJson = require('./package.json');
 
-require('./node_modules/module-boilerplate/load-dependencies')(packageJson);
+require('./node_modules/module-boilerplate/load-dependencies')(gulp, packageJson);
 
 tasks = require('./node_modules/module-boilerplate/tasks.json');
 
@@ -12,3 +13,16 @@ for(var i in tasks) {
 gulp.task('coverage', function() {
   exec('mocha -r blanket -R html-cov > coverage.html tests/tests.js');
 });
+*/
+
+
+var gulp = require('gulp');
+var packageJson = require('./package.json');
+
+require('./node_modules/module-boilerplate/load-dependencies')(gulp, packageJson);
+
+tasks = require('./node_modules/module-boilerplate/tasks.json');
+
+for(var i in tasks) {
+  require('./node_modules/module-boilerplate/tasks/' + tasks[i])(gulp, packageJson);
+}
