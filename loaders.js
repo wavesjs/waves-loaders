@@ -100,6 +100,10 @@ var Loader = (function(super$0){"use strict";if(!PRS$0)MIXIN$0(Loader, super$0);
         request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there
           if (request.status === 200 || request.status === 304) {
+            // Hack for iOS 7, to remove as soon as possible
+            if(this.responseType === 'json' && typeof(request.response) === 'string'){
+              request.response = JSON.parse(request.response);
+            }
             resolve(request.response);
           } else {
             reject(new Error(request.statusText));
