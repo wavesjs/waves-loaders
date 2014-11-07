@@ -17,10 +17,10 @@ Load loaders.js (or the minified version) in your html file by using:
 
   // Load the file passing the path
   var myAudioBufferLoader = new loaders.AudioBufferLoader();
-  AudioBufferLoader.progressCallback = function(val){
+  myAudioBufferLoader.progressCallback = function(val){
     // Do something with the progress value
   }
-  AudioBufferLoader.load('sound/file/url').then(
+  myAudioBufferLoader.load('sound/file/url').then(
       function(buffer){
         // Do something with the loaded audio buffer
       },
