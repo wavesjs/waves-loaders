@@ -19,9 +19,9 @@ require('http').createServer(function (request, response) {
     }).resume();
 }).listen(8080);
 
-Loader = require('../loaders.js').Loader;
-AudioBufferLoader = require('../loaders.js').AudioBufferLoader;
-SuperLoader = require('../loaders.js').SuperLoader;
+Loader = require('../loaders.min.js').Loader;
+AudioBufferLoader = require('../loaders.min.js').AudioBufferLoader;
+SuperLoader = require('../loaders.min.js').SuperLoader;
 
 var assert = chai.assert;
 var audioContext = new AudioContext();
@@ -48,8 +48,8 @@ describe("AudioBufferLoader", function() {
   it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done) {
     var progression = 0;
 
-    function onProgress(val) {
-      progression = val;
+    function onProgress(obj) {
+      progression = obj.value;
     }
     myBufferLoader.progressCallback = onProgress;
     myBufferLoader.fileLoadingRequest(synth).then(
