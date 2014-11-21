@@ -121,8 +121,8 @@ class Loader extends events.EventEmitter {
             } else {
               this.progressCallback({
                 value: evt.loaded / evt.total,
-                loaded: loaded,
-                total: total
+                loaded: evt.loaded,
+                total: evt.total
               });
             }
           }
