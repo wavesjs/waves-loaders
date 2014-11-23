@@ -11,18 +11,27 @@
     "native-promise-only": "^0.7.6-a"
   },
   "devDependencies": {
-    "blanket": "~1.1.6",
     "browserify": "~4.1.2",
     "chai": "~1.9.0",
-    "fs-utils": "0.4.3",
     "gulp": "~3.8.2",
     "gulp-mocha": "^0.5.2",
     "mocha": "~1.17.1",
     "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",
-    "node-static": "^0.7.4",
-    "sinon": "~1.9.1",
-    "w3c-xmlhttprequest": "git+https://github.com/Ircam-RnD/node-xmlhttprequest",
-    "web-audio-api": "git+https://github.com/sebpiq/node-web-audio-api.git"
+    "sinon": "~1.9.1"
+  },
+  "testling": {
+    "harness": "mocha-bdd",
+    "files": "tests/tests.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
   },
   "repository": {
     "type": "git",
