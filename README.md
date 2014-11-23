@@ -2,6 +2,9 @@
 
 > AudioBuffer loader and other loader utilities module
 
+[![browser support](https://ci.testling.com/Ircam-RnD/loaders.png)
+](https://ci.testling.com/Ircam-RnD/loaders)
+
 ### Example
 
 Load loaders.js (or the minified version) in your html file by using:
