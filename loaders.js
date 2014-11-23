@@ -1,4 +1,4 @@
-/* written in ECMAscript 6 */
+var PRS$0 = (function(o,t){o["__proto__"]={"a":t};return o["a"]===t})({},{});var DP$0 = Object.defineProperty;var GOPD$0 = Object.getOwnPropertyDescriptor;var MIXIN$0 = function(t,s){for(var p in s){if(s.hasOwnProperty(p)){DP$0(t,p,GOPD$0(s,p));}}return t};var SP$0 = Object.setPrototypeOf||function(o,p){if(PRS$0){o["__proto__"]=p;}else {DP$0(o,"__proto__",{"value":p,"configurable":true,"enumerable":false,"writable":true});}return o};var OC$0 = Object.create;/* written in ECMAscript 6 */
 /**
  * @file Loaders: AudioBuffer loader and utilities
  * @author Samuel Goldszmidt
@@ -28,17 +28,17 @@ function throwIfMissing() {
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
-class Loader extends events.EventEmitter {
+var Loader = (function(super$0){"use strict";if(!PRS$0)MIXIN$0(Loader, super$0);var proto$0={};
 
   /**
    * @constructs
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
    */
-  constructor(responseType = "") {
-    super();
+  function Loader() {var responseType = arguments[0];if(responseType === void 0)responseType = "";
+    super$0.call(this);
     this.responseType = responseType;
     this.progressCb = undefined;
-  }
+  }if(super$0!==null)SP$0(Loader,super$0);Loader.prototype = OC$0(super$0!==null?super$0.prototype:null,{"constructor":{"value":Loader,"configurable":true,"writable":true}, progressCallback: {"get": $progressCallback_get$0, "set": $progressCallback_set$0, "configurable":true,"enumerable":true}});DP$0(Loader,"prototype",{"configurable":false,"enumerable":false,"writable":false});
 
   /**
    * @function - Method for a promise based file loading.
@@ -47,14 +47,14 @@ class Loader extends events.EventEmitter {
    * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
    * @returns {Promise}
    */
-  load(fileURLs = throwIfMissing()) {
+  proto$0.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();
     if (fileURLs === undefined) throw (new Error("load needs at least a url to load"));
     if (Array.isArray(fileURLs)) {
       return this.loadAll(fileURLs);
     } else {
       return this.loadOne(fileURLs);
     }
-  }
+  };
 
   /**
    * @function - Load a single file
@@ -62,9 +62,9 @@ class Loader extends events.EventEmitter {
    * @param {string} fileURL - The URL of the file to load.
    * @returns {Promise}
    */
-  loadOne(fileURL) {
+  proto$0.loadOne = function(fileURL) {
     return this.fileLoadingRequest(fileURL);
-  }
+  };
 
   /**
    * @function - Load all files at once in a single array and return a Promise
@@ -72,7 +72,7 @@ class Loader extends events.EventEmitter {
    * @param {string[]} fileURLs - The URLs array of the files to load.
    * @returns {Promise}
    */
-  loadAll(fileURLs) {
+  proto$0.loadAll = function(fileURLs) {
     var urlsCount = fileURLs.length,
       promises = [];
 
@@ -81,7 +81,7 @@ class Loader extends events.EventEmitter {
     }
 
     return Promise.all(promises);
-  }
+  };
 
   /**
    * @function - Load a file asynchronously, return a Promise.
@@ -90,14 +90,14 @@ class Loader extends events.EventEmitter {
    * @param {string} [index] - The index of the file in the array of files to load
    * @returns {Promise}
    */
-  fileLoadingRequest(url, index) {
+  proto$0.fileLoadingRequest = function(url, index) {var this$0 = this;
     var promise = new Promise(
-      (resolve, reject) => {
+      function(resolve, reject)  {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.index = index;
-        this.emit('xmlhttprequest', request);
-        request.responseType = this.responseType;
+        this$0.emit('xmlhttprequest', request);
+        request.responseType = this$0.responseType;
         request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there
           if (request.status === 200 || request.status === 304) {
@@ -110,17 +110,17 @@ class Loader extends events.EventEmitter {
             reject(new Error(request.statusText));
           }
         });
-        request.addEventListener('progress', (evt) => {
-          if (this.progressCallback) {
+        request.addEventListener('progress', function(evt)  {
+          if (this$0.progressCallback) {
             if (index !== undefined) {
-              this.progressCallback({
+              this$0.progressCallback({
                 index: index,
                 value: evt.loaded / evt.total,
                 loaded: evt.loaded,
                 total: evt.total
               });
             } else {
-              this.progressCallback({
+              this$0.progressCallback({
                 value: evt.loaded / evt.total,
                 loaded: evt.loaded,
                 total: evt.total
@@ -136,7 +136,7 @@ class Loader extends events.EventEmitter {
         request.send();
       });
     return promise;
-  }
+  };
 
   /**
    * @function - Get the callback function to get the progress of file loading process.
@@ -144,7 +144,7 @@ class Loader extends events.EventEmitter {
    * expose a decode progress value.
    * @returns {Loader~progressCallback}
    */
-  get progressCallback() {
+  function $progressCallback_get$0() {
     return this.progressCb;
   }
 
@@ -154,11 +154,11 @@ class Loader extends events.EventEmitter {
    * expose a decode progress value.
    * @param {Loader~progressCallback} callback - The callback that handles the response.
    */
-  set progressCallback(callback) {
+  function $progressCallback_set$0(callback) {
     this.progressCb = callback;
   }
 
-}
+MIXIN$0(Loader.prototype,proto$0);proto$0=void 0;return Loader;})(events.EventEmitter);
 
 
 /**
@@ -167,19 +167,19 @@ class Loader extends events.EventEmitter {
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
  * Inherit from Loader class
  */
-class AudioBufferLoader extends Loader {
+var AudioBufferLoader = (function(super$0){"use strict";if(!PRS$0)MIXIN$0(AudioBufferLoader, super$0);var proto$0={};
 
   /**
    * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
    */
-  constructor() {
+  function AudioBufferLoader() {
     this.options = {
       "wrapAroundExtension": 0
     };
     this.responseType = 'arraybuffer';
-    super(this.responseType);
-  }
+    super$0.call(this, this.responseType);
+  }if(super$0!==null)SP$0(AudioBufferLoader,super$0);AudioBufferLoader.prototype = OC$0(super$0!==null?super$0.prototype:null,{"constructor":{"value":AudioBufferLoader,"configurable":true,"writable":true}});DP$0(AudioBufferLoader,"prototype",{"configurable":false,"enumerable":false,"writable":false});
 
   /**
    * @function - Method for promise audio file loading and decoding.
@@ -188,11 +188,11 @@ class AudioBufferLoader extends Loader {
    * at the end of the returned AudioBuffer
    * @returns {Promise}
    */
-  load(fileURLs = throwIfMissing(), options = {}) {
+  proto$0.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();var options = arguments[1];if(options === void 0)options = {};
     this.options = options;
     this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
-    return super.load(fileURLs);
-  }
+    return super$0.prototype.load.call(this, fileURLs);
+  };
 
   /**
    * @function - Load a single audio file, decode it in an AudioBuffer, return a Promise
@@ -200,14 +200,14 @@ class AudioBufferLoader extends Loader {
    * @param {string} fileURL - The URL of the audio file location to load.
    * @returns {Promise}
    */
-  loadOne(fileURL) {
-    return super.loadOne(fileURL)
+  proto$0.loadOne = function(fileURL) {
+    return super$0.prototype.loadOne.call(this, fileURL)
       .then(
         this.decodeAudioData.bind(this),
         function(error) {
           throw error;
         });
-  }
+  };
 
   /**
    * @function - Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
@@ -215,17 +215,17 @@ class AudioBufferLoader extends Loader {
    * @param {string[]} fileURLs - The URLs array of the audio files to load.
    * @returns {Promise}
    */
-  loadAll(fileURLs) {
-    return super.loadAll(fileURLs)
+  proto$0.loadAll = function(fileURLs) {var this$0 = this;
+    return super$0.prototype.loadAll.call(this, fileURLs)
       .then(
-        (arraybuffers) => {
-          return Promise.all(arraybuffers.map((arraybuffer) => {
-            return this.decodeAudioData.bind(this)(arraybuffer);
+        function(arraybuffers)  {
+          return Promise.all(arraybuffers.map(function(arraybuffer)  {
+            return this$0.decodeAudioData.bind(this$0)(arraybuffer);
           }));
-        }, (error) => {
+        }, function(error)  {
           throw error; // TODO: better error handler
         });
-  }
+  };
 
   /**
    * @function - Decode Audio Data, return a Promise
@@ -233,19 +233,19 @@ class AudioBufferLoader extends Loader {
    * @param {arraybuffer} - The arraybuffer of the loaded audio file to be decoded.
    * @returns {Promise}
    */
-  decodeAudioData(arraybuffer) {
-    return new Promise((resolve, reject) => {
+  proto$0.decodeAudioData = function(arraybuffer) {var this$0 = this;
+    return new Promise(function(resolve, reject)  {
       audioContext.decodeAudioData(
         arraybuffer, // returned audio data array
-        (buffer) => {
-          if (this.options.wrapAroundExtension === 0) resolve(buffer);
-          else resolve(this.__wrapAround(buffer));
-        }, (error) => {
+        function(buffer)  {
+          if (this$0.options.wrapAroundExtension === 0) resolve(buffer);
+          else resolve(this$0.__wrapAround(buffer));
+        }, function(error)  {
           reject(new Error("DecodeAudioData error"));
         }
       );
     });
-  }
+  };
 
   /**
    * @function - WrapAround, copy the begining input buffer to the end of an output buffer
@@ -253,7 +253,7 @@ class AudioBufferLoader extends Loader {
    * @param {arraybuffer} inBuffer {arraybuffer} - The input buffer
    * @returns {arraybuffer} - The processed buffer (with frame copied from the begining to the end)
    */
-  __wrapAround(inBuffer) {
+  proto$0.__wrapAround = function(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate,
       outBuffer = audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate),
       arrayChData, arrayOutChData;
@@ -266,9 +266,9 @@ class AudioBufferLoader extends Loader {
       });
     }
     return outBuffer;
-  }
+  };
 
-}
+MIXIN$0(AudioBufferLoader.prototype,proto$0);proto$0=void 0;return AudioBufferLoader;})(Loader);
 
 
 /**
@@ -276,16 +276,16 @@ class AudioBufferLoader extends Loader {
  * @class
  * @classdesc Helper to load multiple type of files, and get them in their useful type, json for json files, AudioBuffer for audio files.
  */
-class SuperLoader {
+var SuperLoader = (function(){"use strict";var proto$0={};
 
   /**
    * @constructs
    * Use composition to setup appropriate file loaders
    */
-  constructor() {
+  function SuperLoader() {
     this.bufferLoader = new AudioBufferLoader();
     this.loader = new Loader("json");
-  }
+  }DP$0(SuperLoader,"prototype",{"configurable":false,"enumerable":false,"writable":false});
 
 
   /**
@@ -295,7 +295,7 @@ class SuperLoader {
    * at the end of the returned AudioBuffer
    * @returns {Promise}
    */
-  load(fileURLs = throwIfMissing(), options = {}) {
+  proto$0.load = function() {var fileURLs = arguments[0];if(fileURLs === void 0)fileURLs = throwIfMissing();var options = arguments[1];if(options === void 0)options = {};
     this.options = options;
     this.options.wrapAroundExtension = this.options.wrapAroundExtension || 0;
     if (Array.isArray(fileURLs)) {
@@ -320,9 +320,9 @@ class SuperLoader {
       if (otherURLs.length > 0) promises.push(this.loader.load(otherURLs));
       if (audioURLs.length > 0) promises.push(this.bufferLoader.load(audioURLs, this.options));
 
-      return new Promise((resolve, reject) => {
+      return new Promise(function(resolve, reject)  {
         Promise.all(promises).then(
-          (datas) => {
+          function(datas)  {
             // Need to reorder and flatten all of these fulfilled promises
             // @todo this is ugly
             if (datas.length === 1) {
@@ -336,14 +336,14 @@ class SuperLoader {
               }
               resolve(outData);
             }
-          }, (error) => {
+          }, function(error)  {
             throw error;
           });
       });
     }
-  }
+  };
 
-}
+MIXIN$0(SuperLoader.prototype,proto$0);proto$0=void 0;return SuperLoader;})();
 
 // CommonJS function export
 module.exports = {
