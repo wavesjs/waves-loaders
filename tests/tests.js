@@ -1,16 +1,26 @@
 var chai = require('chai');
-var assert = chai.assert;
+var assert = require('assert');
 var sinon = require("sinon");
 
-var Loader = require('../loaders.min.js').Loader;
-var AudioBufferLoader = require('../loaders.min.js').AudioBufferLoader;
-var SuperLoader = require('../loaders.min.js').SuperLoader;
+var Loader = require('../loaders.es6.js').Loader;
+var AudioBufferLoader = require('../loaders.es6.js').AudioBufferLoader;
+var SuperLoader = require('../loaders.es6.js').SuperLoader;
 
 var audioContext = new AudioContext();
 
-var synth = "http://upload.wikimedia.org/wikipedia/commons/7/78/1210secretmorzecode.wav";
-var synt = 'https://rawgit.com/Ircam-RnD/loaders/master/tests/synt.wav';
-var json = 'https://rawgit.com/Ircam-RnD/loaders/master/tests/test.json';
+// Some urls with available - or not - files (json, wav)
+
+var synth = 'synth.wav';
+var json = 'test.json';
+var synt = 'synt.wav';
+
+// Create a valid buffer for testing purposes
+var bufferSize = 2 * audioContext.sampleRate;
+var validBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+var output = validBuffer.getChannelData(0);
+for (var i = 0; i < bufferSize; i++) {
+  output[i] = Math.random() * 2 - 1;
+}
 
 describe("Loader", function() {
   var loader = new Loader('json');
@@ -25,7 +35,6 @@ describe("Loader", function() {
 describe("AudioBufferLoader", function() {
   var myBufferLoader = new AudioBufferLoader();
   var validArrayBuffer; // To have access to a valid arraybuffer in tests
-  var validBuffer; // To have access to a valid buffer in tests
 
   it('Test fileLoadingRequest function with an existing resource, Promise implementation for XMLHttpRequest', function(done) {
     var progression = 0;
@@ -39,7 +48,7 @@ describe("AudioBufferLoader", function() {
         // Should be sure it's the right buffer, well, we guess it is.
         validArrayBuffer = buffer;
         // We check that the progress event finally reached 1.
-        assert.isTrue(progression > 0);
+        assert.equal(progression > 0, true);
         done();
       });
   });
@@ -51,18 +60,17 @@ describe("AudioBufferLoader", function() {
         //assert.equal(error.message, 'Not Found');
         done();
       }
-    );
+      );
   });
 
   it('Test decodeAudioData function with valid arraybuffer', function(done) {
     validArrayBuffer.numBuffers = 2;
     myBufferLoader.decodeAudioData(validArrayBuffer).then(
       function(buffer) {
-        validBuffer = buffer;
         done();
       },
       function(error) {}
-    );
+      );
   });
 
   it('Test decodeAudioData function with invalid arraybuffer', function(done) {
@@ -71,7 +79,7 @@ describe("AudioBufferLoader", function() {
       function(error) {
         done();
       }
-    );
+      );
   });
 
   it('Test loadOne function with valid url', function(done) {
@@ -80,7 +88,7 @@ describe("AudioBufferLoader", function() {
         done();
       },
       function(error) {}
-    );
+      );
   });
 
   it('Test loadOne function with invalid url', function(done) {
@@ -89,7 +97,7 @@ describe("AudioBufferLoader", function() {
       function(error) {
         done();
       }
-    );
+      );
   });
 
   it('Test loadAll function with valid url', function(done) {
@@ -102,8 +110,8 @@ describe("AudioBufferLoader", function() {
     myBufferLoader.loadAll([synth, synth]).then(
       function(buffer) {
         // Check that all the progress events is not 0.
-        assert.isTrue(progress_steps[0] > 0);
-        assert.isTrue(progress_steps[1] > 0);
+        assert.equal(progress_steps[0] > 0, true);
+        assert.equal(progress_steps[1] > 0, true);
         done();
       },
       function(error) {});
@@ -126,20 +134,20 @@ describe("AudioBufferLoader", function() {
     sinon.spy(myBufferLoader, 'loadOne');
     myBufferLoader.load(synth).then(
       function(buffer) {
-        assert.isTrue(myBufferLoader.loadOne.calledOnce);
+        assert.equal(myBufferLoader.loadOne.calledOnce, true);
         done();
       }
-    );
+      );
   });
 
   it("Test load function for more than one url", function(done) {
     sinon.spy(myBufferLoader, 'loadAll');
     myBufferLoader.load([synth, synth]).then(
       function(buffer) {
-        assert.isTrue(myBufferLoader.loadAll.calledOnce);
+        assert.equal(myBufferLoader.loadAll.calledOnce, true);
         done();
       }
-    );
+      );
   });
 
   it("Test emit xmlhttprequest event for each new request", function(done) {
@@ -154,6 +162,7 @@ describe("AudioBufferLoader", function() {
   });
 
   it("Should wrap around extension correctly", function(done){
+    //
     var wrapAroundExtension = 1;
     myBufferLoader.options = {};
     myBufferLoader.options.wrapAroundExtension = wrapAroundExtension;
@@ -161,8 +170,8 @@ describe("AudioBufferLoader", function() {
     var initialLength = validBuffer.length;
     assert.equal(outputBuffer.length, initialLength+validBuffer.sampleRate * wrapAroundExtension);
     for(var ch = 0; ch<validBuffer.numberOfChannels; ch++){
-      inChArray = validBuffer.getChannelData(ch);
-      outChArray = outputBuffer.getChannelData(ch);
+      var inChArray = validBuffer.getChannelData(ch);
+      var outChArray = outputBuffer.getChannelData(ch);
       for(var i=0; i<validBuffer.sampleRate * wrapAroundExtension; i++){
         assert.equal(outChArray[initialLength+i], inChArray[i]);
       }
@@ -181,18 +190,26 @@ describe("SuperLoader", function() {
         // should assert files are correct ...
         done();
       },
-      function(error) {}
-    );
+      function(error) {
+        console.log(error)
+      }
+      );
   });
   it("Should load correctly one type of files (only jsons, or only audios)", function(done) {
-    polyLoader.load([json, json]).then(
+    var filesToLoad = [json, json]
+    polyLoader.load(filesToLoad).then(
       function(files) {
         assert.equal(files.length, 2);
         done();
       },
-      function(error) {}
-    );
+      function(error) {
+        console.log(error)
+      }
+      );
   });
 });
+
+
+
 
 

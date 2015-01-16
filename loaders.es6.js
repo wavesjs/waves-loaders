@@ -12,7 +12,6 @@ var _ = require('lodash'),
 
 require("native-promise-only");
 
-
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
@@ -28,6 +27,7 @@ function throwIfMissing() {
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
+
 class Loader extends events.EventEmitter {
 
   /**

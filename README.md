@@ -2,20 +2,17 @@
 
 > AudioBuffer loader and other loader utilities module
 
-[![browser support](https://ci.testling.com/Ircam-RnD/loaders.png)
-](https://ci.testling.com/Ircam-RnD/loaders)
-
 ### Example
 
-Load loaders.js (or the minified version) in your html file by using:
+Load loaders.js in your html file by using:
 
 ```html
-    <script src="loaders.min.js"></script>
+    <script src="loaders.js"></script>
 ```
 
 ```js
   // We need an audio context to decode the file
-  // By default, buffer-loader search for audioContext in the window.
+  // By default,the loaders search for audioContext in the window.
   var audioContext = new AudioContext();
 
   // Load the file passing the path
@@ -44,12 +41,6 @@ and value, between 0.0 and 1, corresponds to the file loading progress.
 
 ### Tests
 
-If gulp is not installed
-
-```bash
-$ npm install -g gulp
-```
-
 Install all dependencies in the module folder
 
 ```bash
@@ -59,17 +50,10 @@ $ npm install
 Run the test suite
 
 ```bash
-$ mocha tests/tests.js
+$ npm test
 ```
 
-Generate the coverage report
-
-```bash
-mocha -r blanket -R html-cov > coverage.html tests/tests.js
-```
-
-### Usage
-Read the API documentation [here](https://github.com/Ircam-RnD/loaders/blob/master/docs/api.md)
+It should launch a browser, run the tests in it, and generate the coverage report in the coverage folder.
 
 ### Status
 

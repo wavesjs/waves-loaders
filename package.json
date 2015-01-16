@@ -11,34 +11,33 @@
     "native-promise-only": "^0.7.6-a"
   },
   "devDependencies": {
-    "browserify": "~4.1.2",
-    "chai": "~1.9.0",
-    "gulp": "~3.8.2",
-    "gulp-mocha": "^0.5.2",
-    "mocha": "~1.17.1",
-    "module-boilerplate": "git://github.com/Ircam-RnD/module-boilerplate.git#master",
-    "sinon": "~1.9.1"
-  },
-  "testling": {
-    "harness": "mocha-bdd",
-    "files": "tests/tests.js",
-    "browsers": [
-      "ie/6..latest",
-      "chrome/22..latest",
-      "firefox/16..latest",
-      "safari/latest",
-      "opera/11.0..latest",
-      "iphone/6",
-      "ipad/6",
-      "android-browser/latest"
-    ]
+    "body-parser": "^1.9.3",
+    "browserify": "^6.3.3",
+    "browserify-istanbul": "git://github.com/ouhouhsami/browserify-istanbul#master",
+    "chai": "^1.10.0",
+    "connect": "^3.3.3",
+    "es6-transpiler": "^0.7.18",
+    "es6ify": "^1.5.1",
+    "install": "^0.1.8",
+    "istanbul": "^0.3.2",
+    "istanbul-traceur": "git://github.com/ouhouhsami/istanbul-traceur#master",
+    "mocha": "^2.0.1",
+    "mocha-traceur": "^2.0.0",
+    "npm": "^2.2.0",
+    "open": "0.0.5",
+    "serve-static": "^1.7.1",
+    "sinon": "~1.9.1",
+    "traceur": "0.0.74"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Ircam-RnD/loaders"
   },
   "scripts": {
-    "test": "mocha tests/tests.js"
+    "test": "node scripts/testsAndCoverage.js",
+    "transpile": "./node_modules/es6-transpiler/build/es5/es6toes5 loaders.es6.js > loaders.es5.js",
+    "browserify": "browserify -t brfs loaders.es5.js > loaders.js",
+    "build": "./node_modules/es6-transpiler/build/es5/es6toes5 loaders.es6.js > loaders.es5.js && browserify -t brfs loaders.es5.js -o loaders.js"
   },
   "config": {
     "blanket": {

@@ -1,2 +1,5 @@
 node_modules
-gh-pages
+coverage
+coverage1.json
+loaders.es5.js
+npm-debug.log
