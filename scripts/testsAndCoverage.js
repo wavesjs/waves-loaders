@@ -27,7 +27,6 @@ browserify({
   .require('./tests/tests.js', {
     entry: true
   })
-  //.require('./node_modules/lodash/dist/lodash.js', {expose:'_', entry:false})
   .bundle(function(err, buf) {
     if(err){
       console.warn(err);
