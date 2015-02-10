@@ -1,5 +1,3 @@
 node_modules
-coverage
-coverage1.json
-loaders.es5.js
+coverage*
 npm-debug.log

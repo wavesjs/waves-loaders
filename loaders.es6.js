@@ -102,7 +102,7 @@ class Loader extends events.EventEmitter {
           // Test request.status value, as 404 will also get there
           if (request.status === 200 || request.status === 304) {
             // Hack for iOS 7, to remove as soon as possible
-            if(this.responseType === 'json' && typeof(request.response) === 'string'){
+            if (this.responseType === 'json' && typeof(request.response) === 'string') {
               request.response = JSON.parse(request.response);
             }
             resolve(request.response);

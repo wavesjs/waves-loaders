@@ -1,17 +1,16 @@
 var chai = require('chai');
 var assert = require('assert');
 var sinon = require("sinon");
+var audioContext = require("audio-context")
 
 var Loader = require('../loaders.es6.js').Loader;
 var AudioBufferLoader = require('../loaders.es6.js').AudioBufferLoader;
 var SuperLoader = require('../loaders.es6.js').SuperLoader;
 
-var audioContext = new AudioContext();
-
 // Some urls with available - or not - files (json, wav)
 
-var synth = 'synth.wav';
-var json = 'test.json';
+var synth = 'http://upload.wikimedia.org/wikipedia/commons/4/4d/Continuity_proof.ogg'
+var json = 'https://rawgit.com/Ircam-RnD/loaders/master/tests/test.json';
 var synt = 'synt.wav';
 
 // Create a valid buffer for testing purposes
@@ -60,7 +59,7 @@ describe("AudioBufferLoader", function() {
         //assert.equal(error.message, 'Not Found');
         done();
       }
-      );
+    );
   });
 
   it('Test decodeAudioData function with valid arraybuffer', function(done) {
@@ -70,7 +69,7 @@ describe("AudioBufferLoader", function() {
         done();
       },
       function(error) {}
-      );
+    );
   });
 
   it('Test decodeAudioData function with invalid arraybuffer', function(done) {
@@ -79,7 +78,7 @@ describe("AudioBufferLoader", function() {
       function(error) {
         done();
       }
-      );
+    );
   });
 
   it('Test loadOne function with valid url', function(done) {
@@ -88,7 +87,7 @@ describe("AudioBufferLoader", function() {
         done();
       },
       function(error) {}
-      );
+    );
   });
 
   it('Test loadOne function with invalid url', function(done) {
@@ -97,7 +96,7 @@ describe("AudioBufferLoader", function() {
       function(error) {
         done();
       }
-      );
+    );
   });
 
   it('Test loadAll function with valid url', function(done) {
@@ -126,7 +125,10 @@ describe("AudioBufferLoader", function() {
   });
 
   it("Test load function without any parameters", function(done) {
-    chai.expect(myBufferLoader.load).to.throw('Missing parameter');
+    //chai.expect(myBufferLoader.load).to.throw('Missing parameter');
+    assert.throws(function() {
+      myBufferLoader.load()
+    }, Error);
     done();
   });
 
@@ -137,7 +139,7 @@ describe("AudioBufferLoader", function() {
         assert.equal(myBufferLoader.loadOne.calledOnce, true);
         done();
       }
-      );
+    );
   });
 
   it("Test load function for more than one url", function(done) {
@@ -147,7 +149,7 @@ describe("AudioBufferLoader", function() {
         assert.equal(myBufferLoader.loadAll.calledOnce, true);
         done();
       }
-      );
+    );
   });
 
   it("Test emit xmlhttprequest event for each new request", function(done) {
@@ -161,19 +163,19 @@ describe("AudioBufferLoader", function() {
     });
   });
 
-  it("Should wrap around extension correctly", function(done){
+  it("Should wrap around extension correctly", function(done) {
     //
     var wrapAroundExtension = 1;
     myBufferLoader.options = {};
     myBufferLoader.options.wrapAroundExtension = wrapAroundExtension;
     var outputBuffer = myBufferLoader.__wrapAround(validBuffer);
     var initialLength = validBuffer.length;
-    assert.equal(outputBuffer.length, initialLength+validBuffer.sampleRate * wrapAroundExtension);
-    for(var ch = 0; ch<validBuffer.numberOfChannels; ch++){
+    assert.equal(outputBuffer.length, initialLength + validBuffer.sampleRate * wrapAroundExtension);
+    for (var ch = 0; ch < validBuffer.numberOfChannels; ch++) {
       var inChArray = validBuffer.getChannelData(ch);
       var outChArray = outputBuffer.getChannelData(ch);
-      for(var i=0; i<validBuffer.sampleRate * wrapAroundExtension; i++){
-        assert.equal(outChArray[initialLength+i], inChArray[i]);
+      for (var i = 0; i < validBuffer.sampleRate * wrapAroundExtension; i++) {
+        assert.equal(outChArray[initialLength + i], inChArray[i]);
       }
     }
     done();
@@ -193,7 +195,7 @@ describe("SuperLoader", function() {
       function(error) {
         console.log(error)
       }
-      );
+    );
   });
   it("Should load correctly one type of files (only jsons, or only audios)", function(done) {
     var filesToLoad = [json, json]
@@ -205,11 +207,6 @@ describe("SuperLoader", function() {
       function(error) {
         console.log(error)
       }
-      );
+    );
   });
 });
-
-
-
-
-

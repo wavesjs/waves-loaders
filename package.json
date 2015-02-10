@@ -11,43 +11,20 @@
     "native-promise-only": "^0.7.6-a"
   },
   "devDependencies": {
-    "body-parser": "^1.9.3",
-    "browserify": "^6.3.3",
-    "browserify-istanbul": "git://github.com/ouhouhsami/browserify-istanbul#master",
+    "tac6": "git://github.com/ircam-rnd/tac6.git#master",
     "chai": "^1.10.0",
-    "connect": "^3.3.3",
-    "es6-transpiler": "^0.7.18",
-    "es6ify": "^1.5.1",
-    "install": "^0.1.8",
-    "istanbul": "^0.3.2",
-    "istanbul-traceur": "git://github.com/ouhouhsami/istanbul-traceur#master",
-    "mocha": "^2.0.1",
-    "mocha-traceur": "^2.0.0",
-    "npm": "^2.2.0",
-    "open": "0.0.5",
-    "serve-static": "^1.7.1",
-    "sinon": "~1.9.1",
-    "traceur": "0.0.74"
+    "sinon": "~1.9.1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Ircam-RnD/loaders"
   },
+  "browserify": {
+    "transforms": ["es6ify"]
+  },
   "scripts": {
-    "test": "node scripts/testsAndCoverage.js",
-    "transpile": "./node_modules/es6-transpiler/build/es5/es6toes5 loaders.es6.js > loaders.es5.js",
-    "browserify": "browserify -t brfs loaders.es5.js > loaders.js",
-    "build": "./node_modules/es6-transpiler/build/es5/es6toes5 loaders.es6.js > loaders.es5.js && browserify -t brfs loaders.es5.js -o loaders.js"
-  },
-  "config": {
-    "blanket": {
-      "pattern": "index.js",
-      "data-cover-never": "node_modules"
-    }
-  },
-  "directories": {
-    "lib": "./src/",
-    "example": "  ./examples/"
+    "bundle": "browserify loaders.es6.js > loaders.js -s 'loaders' -d -t es6ify",
+    "test": "tac6"
   },
   "exports": "loaders"
 }
