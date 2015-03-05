@@ -1,4 +1,3 @@
-var path = require('path');
 var Loader = require('./loader');
 var AudioBufferLoader = require('./audio-buffer-loader');
 
@@ -45,9 +44,11 @@ class SuperLoader {
         []
       ]; // pos is used to track the positions of each fileURL
       var otherURLs = fileURLs.filter(function(url, index) {
-        var extname = path.extname(url);
+        // var extname = path.extname(url);
+        var parts = url.split('.');
+        var extname = parts[parts.length - 1];
         i += 1;
-        if (extname == '.json') {
+        if (extname == 'json') {
           pos[0].push(i);
           return true;
         } else {

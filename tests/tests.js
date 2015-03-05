@@ -1,11 +1,14 @@
 var chai = require('chai');
 var assert = require('assert');
 var sinon = require("sinon");
-var audioContext = require("audio-context")
+var audioContext = new AudioContext();
 
-var Loader = require('../loaders.es6.js').Loader;
-var AudioBufferLoader = require('../loaders.es6.js').AudioBufferLoader;
-var SuperLoader = require('../loaders.es6.js').SuperLoader;
+var Loader = require('../es6/loader');
+var AudioBufferLoader = require('../es6/audio-buffer-loader');
+var SuperLoader = require('../es6/super-loader');
+// var Loader = require('../waves-loaders').Loader;
+// var AudioBufferLoader = require('../waves-loaders').AudioBufferLoader;
+// var SuperLoader = require('../waves-loaders').SuperLoader;
 
 // Some urls with available - or not - files (json, wav)
 

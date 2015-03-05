@@ -14,7 +14,7 @@ function throwIfMissing() {
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
-class Loader extends events.EventEmitter {
+class Loader {
 
   /**
    * @constructs
@@ -23,6 +23,7 @@ class Loader extends events.EventEmitter {
   constructor(responseType = "") {
     super();
     this.responseType = responseType;
+    // rename to `onProgress` ?
     this.progressCb = undefined;
   }
 
@@ -82,7 +83,7 @@ class Loader extends events.EventEmitter {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.index = index;
-        this.emit('xmlhttprequest', request);
+        // this.emit('xmlhttprequest', request);
         request.responseType = this.responseType;
         request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there
