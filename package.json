@@ -1,30 +1,43 @@
 {
-  "name": "loaders",
+  "name": "waves-loaders",
   "version": "0.1.1",
   "description": "AudioBuffer loader and other loader utilities module",
-  "main": "loaders.js",
+  "main": "waves-loaders.js",
+  "standalone": "wavesLoaders",
   "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
-  "license": "BSD-3-Clause",
-  "dependencies": {
-    "audio-context": "git://github.com/ircam-rnd/audio-context.git#master",
-    "lodash": "^2.4.1",
-    "native-promise-only": "^0.7.6-a"
+  "scripts": {
+    "transpile": "node ./bin/scripts.js --transpile",
+    "prebundle": "npm run hint && npm run transpile",
+    "bundle": "node ./bin/scripts.js --bundle",
+    "postbundle": "npm run uglify",
+    "uglify": "node ./bin/scripts.js --uglify",
+    "watch": "node ./bin/scripts.js --watch",
+    "test": "tac6",
+    "pretest": "npm run hint",
+    "hint": "find es6 -type f | while read -r line; do jshint $line; done;"
   },
-  "devDependencies": {
-    "tac6": "git://github.com/ircam-rnd/tac6.git#master",
-    "chai": "^1.10.0",
-    "sinon": "~1.9.1"
-  },
+  "license": "BSD-3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ircam-RnD/loaders"
+    "url": "https://github.com/wavesjs/loaders"
   },
-  "browserify": {
-    "transforms": ["es6ify"]
+  "jshintConfig": {
+    "esnext": true,
+    "browser": true,
+    "node": true,
+    "devel": true
   },
-  "scripts": {
-    "bundle": "browserify loaders.es6.js > loaders.js -s 'loaders' -d -t es6ify",
-    "test": "tac6"
+  "dependencies": {
+    "babel-runtime": "^4.6.5"
   },
-  "exports": "loaders"
+  "devDependencies": {
+    "audio-context": "git://github.com/ircam-rnd/audio-context",
+    "babel": "^4.5.0",
+    "browserify": "^9.0.3",
+    "fs-extra": "^0.16.3",
+    "jshint": "^2.6.0",
+    "node-watch": "^0.3.4",
+    "tac6": "git://github.com/ircam-rnd/tac6.git#master",
+    "uglify-js": "^2.4.16"
+  }
 }
