@@ -1,4 +1,3 @@
-var events = require('events');
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
@@ -83,7 +82,7 @@ class Loader {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.index = index;
-        // this.emit('xmlhttprequest', request);
+
         request.responseType = this.responseType;
         request.addEventListener('load', function() {
           // Test request.status value, as 404 will also get there

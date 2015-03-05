@@ -155,16 +155,16 @@ describe("AudioBufferLoader", function() {
     );
   });
 
-  it("Test emit xmlhttprequest event for each new request", function(done) {
-    var xmlhttprequestCalls = 0;
-    myBufferLoader.on('xmlhttprequest', function(request) {
-      xmlhttprequestCalls += 1;
-    });
-    myBufferLoader.load([synth, synth]).then(function(buffer) {
-      assert.equal(xmlhttprequestCalls, 2);
-      done();
-    });
-  });
+  // it("Test emit xmlhttprequest event for each new request", function(done) {
+  //   var xmlhttprequestCalls = 0;
+  //   myBufferLoader.on('xmlhttprequest', function(request) {
+  //     xmlhttprequestCalls += 1;
+  //   });
+  //   myBufferLoader.load([synth, synth]).then(function(buffer) {
+  //     assert.equal(xmlhttprequestCalls, 2);
+  //     done();
+  //   });
+  // });
 
   it("Should wrap around extension correctly", function(done) {
     //
