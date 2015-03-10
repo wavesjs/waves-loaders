@@ -28,10 +28,9 @@
     "devel": true
   },
   "dependencies": {
-    "babel-runtime": "^4.6.5"
+    "babel-runtime": "^4.7.6"
   },
   "devDependencies": {
-    "audio-context": "git://github.com/ircam-rnd/audio-context",
     "babel": "^4.5.0",
     "browserify": "^9.0.3",
     "fs-extra": "^0.16.3",
