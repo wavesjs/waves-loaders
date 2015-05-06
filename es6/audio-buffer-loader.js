@@ -25,11 +25,12 @@ class AudioBufferLoader extends Loader {
    * Set the responseType to 'arraybuffer' and initialize options.
    */
   constructor(responseType = 'arraybuffer') {
+    super(responseType);
     this.options = {
       "wrapAroundExtension": 0
     };
     this.responseType = responseType;
-    super(this.responseType);
+
   }
 
   /**

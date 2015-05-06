@@ -20,7 +20,6 @@
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
    */
    constructor(responseType = undefined) {
-    super();
     this.responseType = responseType;
     // rename to `onProgress` ?
     this.progressCb = undefined;
