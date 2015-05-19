@@ -24,12 +24,13 @@ class AudioBufferLoader extends Loader {
    * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
    */
-  constructor() {
+  constructor(responseType = 'arraybuffer') {
+    super(responseType);
     this.options = {
       "wrapAroundExtension": 0
     };
-    this.responseType = 'arraybuffer';
-    super(this.responseType);
+    this.responseType = responseType;
+
   }
 
   /**
@@ -85,6 +86,7 @@ class AudioBufferLoader extends Loader {
    * @returns {Promise}
    */
   decodeAudioData(arraybuffer) {
+    if(arraybuffer instanceof ArrayBuffer){
     return new Promise((resolve, reject) => {
       audioContext.decodeAudioData(
         arraybuffer, // returned audio data array
@@ -96,6 +98,11 @@ class AudioBufferLoader extends Loader {
         }
       );
     });
+  }else{
+    return new Promise((resolve, reject) => {
+      resolve(arraybuffer);
+    });
+  }
   }
 
   /**
@@ -112,6 +119,7 @@ class AudioBufferLoader extends Loader {
     for (var channel = 0; channel < inBuffer.numberOfChannels; channel++) {
       arrayChData = inBuffer.getChannelData(channel);
       arrayOutChData = outBuffer.getChannelData(channel);
+      console.log(arrayOutChData);
 
       arrayOutChData.forEach(function(sample, index) {
         if (index < inBuffer.length) arrayOutChData[index] = arrayChData[index];

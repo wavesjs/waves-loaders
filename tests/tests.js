@@ -12,7 +12,7 @@ var SuperLoader = require('../es6/super-loader');
 
 // Some urls with available - or not - files (json, wav)
 
-var synth = 'http://upload.wikimedia.org/wikipedia/commons/4/4d/Continuity_proof.ogg'
+var synth = 'http://upload.wikimedia.org/wikipedia/commons/4/4d/Continuity_proof.ogg';
 var json = 'https://rawgit.com/Ircam-RnD/loaders/master/tests/test.json';
 var synt = 'synt.wav';
 
@@ -130,7 +130,7 @@ describe("AudioBufferLoader", function() {
   it("Test load function without any parameters", function(done) {
     //chai.expect(myBufferLoader.load).to.throw('Missing parameter');
     assert.throws(function() {
-      myBufferLoader.load()
+      myBufferLoader.load();
     }, Error);
     done();
   });
@@ -188,7 +188,25 @@ describe("AudioBufferLoader", function() {
 
 describe("SuperLoader", function() {
   var polyLoader = new SuperLoader();
+  it("Should load correctly one single file", function(done){
+    function onProgress(obj) {
+      // Here we could test total loaded values
+      //console.log(obj)
+    }
+    polyLoader.progressCallback = onProgress;
+    polyLoader.load(json).then(
+      function(file){
+        // should assert files are correct ...
+        done();
+      }
+    );
+  });
   it("Should load correctly audio files and json files", function(done) {
+    function onProgress(obj) {
+      // Here we could test total loaded values
+      //console.log(obj)
+    }
+    polyLoader.progressCallback = onProgress;
     polyLoader.load([json, synth, json, synth]).then(
       function(files) {
         assert.equal(files.length, 4);
@@ -196,19 +214,24 @@ describe("SuperLoader", function() {
         done();
       },
       function(error) {
-        console.log(error)
+        console.log(error);
       }
     );
   });
   it("Should load correctly one type of files (only jsons, or only audios)", function(done) {
-    var filesToLoad = [json, json]
+    var filesToLoad = [json, json];
+    function onProgress(obj) {
+      // Here we could test total loaded values
+      //console.log(obj)
+    }
+    polyLoader.progressCallback = onProgress;
     polyLoader.load(filesToLoad).then(
       function(files) {
         assert.equal(files.length, 2);
         done();
       },
       function(error) {
-        console.log(error)
+        console.log(error);
       }
     );
   });
