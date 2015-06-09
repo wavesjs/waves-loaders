@@ -9,7 +9,11 @@ function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
-var audioContext = new AudioContext();
+var audioContext;
+
+try {
+  audioContext = new window.AudioContext();
+} catch (e) {}
 
 /**
  * AudioBufferLoader
