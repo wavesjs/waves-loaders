@@ -26,7 +26,7 @@
   }
 
   /**
-   * @function - Method for a promise based file loading.
+   * Method for a promise based file loading.
    * Internally switch between loadOne and loadAll.
    * @public
    * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
