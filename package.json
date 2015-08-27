@@ -15,7 +15,7 @@
     "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
     "pretest": "npm run hint",
     "hint": "jshint ./es6; true",
-    "coverage": "browserify -t [ babelify --blacklist regenerator ] -t coverify tests/*/*.js | testling -u --no-show | coverify --json -o coverage.json && node ./bin/scripts.js --cover-report -i coverage.json"
+    "coverage": "browserify -t [ babelify --blacklist regenerator ] -t coverify tests/*.js | testling -u --no-show | coverify --json -o coverage.json && node ./bin/scripts.js --cover-report -i coverage.json"
   },
   "license": "BSD-3",
   "repository": {
