@@ -1,5 +1,6 @@
 var Loader = require('./loader');
 
+
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
@@ -15,15 +16,14 @@ try {
   audioContext = new window.AudioContext();
 } catch (e) {}
 
+
 /**
  * AudioBufferLoader
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
  * Inherit from Loader class
  */
-
 class AudioBufferLoader extends Loader {
-
   /**
    * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
@@ -90,23 +90,23 @@ class AudioBufferLoader extends Loader {
    * @returns {Promise}
    */
   decodeAudioData(arraybuffer) {
-    if(arraybuffer instanceof ArrayBuffer){
-    return new Promise((resolve, reject) => {
-      audioContext.decodeAudioData(
-        arraybuffer, // returned audio data array
-        (buffer) => {
-          if (this.options.wrapAroundExtension === 0) resolve(buffer);
-          else resolve(this.__wrapAround(buffer));
-        }, (error) => {
-          reject(new Error("DecodeAudioData error"));
-        }
-      );
-    });
-  }else{
-    return new Promise((resolve, reject) => {
-      resolve(arraybuffer);
-    });
-  }
+    if (arraybuffer instanceof ArrayBuffer) {
+      return new Promise((resolve, reject) => {
+        audioContext.decodeAudioData(
+          arraybuffer, // returned audio data array
+          (buffer) => {
+            if (this.options.wrapAroundExtension === 0) resolve(buffer);
+            else resolve(this.__wrapAround(buffer));
+          }, (error) => {
+            reject(new Error("DecodeAudioData error"));
+          }
+        );
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(arraybuffer);
+      });
+    }
   }
 
   /**
