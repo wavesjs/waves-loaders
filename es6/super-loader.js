@@ -12,6 +12,7 @@ export default class SuperLoader extends AudioBufferLoader {
    * Use composition to setup appropriate file loaders
    */
   constructor() {
+    super(null);
     // bypass AudioBufferLoader constructor. This is bad but it works.
   }
 }

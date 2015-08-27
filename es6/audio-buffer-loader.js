@@ -117,13 +117,13 @@ export default class AudioBufferLoader extends Loader {
    */
   __wrapAround(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate;
+
     var outBuffer = audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate);
     var arrayChData, arrayOutChData;
 
     for (var channel = 0; channel < inBuffer.numberOfChannels; channel++) {
       arrayChData = inBuffer.getChannelData(channel);
       arrayOutChData = outBuffer.getChannelData(channel);
-      console.log(arrayOutChData);
 
       arrayOutChData.forEach(function(sample, index) {
         if (index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
