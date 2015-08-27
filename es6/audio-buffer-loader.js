@@ -1,4 +1,4 @@
-var Loader = require('./loader');
+import Loader from './loader';
 
 
 /**
@@ -23,7 +23,7 @@ try {
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
  * Inherit from Loader class
  */
-class AudioBufferLoader extends Loader {
+export default class AudioBufferLoader extends Loader {
   /**
    * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
@@ -135,5 +135,3 @@ class AudioBufferLoader extends Loader {
   }
 
 }
-
-module.exports = AudioBufferLoader;

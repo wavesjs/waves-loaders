@@ -13,7 +13,7 @@ function throwIfMissing() {
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
-class Loader {
+export default class Loader {
   /**
    * @constructs
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
@@ -32,7 +32,7 @@ class Loader {
    * @returns {Promise}
    */
   load(fileURLs = throwIfMissing()) {
-    if (fileURLs === undefined) throw (new Error("load needs at least a url to load"));
+    if (fileURLs === undefined) throw (new Error('load needs at least a url to load'));
     if (Array.isArray(fileURLs)) {
       return this.loadAll(fileURLs);
     } else {
@@ -122,7 +122,7 @@ class Loader {
         });
         // Manage network errors
         request.addEventListener('error', function() {
-          reject(new Error("Network Error"));
+          reject(new Error('Network Error'));
         });
 
         request.send();
@@ -150,5 +150,3 @@ class Loader {
     this.progressCb = callback;
   }
 }
-
-module.exports = Loader;
