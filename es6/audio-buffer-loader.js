@@ -133,5 +133,4 @@ export default class AudioBufferLoader extends Loader {
 
     return outBuffer;
   }
-
 }

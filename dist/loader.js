@@ -1,18 +1,24 @@
+'use strict';
+
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
+
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
+_Object$defineProperty(exports, '__esModule', {
+  value: true
+});
+
 /**
  * Gets called if a parameter is missing and the expression
  * specifying the default value is evaluated.
  * @function
  */
-"use strict";
-
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
-
-var _createClass = require("babel-runtime/helpers/create-class")["default"];
-
-var _core = require("babel-runtime/core-js")["default"];
-
 function throwIfMissing() {
-  throw new Error("Missing parameter");
+  throw new Error('Missing parameter');
 }
 
 /**
@@ -22,7 +28,6 @@ function throwIfMissing() {
  */
 
 var Loader = (function () {
-
   /**
    * @constructs
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
@@ -38,155 +43,150 @@ var Loader = (function () {
     this.progressCb = undefined;
   }
 
-  _createClass(Loader, {
-    load: {
+  _createClass(Loader, [{
+    key: 'load',
 
-      /**
-       * @function - Method for a promise based file loading.
-       * Internally switch between loadOne and loadAll.
-       * @public
-       * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
-       * @returns {Promise}
-       */
+    /**
+     * Method for a promise based file loading.
+     * Internally switch between loadOne and loadAll.
+     * @public
+     * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
+     * @returns {Promise}
+     */
+    value: function load() {
+      var fileURLs = arguments[0] === undefined ? throwIfMissing() : arguments[0];
 
-      value: function load() {
-        var fileURLs = arguments[0] === undefined ? throwIfMissing() : arguments[0];
-
-        if (fileURLs === undefined) throw new Error("load needs at least a url to load");
-        if (Array.isArray(fileURLs)) {
-          return this.loadAll(fileURLs);
-        } else {
-          return this.loadOne(fileURLs);
-        }
-      }
-    },
-    loadOne: {
-
-      /**
-       * @function - Load a single file
-       * @private
-       * @param {string} fileURL - The URL of the file to load.
-       * @returns {Promise}
-       */
-
-      value: function loadOne(fileURL) {
-        return this.fileLoadingRequest(fileURL);
-      }
-    },
-    loadAll: {
-
-      /**
-       * @function - Load all files at once in a single array and return a Promise
-       * @private
-       * @param {string[]} fileURLs - The URLs array of the files to load.
-       * @returns {Promise}
-       */
-
-      value: function loadAll(fileURLs) {
-        var urlsCount = fileURLs.length,
-            promises = [];
-
-        for (var i = 0; i < urlsCount; ++i) {
-          promises.push(this.fileLoadingRequest(fileURLs[i], i));
-        }
-
-        return _core.Promise.all(promises);
-      }
-    },
-    fileLoadingRequest: {
-
-      /**
-       * @function - Load a file asynchronously, return a Promise.
-       * @private
-       * @param {string} url - The URL of the file to load
-       * @param {string} [index] - The index of the file in the array of files to load
-       * @returns {Promise}
-       */
-
-      value: function fileLoadingRequest(url, index) {
-        var _this = this;
-
-        var promise = new _core.Promise(function (resolve, reject) {
-          var request = new XMLHttpRequest();
-          request.open("GET", url, true);
-          request.index = index;
-          if (_this.responseType) {
-            request.responseType = _this.responseType;
-          } else {
-            var suffix = ".json";
-            if (url.indexOf(suffix, _this.length - suffix.length) !== -1) {
-              request.responseType = "json";
-            } else {
-              request.responseType = "arraybuffer";
-            }
-          }
-          request.addEventListener("load", function () {
-            // Test request.status value, as 404 will also get there
-            if (request.status === 200 || request.status === 304) {
-              // Hack for iOS 7, to remove as soon as possible
-              if (this.responseType === "json" && typeof request.response === "string") {
-                request.response = JSON.parse(request.response);
-              }
-              resolve(request.response);
-            } else {
-              reject(new Error(request.statusText));
-            }
-          });
-          request.addEventListener("progress", function (evt) {
-            if (_this.progressCallback) {
-              if (index !== undefined) {
-                _this.progressCallback({
-                  index: index,
-                  value: evt.loaded / evt.total,
-                  loaded: evt.loaded,
-                  total: evt.total
-                });
-              } else {
-                _this.progressCallback({
-                  value: evt.loaded / evt.total,
-                  loaded: evt.loaded,
-                  total: evt.total
-                });
-              }
-            }
-          });
-          // Manage network errors
-          request.addEventListener("error", function () {
-            reject(new Error("Network Error"));
-          });
-
-          request.send();
-        });
-        return promise;
-      }
-    },
-    progressCallback: {
-
-      /**
-       * @function - Get the callback function to get the progress of file loading process.
-       * This is only for the file loading progress as decodeAudioData doesn't
-       * expose a decode progress value.
-       * @returns {Loader~progressCallback}
-       */
-
-      get: function () {
-        return this.progressCb;
-      },
-
-      /**
-       * @function - Set the callback function to get the progress of file loading process.
-       * This is only for the file loading progress as decodeAudioData doesn't
-       * expose a decode progress value.
-       * @param {Loader~progressCallback} callback - The callback that handles the response.
-       */
-      set: function (callback) {
-        this.progressCb = callback;
+      if (fileURLs === undefined) throw new Error('load needs at least a url to load');
+      if (Array.isArray(fileURLs)) {
+        return this.loadAll(fileURLs);
+      } else {
+        return this.loadOne(fileURLs);
       }
     }
-  });
+  }, {
+    key: 'loadOne',
+
+    /**
+     * @function - Load a single file
+     * @private
+     * @param {string} fileURL - The URL of the file to load.
+     * @returns {Promise}
+     */
+    value: function loadOne(fileURL) {
+      return this.fileLoadingRequest(fileURL);
+    }
+  }, {
+    key: 'loadAll',
+
+    /**
+     * @function - Load all files at once in a single array and return a Promise
+     * @private
+     * @param {string[]} fileURLs - The URLs array of the files to load.
+     * @returns {Promise}
+     */
+    value: function loadAll(fileURLs) {
+      var urlsCount = fileURLs.length,
+          promises = [];
+
+      for (var i = 0; i < urlsCount; ++i) {
+        promises.push(this.fileLoadingRequest(fileURLs[i], i));
+      }
+
+      return _Promise.all(promises);
+    }
+  }, {
+    key: 'fileLoadingRequest',
+
+    /**
+     * @function - Load a file asynchronously, return a Promise.
+     * @private
+     * @param {string} url - The URL of the file to load
+     * @param {string} [index] - The index of the file in the array of files to load
+     * @returns {Promise}
+     */
+    value: function fileLoadingRequest(url, index) {
+      var _this = this;
+
+      var promise = new _Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.index = index;
+        if (_this.responseType) {
+          request.responseType = _this.responseType;
+        } else {
+          var suffix = '.json';
+          if (url.indexOf(suffix, _this.length - suffix.length) !== -1) {
+            request.responseType = 'json';
+          } else {
+            request.responseType = 'arraybuffer';
+          }
+        }
+        request.addEventListener('load', function () {
+          // Test request.status value, as 404 will also get there
+          if (request.status === 200 || request.status === 304) {
+            // Hack for iOS 7, to remove as soon as possible
+            if (this.responseType === 'json' && typeof request.response === 'string') {
+              request.response = JSON.parse(request.response);
+            }
+            resolve(request.response);
+          } else {
+            reject(new Error(request.statusText));
+          }
+        });
+        request.addEventListener('progress', function (evt) {
+          if (_this.progressCallback) {
+            if (index !== undefined) {
+              _this.progressCallback({
+                index: index,
+                value: evt.loaded / evt.total,
+                loaded: evt.loaded,
+                total: evt.total
+              });
+            } else {
+              _this.progressCallback({
+                value: evt.loaded / evt.total,
+                loaded: evt.loaded,
+                total: evt.total
+              });
+            }
+          }
+        });
+        // Manage network errors
+        request.addEventListener('error', function () {
+          reject(new Error('Network Error'));
+        });
+
+        request.send();
+      });
+      return promise;
+    }
+  }, {
+    key: 'progressCallback',
+
+    /**
+     * @function - Get the callback function to get the progress of file loading process.
+     * This is only for the file loading progress as decodeAudioData doesn't
+     * expose a decode progress value.
+     * @returns {Loader~progressCallback}
+     */
+    get: function () {
+      return this.progressCb;
+    },
+
+    /**
+     * @function - Set the callback function to get the progress of file loading process.
+     * This is only for the file loading progress as decodeAudioData doesn't
+     * expose a decode progress value.
+     * @param {Loader~progressCallback} callback - The callback that handles the response.
+     */
+    set: function (callback) {
+      this.progressCb = callback;
+    }
+  }]);
 
   return Loader;
 })();
 
-module.exports = Loader;
-//# sourceMappingURL=data:application/json;base64,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QUFHO0FBQ3RCLGVBQU8sSUFBSSxDQUFDLFVBQVUsQ0FBQztPQUN4Qjs7Ozs7Ozs7V0FRb0IsVUFBQyxRQUFRLEVBQUU7QUFDOUIsWUFBSSxDQUFDLFVBQVUsR0FBRyxRQUFRLENBQUM7T0FDNUI7Ozs7U0ExSUksTUFBTTs7O0FBOEliLE1BQU0sQ0FBQyxPQUFPLEdBQUcsTUFBTSxDQUFDIiwiZmlsZSI6ImVzNi9zdXBlci1sb2FkZXIuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEdldHMgY2FsbGVkIGlmIGEgcGFyYW1ldGVyIGlzIG1pc3NpbmcgYW5kIHRoZSBleHByZXNzaW9uXG4gKiBzcGVjaWZ5aW5nIHRoZSBkZWZhdWx0IHZhbHVlIGlzIGV2YWx1YXRlZC5cbiAqIEBmdW5jdGlvblxuICovXG4gZnVuY3Rpb24gdGhyb3dJZk1pc3NpbmcoKSB7XG4gIHRocm93IG5ldyBFcnJvcignTWlzc2luZyBwYXJhbWV0ZXInKTtcbn1cblxuXG4vKipcbiAqIExvYWRlclxuICogQGNsYXNzXG4gKiBAY2xhc3NkZXNjIFByb21pc2UgYmFzZWQgaW1wbGVtZW50YXRpb24gb2YgWE1MSHR0cFJlcXVlc3QgTGV2ZWwgMiBmb3IgR0VUIG1ldGhvZC5cbiAqL1xuIGNsYXNzIExvYWRlciB7XG5cbiAgLyoqXG4gICAqIEBjb25zdHJ1Y3RzXG4gICAqIEBwYXJhbSB7c3RyaW5nfSBbcmVzcG9uc2VUeXBlPVwiXCJdIC0gcmVzcG9uc2VUeXBlJ3MgdmFsdWUsIFwidGV4dFwiIChlcXVhbCB0byBcIlwiKSwgXCJhcnJheWJ1ZmZlclwiLCBcImJsb2JcIiwgXCJkb2N1bWVudFwiIG9yIFwianNvblwiXG4gICAqL1xuICAgY29uc3RydWN0b3IocmVzcG9uc2VUeXBlID0gdW5kZWZpbmVkKSB7XG4gICAgdGhpcy5yZXNwb25zZVR5cGUgPSByZXNwb25zZVR5cGU7XG4gICAgLy8gcmVuYW1lIHRvIGBvblByb2dyZXNzYCA/XG4gICAgdGhpcy5wcm9ncmVzc0NiID0gdW5kZWZpbmVkO1xuICB9XG5cbiAgLyoqXG4gICAqIEBmdW5jdGlvbiAtIE1ldGhvZCBmb3IgYSBwcm9taXNlIGJhc2VkIGZpbGUgbG9hZGluZy5cbiAgICogSW50ZXJuYWxseSBzd2l0Y2ggYmV0d2VlbiBsb2FkT25lIGFuZCBsb2FkQWxsLlxuICAgKiBAcHVibGljXG4gICAqIEBwYXJhbSB7KHN0cmluZ3xzdHJpbmdbXSl9IGZpbGVVUkxzIC0gVGhlIFVSTChzKSBvZiB0aGUgZmlsZXMgdG8gbG9hZC4gQWNjZXB0cyBhIFVSTCBwb2ludGluZyB0byB0aGUgZmlsZSBsb2NhdGlvbiBvciBhbiBhcnJheSBvZiBVUkxzLlxuICAgKiBAcmV0dXJucyB7UHJvbWlzZX1cbiAgICovXG4gICBsb2FkKGZpbGVVUkxzID0gdGhyb3dJZk1pc3NpbmcoKSkge1xuICAgIGlmIChmaWxlVVJMcyA9PT0gdW5kZWZpbmVkKSB0aHJvdyAobmV3IEVycm9yKFwibG9hZCBuZWVkcyBhdCBsZWFzdCBhIHVybCB0byBsb2FkXCIpKTtcbiAgICBpZiAoQXJyYXkuaXNBcnJheShmaWxlVVJMcykpIHtcbiAgICAgIHJldHVybiB0aGlzLmxvYWRBbGwoZmlsZVVSTHMpO1xuICAgIH0gZWxzZSB7XG4gICAgICByZXR1cm4gdGhpcy5sb2FkT25lKGZpbGVVUkxzKTtcbiAgICB9XG4gIH1cblxuICAvKipcbiAgICogQGZ1bmN0aW9uIC0gTG9hZCBhIHNpbmdsZSBmaWxlXG4gICAqIEBwcml2YXRlXG4gICAqIEBwYXJhbSB7c3RyaW5nfSBmaWxlVVJMIC0gVGhlIFVSTCBvZiB0aGUgZmlsZSB0byBsb2FkLlxuICAgKiBAcmV0dXJucyB7UHJvbWlzZX1cbiAgICovXG4gICBsb2FkT25lKGZpbGVVUkwpIHtcbiAgICByZXR1cm4gdGhpcy5maWxlTG9hZGluZ1JlcXVlc3QoZmlsZVVSTCk7XG4gIH1cblxuICAvKipcbiAgICogQGZ1bmN0aW9uIC0gTG9hZCBhbGwgZmlsZXMgYXQgb25jZSBpbiBhIHNpbmdsZSBhcnJheSBhbmQgcmV0dXJuIGEgUHJvbWlzZVxuICAgKiBAcHJpdmF0ZVxuICAgKiBAcGFyYW0ge3N0cmluZ1tdfSBmaWxlVVJMcyAtIFRoZSBVUkxzIGFycmF5IG9mIHRoZSBmaWxlcyB0byBsb2FkLlxuICAgKiBAcmV0dXJucyB7UHJvbWlzZX1cbiAgICovXG4gICBsb2FkQWxsKGZpbGVVUkxzKSB7XG4gICAgdmFyIHVybHNDb3VudCA9IGZpbGVVUkxzLmxlbmd0aCxcbiAgICBwcm9taXNlcyA9IFtdO1xuXG4gICAgZm9yICh2YXIgaSA9IDA7IGkgPCB1cmxzQ291bnQ7ICsraSkge1xuICAgICAgcHJvbWlzZXMucHVzaCh0aGlzLmZpbGVMb2FkaW5nUmVxdWVzdChmaWxlVVJMc1tpXSwgaSkpO1xuICAgIH1cblxuICAgIHJldHVybiBQcm9taXNlLmFsbChwcm9taXNlcyk7XG4gIH1cblxuICAvKipcbiAgICogQGZ1bmN0aW9uIC0gTG9hZCBhIGZpbGUgYXN5bmNocm9ub3VzbHksIHJldHVybiBhIFByb21pc2UuXG4gICAqIEBwcml2YXRlXG4gICAqIEBwYXJhbSB7c3RyaW5nfSB1cmwgLSBUaGUgVVJMIG9mIHRoZSBmaWxlIHRvIGxvYWRcbiAgICogQHBhcmFtIHtzdHJpbmd9IFtpbmRleF0gLSBUaGUgaW5kZXggb2YgdGhlIGZpbGUgaW4gdGhlIGFycmF5IG9mIGZpbGVzIHRvIGxvYWRcbiAgICogQHJldHVybnMge1Byb21pc2V9XG4gICAqL1xuICAgZmlsZUxvYWRpbmdSZXF1ZXN0KHVybCwgaW5kZXgpIHtcbiAgICB2YXIgcHJvbWlzZSA9IG5ldyBQcm9taXNlKFxuICAgICAgKHJlc29sdmUsIHJlamVjdCkgPT4ge1xuICAgICAgICB2YXIgcmVxdWVzdCA9IG5ldyBYTUxIdHRwUmVxdWVzdCgpO1xuICAgICAgICByZXF1ZXN0Lm9wZW4oJ0dFVCcsIHVybCwgdHJ1ZSk7XG4gICAgICAgIHJlcXVlc3QuaW5kZXggPSBpbmRleDtcbiAgICAgICAgaWYodGhpcy5yZXNwb25zZVR5cGUpe1xuICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2VUeXBlID0gdGhpcy5yZXNwb25zZVR5cGU7XG4gICAgICAgIH1cbiAgICAgICAgZWxzZXtcbiAgICAgICAgICB2YXIgc3VmZml4ID0gJy5qc29uJztcbiAgICAgICAgICBpZih1cmwuaW5kZXhPZihzdWZmaXgsIHRoaXMubGVuZ3RoIC0gc3VmZml4Lmxlbmd0aCkgIT09IC0xKXtcbiAgICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2VUeXBlID0gJ2pzb24nO1xuICAgICAgICAgIH1cbiAgICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2VUeXBlID0gJ2FycmF5YnVmZmVyJztcbiAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICAgICAgcmVxdWVzdC5hZGRFdmVudExpc3RlbmVyKCdsb2FkJywgZnVuY3Rpb24oKSB7XG4gICAgICAgICAgLy8gVGVzdCByZXF1ZXN0LnN0YXR1cyB2YWx1ZSwgYXMgNDA0IHdpbGwgYWxzbyBnZXQgdGhlcmVcbiAgICAgICAgICBpZiAocmVxdWVzdC5zdGF0dXMgPT09IDIwMCB8fCByZXF1ZXN0LnN0YXR1cyA9PT0gMzA0KSB7XG4gICAgICAgICAgICAvLyBIYWNrIGZvciBpT1MgNywgdG8gcmVtb3ZlIGFzIHNvb24gYXMgcG9zc2libGVcbiAgICAgICAgICAgIGlmICh0aGlzLnJlc3BvbnNlVHlwZSA9PT0gJ2pzb24nICYmIHR5cGVvZihyZXF1ZXN0LnJlc3BvbnNlKSA9PT0gJ3N0cmluZycpIHtcbiAgICAgICAgICAgICAgcmVxdWVzdC5yZXNwb25zZSA9IEpTT04ucGFyc2UocmVxdWVzdC5yZXNwb25zZSk7XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICByZXNvbHZlKHJlcXVlc3QucmVzcG9uc2UpO1xuICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICByZWplY3QobmV3IEVycm9yKHJlcXVlc3Quc3RhdHVzVGV4dCkpO1xuICAgICAgICAgIH1cbiAgICAgICAgfSk7XG4gICAgICAgIHJlcXVlc3QuYWRkRXZlbnRMaXN0ZW5lcigncHJvZ3Jlc3MnLCAoZXZ0KSA9PiB7XG4gICAgICAgICAgaWYgKHRoaXMucHJvZ3Jlc3NDYWxsYmFjaykge1xuICAgICAgICAgICAgaWYgKGluZGV4ICE9PSB1bmRlZmluZWQpIHtcbiAgICAgICAgICAgICAgdGhpcy5wcm9ncmVzc0NhbGxiYWNrKHtcbiAgICAgICAgICAgICAgICBpbmRleDogaW5kZXgsXG4gICAgICAgICAgICAgICAgdmFsdWU6IGV2dC5sb2FkZWQgLyBldnQudG90YWwsXG4gICAgICAgICAgICAgICAgbG9hZGVkOiBldnQubG9hZGVkLFxuICAgICAgICAgICAgICAgIHRvdGFsOiBldnQudG90YWxcbiAgICAgICAgICAgICAgfSk7XG4gICAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgICB0aGlzLnByb2dyZXNzQ2FsbGJhY2soe1xuICAgICAgICAgICAgICAgIHZhbHVlOiBldnQubG9hZGVkIC8gZXZ0LnRvdGFsLFxuICAgICAgICAgICAgICAgIGxvYWRlZDogZXZ0LmxvYWRlZCxcbiAgICAgICAgICAgICAgICB0b3RhbDogZXZ0LnRvdGFsXG4gICAgICAgICAgICAgIH0pO1xuICAgICAgICAgICAgfVxuICAgICAgICAgIH1cbiAgICAgICAgfSk7XG4gICAgICAgIC8vIE1hbmFnZSBuZXR3b3JrIGVycm9yc1xuICAgICAgICByZXF1ZXN0LmFkZEV2ZW50TGlzdGVuZXIoJ2Vycm9yJywgZnVuY3Rpb24oKSB7XG4gICAgICAgICAgcmVqZWN0KG5ldyBFcnJvcihcIk5ldHdvcmsgRXJyb3JcIikpO1xuICAgICAgICB9KTtcblxuICAgICAgICByZXF1ZXN0LnNlbmQoKTtcbiAgICAgIH0pO1xucmV0dXJuIHByb21pc2U7XG59XG5cbiAgLyoqXG4gICAqIEBmdW5jdGlvbiAtIEdldCB0aGUgY2FsbGJhY2sgZnVuY3Rpb24gdG8gZ2V0IHRoZSBwcm9ncmVzcyBvZiBmaWxlIGxvYWRpbmcgcHJvY2Vzcy5cbiAgICogVGhpcyBpcyBvbmx5IGZvciB0aGUgZmlsZSBsb2FkaW5nIHByb2dyZXNzIGFzIGRlY29kZUF1ZGlvRGF0YSBkb2Vzbid0XG4gICAqIGV4cG9zZSBhIGRlY29kZSBwcm9ncmVzcyB2YWx1ZS5cbiAgICogQHJldHVybnMge0xvYWRlcn5wcm9ncmVzc0NhbGxiYWNrfVxuICAgKi9cbiAgIGdldCBwcm9ncmVzc0NhbGxiYWNrKCkge1xuICAgIHJldHVybiB0aGlzLnByb2dyZXNzQ2I7XG4gIH1cblxuICAvKipcbiAgICogQGZ1bmN0aW9uIC0gU2V0IHRoZSBjYWxsYmFjayBmdW5jdGlvbiB0byBnZXQgdGhlIHByb2dyZXNzIG9mIGZpbGUgbG9hZGluZyBwcm9jZXNzLlxuICAgKiBUaGlzIGlzIG9ubHkgZm9yIHRoZSBmaWxlIGxvYWRpbmcgcHJvZ3Jlc3MgYXMgZGVjb2RlQXVkaW9EYXRhIGRvZXNuJ3RcbiAgICogZXhwb3NlIGEgZGVjb2RlIHByb2dyZXNzIHZhbHVlLlxuICAgKiBAcGFyYW0ge0xvYWRlcn5wcm9ncmVzc0NhbGxiYWNrfSBjYWxsYmFjayAtIFRoZSBjYWxsYmFjayB0aGF0IGhhbmRsZXMgdGhlIHJlc3BvbnNlLlxuICAgKi9cbiAgIHNldCBwcm9ncmVzc0NhbGxiYWNrKGNhbGxiYWNrKSB7XG4gICAgdGhpcy5wcm9ncmVzc0NiID0gY2FsbGJhY2s7XG4gIH1cblxufVxuXG5tb2R1bGUuZXhwb3J0cyA9IExvYWRlcjtcbiJdfQ==
+exports['default'] = Loader;
+module.exports = exports['default'];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVzNi9sb2FkZXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUtBLFNBQVMsY0FBYyxHQUFHO0FBQ3hCLFFBQU0sSUFBSSxLQUFLLENBQUMsbUJBQW1CLENBQUMsQ0FBQztDQUN0Qzs7Ozs7Ozs7SUFRb0IsTUFBTTs7Ozs7O0FBS2QsV0FMUSxNQUFNLEdBS2E7UUFBMUIsWUFBWSxnQ0FBRyxTQUFTOzswQkFMakIsTUFBTTs7QUFNdkIsUUFBSSxDQUFDLFlBQVksR0FBRyxZQUFZLENBQUM7O0FBRWpDLFFBQUksQ0FBQyxVQUFVLEdBQUcsU0FBUyxDQUFDO0dBQzdCOztlQVRrQixNQUFNOzs7Ozs7Ozs7O1dBa0JyQixnQkFBOEI7VUFBN0IsUUFBUSxnQ0FBRyxjQUFjLEVBQUU7O0FBQzlCLFVBQUksUUFBUSxLQUFLLFNBQVMsRUFBRSxNQUFPLElBQUksS0FBSyxDQUFDLG1DQUFtQyxDQUFDLENBQUU7QUFDbkYsVUFBSSxLQUFLLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FBQyxFQUFFO0FBQzNCLGVBQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxRQUFRLENBQUMsQ0FBQztPQUMvQixNQUFNO0FBQ0wsZUFBTyxJQUFJLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FBQyxDQUFDO09BQy9CO0tBQ0Y7Ozs7Ozs7Ozs7V0FRTSxpQkFBQyxPQUFPLEVBQUU7QUFDZixhQUFPLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxPQUFPLENBQUMsQ0FBQztLQUN6Qzs7Ozs7Ozs7OztXQVFNLGlCQUFDLFFBQVEsRUFBRTtBQUNoQixVQUFJLFNBQVMsR0FBRyxRQUFRLENBQUMsTUFBTTtVQUM3QixRQUFRLEdBQUcsRUFBRSxDQUFDOztBQUVoQixXQUFLLElBQUksQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLEdBQUcsU0FBUyxFQUFFLEVBQUUsQ0FBQyxFQUFFO0FBQ2xDLGdCQUFRLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxRQUFRLENBQUMsQ0FBQyxDQUFDLEVBQUUsQ0FBQyxDQUFDLENBQUMsQ0FBQztPQUN4RDs7QUFFRCxhQUFPLFNBQVEsR0FBRyxDQUFDLFFBQVEsQ0FBQyxDQUFDO0tBQzlCOzs7Ozs7Ozs7OztXQVNpQiw0QkFBQyxHQUFHLEVBQUUsS0FBSyxFQUFFOzs7QUFDN0IsVUFBSSxPQUFPLEdBQUcsYUFDWixVQUFDLE9BQU8sRUFBRSxNQUFNLEVBQUs7QUFDbkIsWUFBSSxPQUFPLEdBQUcsSUFBSSxjQUFjLEVBQUUsQ0FBQztBQUNuQyxlQUFPLENBQUMsSUFBSSxDQUFDLEtBQUssRUFBRSxHQUFHLEVBQUUsSUFBSSxDQUFDLENBQUM7QUFDL0IsZUFBTyxDQUFDLEtBQUssR0FBRyxLQUFLLENBQUM7QUFDdEIsWUFBSSxNQUFLLFlBQVksRUFBRTtBQUNyQixpQkFBTyxDQUFDLFlBQVksR0FBRyxNQUFLLFlBQVksQ0FBQztTQUMxQyxNQUFNO0FBQ0wsY0FBSSxNQUFNLEdBQUcsT0FBTyxDQUFDO0FBQ3JCLGNBQUksR0FBRyxDQUFDLE9BQU8sQ0FBQyxNQUFNLEVBQUUsTUFBSyxNQUFNLEdBQUcsTUFBTSxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsQ0FBQyxFQUFFO0FBQzNELG1CQUFPLENBQUMsWUFBWSxHQUFHLE1BQU0sQ0FBQztXQUMvQixNQUFNO0FBQ0wsbUJBQU8sQ0FBQyxZQUFZLEdBQUcsYUFBYSxDQUFDO1dBQ3RDO1NBQ0Y7QUFDRCxlQUFPLENBQUMsZ0JBQWdCLENBQUMsTUFBTSxFQUFFLFlBQVc7O0FBRTFDLGNBQUksT0FBTyxDQUFDLE1BQU0sS0FBSyxHQUFHLElBQUksT0FBTyxDQUFDLE1BQU0sS0FBSyxHQUFHLEVBQUU7O0FBRXBELGdCQUFJLElBQUksQ0FBQyxZQUFZLEtBQUssTUFBTSxJQUFJLE9BQU8sT0FBTyxDQUFDLFFBQVEsQUFBQyxLQUFLLFFBQVEsRUFBRTtBQUN6RSxxQkFBTyxDQUFDLFFBQVEsR0FBRyxJQUFJLENBQUMsS0FBSyxDQUFDLE9BQU8sQ0FBQyxRQUFRLENBQUMsQ0FBQzthQUNqRDtBQUNELG1CQUFPLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FBQyxDQUFDO1dBQzNCLE1BQU07QUFDTCxrQkFBTSxDQUFDLElBQUksS0FBSyxDQUFDLE9BQU8sQ0FBQyxVQUFVLENBQUMsQ0FBQyxDQUFDO1dBQ3ZDO1NBQ0YsQ0FBQyxDQUFDO0FBQ0gsZUFBTyxDQUFDLGdCQUFnQixDQUFDLFVBQVUsRUFBRSxVQUFDLEdBQUcsRUFBSztBQUM1QyxjQUFJLE1BQUssZ0JBQWdCLEVBQUU7QUFDekIsZ0JBQUksS0FBSyxLQUFLLFNBQVMsRUFBRTtBQUN2QixvQkFBSyxnQkFBZ0IsQ0FBQztBQUNwQixxQkFBSyxFQUFFLEtBQUs7QUFDWixxQkFBSyxFQUFFLEdBQUcsQ0FBQyxNQUFNLEdBQUcsR0FBRyxDQUFDLEtBQUs7QUFDN0Isc0JBQU0sRUFBRSxHQUFHLENBQUMsTUFBTTtBQUNsQixxQkFBSyxFQUFFLEdBQUcsQ0FBQyxLQUFLO2VBQ2pCLENBQUMsQ0FBQzthQUNKLE1BQU07QUFDTCxvQkFBSyxnQkFBZ0IsQ0FBQztBQUNwQixxQkFBSyxFQUFFLEdBQUcsQ0FBQyxNQUFNLEdBQUcsR0FBRyxDQUFDLEtBQUs7QUFDN0Isc0JBQU0sRUFBRSxHQUFHLENBQUMsTUFBTTtBQUNsQixxQkFBSyxFQUFFLEdBQUcsQ0FBQyxLQUFLO2VBQ2pCLENBQUMsQ0FBQzthQUNKO1dBQ0Y7U0FDRixDQUFDLENBQUM7O0FBRUgsZUFBTyxDQUFDLGdCQUFnQixDQUFDLE9BQU8sRUFBRSxZQUFXO0FBQzNDLGdCQUFNLENBQUMsSUFBSSxLQUFLLENBQUMsZUFBZSxDQUFDLENBQUMsQ0FBQztTQUNwQyxDQUFDLENBQUM7O0FBRUgsZUFBTyxDQUFDLElBQUksRUFBRSxDQUFDO09BQ2hCLENBQUMsQ0FBQztBQUNMLGFBQU8sT0FBTyxDQUFDO0tBQ2hCOzs7Ozs7Ozs7O1NBUW1CLFlBQUc7QUFDckIsYUFBTyxJQUFJLENBQUMsVUFBVSxDQUFDO0tBQ3hCOzs7Ozs7OztTQVFtQixVQUFDLFFBQVEsRUFBRTtBQUM3QixVQUFJLENBQUMsVUFBVSxHQUFHLFFBQVEsQ0FBQztLQUM1Qjs7O1NBdklrQixNQUFNOzs7cUJBQU4sTUFBTSIsImZpbGUiOiJlczYvbG9hZGVyLmpzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBHZXRzIGNhbGxlZCBpZiBhIHBhcmFtZXRlciBpcyBtaXNzaW5nIGFuZCB0aGUgZXhwcmVzc2lvblxuICogc3BlY2lmeWluZyB0aGUgZGVmYXVsdCB2YWx1ZSBpcyBldmFsdWF0ZWQuXG4gKiBAZnVuY3Rpb25cbiAqL1xuZnVuY3Rpb24gdGhyb3dJZk1pc3NpbmcoKSB7XG4gIHRocm93IG5ldyBFcnJvcignTWlzc2luZyBwYXJhbWV0ZXInKTtcbn1cblxuXG4vKipcbiAqIExvYWRlclxuICogQGNsYXNzXG4gKiBAY2xhc3NkZXNjIFByb21pc2UgYmFzZWQgaW1wbGVtZW50YXRpb24gb2YgWE1MSHR0cFJlcXVlc3QgTGV2ZWwgMiBmb3IgR0VUIG1ldGhvZC5cbiAqL1xuZXhwb3J0IGRlZmF1bHQgY2xhc3MgTG9hZGVyIHtcbiAgLyoqXG4gICAqIEBjb25zdHJ1Y3RzXG4gICAqIEBwYXJhbSB7c3RyaW5nfSBbcmVzcG9uc2VUeXBlPVwiXCJdIC0gcmVzcG9uc2VUeXBlJ3MgdmFsdWUsIFwidGV4dFwiIChlcXVhbCB0byBcIlwiKSwgXCJhcnJheWJ1ZmZlclwiLCBcImJsb2JcIiwgXCJkb2N1bWVudFwiIG9yIFwianNvblwiXG4gICAqL1xuICBjb25zdHJ1Y3RvcihyZXNwb25zZVR5cGUgPSB1bmRlZmluZWQpIHtcbiAgICB0aGlzLnJlc3BvbnNlVHlwZSA9IHJlc3BvbnNlVHlwZTtcbiAgICAvLyByZW5hbWUgdG8gYG9uUHJvZ3Jlc3NgID9cbiAgICB0aGlzLnByb2dyZXNzQ2IgPSB1bmRlZmluZWQ7XG4gIH1cblxuICAvKipcbiAgICogTWV0aG9kIGZvciBhIHByb21pc2UgYmFzZWQgZmlsZSBsb2FkaW5nLlxuICAgKiBJbnRlcm5hbGx5IHN3aXRjaCBiZXR3ZWVuIGxvYWRPbmUgYW5kIGxvYWRBbGwuXG4gICAqIEBwdWJsaWNcbiAgICogQHBhcmFtIHsoc3RyaW5nfHN0cmluZ1tdKX0gZmlsZVVSTHMgLSBUaGUgVVJMKHMpIG9mIHRoZSBmaWxlcyB0byBsb2FkLiBBY2NlcHRzIGEgVVJMIHBvaW50aW5nIHRvIHRoZSBmaWxlIGxvY2F0aW9uIG9yIGFuIGFycmF5IG9mIFVSTHMuXG4gICAqIEByZXR1cm5zIHtQcm9taXNlfVxuICAgKi9cbiAgbG9hZChmaWxlVVJMcyA9IHRocm93SWZNaXNzaW5nKCkpIHtcbiAgICBpZiAoZmlsZVVSTHMgPT09IHVuZGVmaW5lZCkgdGhyb3cgKG5ldyBFcnJvcignbG9hZCBuZWVkcyBhdCBsZWFzdCBhIHVybCB0byBsb2FkJykpO1xuICAgIGlmIChBcnJheS5pc0FycmF5KGZpbGVVUkxzKSkge1xuICAgICAgcmV0dXJuIHRoaXMubG9hZEFsbChmaWxlVVJMcyk7XG4gICAgfSBlbHNlIHtcbiAgICAgIHJldHVybiB0aGlzLmxvYWRPbmUoZmlsZVVSTHMpO1xuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBAZnVuY3Rpb24gLSBMb2FkIGEgc2luZ2xlIGZpbGVcbiAgICogQHByaXZhdGVcbiAgICogQHBhcmFtIHtzdHJpbmd9IGZpbGVVUkwgLSBUaGUgVVJMIG9mIHRoZSBmaWxlIHRvIGxvYWQuXG4gICAqIEByZXR1cm5zIHtQcm9taXNlfVxuICAgKi9cbiAgbG9hZE9uZShmaWxlVVJMKSB7XG4gICAgcmV0dXJuIHRoaXMuZmlsZUxvYWRpbmdSZXF1ZXN0KGZpbGVVUkwpO1xuICB9XG5cbiAgLyoqXG4gICAqIEBmdW5jdGlvbiAtIExvYWQgYWxsIGZpbGVzIGF0IG9uY2UgaW4gYSBzaW5nbGUgYXJyYXkgYW5kIHJldHVybiBhIFByb21pc2VcbiAgICogQHByaXZhdGVcbiAgICogQHBhcmFtIHtzdHJpbmdbXX0gZmlsZVVSTHMgLSBUaGUgVVJMcyBhcnJheSBvZiB0aGUgZmlsZXMgdG8gbG9hZC5cbiAgICogQHJldHVybnMge1Byb21pc2V9XG4gICAqL1xuICBsb2FkQWxsKGZpbGVVUkxzKSB7XG4gICAgdmFyIHVybHNDb3VudCA9IGZpbGVVUkxzLmxlbmd0aCxcbiAgICAgIHByb21pc2VzID0gW107XG5cbiAgICBmb3IgKHZhciBpID0gMDsgaSA8IHVybHNDb3VudDsgKytpKSB7XG4gICAgICBwcm9taXNlcy5wdXNoKHRoaXMuZmlsZUxvYWRpbmdSZXF1ZXN0KGZpbGVVUkxzW2ldLCBpKSk7XG4gICAgfVxuXG4gICAgcmV0dXJuIFByb21pc2UuYWxsKHByb21pc2VzKTtcbiAgfVxuXG4gIC8qKlxuICAgKiBAZnVuY3Rpb24gLSBMb2FkIGEgZmlsZSBhc3luY2hyb25vdXNseSwgcmV0dXJuIGEgUHJvbWlzZS5cbiAgICogQHByaXZhdGVcbiAgICogQHBhcmFtIHtzdHJpbmd9IHVybCAtIFRoZSBVUkwgb2YgdGhlIGZpbGUgdG8gbG9hZFxuICAgKiBAcGFyYW0ge3N0cmluZ30gW2luZGV4XSAtIFRoZSBpbmRleCBvZiB0aGUgZmlsZSBpbiB0aGUgYXJyYXkgb2YgZmlsZXMgdG8gbG9hZFxuICAgKiBAcmV0dXJucyB7UHJvbWlzZX1cbiAgICovXG4gIGZpbGVMb2FkaW5nUmVxdWVzdCh1cmwsIGluZGV4KSB7XG4gICAgdmFyIHByb21pc2UgPSBuZXcgUHJvbWlzZShcbiAgICAgIChyZXNvbHZlLCByZWplY3QpID0+IHtcbiAgICAgICAgdmFyIHJlcXVlc3QgPSBuZXcgWE1MSHR0cFJlcXVlc3QoKTtcbiAgICAgICAgcmVxdWVzdC5vcGVuKCdHRVQnLCB1cmwsIHRydWUpO1xuICAgICAgICByZXF1ZXN0LmluZGV4ID0gaW5kZXg7XG4gICAgICAgIGlmICh0aGlzLnJlc3BvbnNlVHlwZSkge1xuICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2VUeXBlID0gdGhpcy5yZXNwb25zZVR5cGU7XG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgdmFyIHN1ZmZpeCA9ICcuanNvbic7XG4gICAgICAgICAgaWYgKHVybC5pbmRleE9mKHN1ZmZpeCwgdGhpcy5sZW5ndGggLSBzdWZmaXgubGVuZ3RoKSAhPT0gLTEpIHtcbiAgICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2VUeXBlID0gJ2pzb24nO1xuICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICByZXF1ZXN0LnJlc3BvbnNlVHlwZSA9ICdhcnJheWJ1ZmZlcic7XG4gICAgICAgICAgfVxuICAgICAgICB9XG4gICAgICAgIHJlcXVlc3QuYWRkRXZlbnRMaXN0ZW5lcignbG9hZCcsIGZ1bmN0aW9uKCkge1xuICAgICAgICAgIC8vIFRlc3QgcmVxdWVzdC5zdGF0dXMgdmFsdWUsIGFzIDQwNCB3aWxsIGFsc28gZ2V0IHRoZXJlXG4gICAgICAgICAgaWYgKHJlcXVlc3Quc3RhdHVzID09PSAyMDAgfHwgcmVxdWVzdC5zdGF0dXMgPT09IDMwNCkge1xuICAgICAgICAgICAgLy8gSGFjayBmb3IgaU9TIDcsIHRvIHJlbW92ZSBhcyBzb29uIGFzIHBvc3NpYmxlXG4gICAgICAgICAgICBpZiAodGhpcy5yZXNwb25zZVR5cGUgPT09ICdqc29uJyAmJiB0eXBlb2YocmVxdWVzdC5yZXNwb25zZSkgPT09ICdzdHJpbmcnKSB7XG4gICAgICAgICAgICAgIHJlcXVlc3QucmVzcG9uc2UgPSBKU09OLnBhcnNlKHJlcXVlc3QucmVzcG9uc2UpO1xuICAgICAgICAgICAgfVxuICAgICAgICAgICAgcmVzb2x2ZShyZXF1ZXN0LnJlc3BvbnNlKTtcbiAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgcmVqZWN0KG5ldyBFcnJvcihyZXF1ZXN0LnN0YXR1c1RleHQpKTtcbiAgICAgICAgICB9XG4gICAgICAgIH0pO1xuICAgICAgICByZXF1ZXN0LmFkZEV2ZW50TGlzdGVuZXIoJ3Byb2dyZXNzJywgKGV2dCkgPT4ge1xuICAgICAgICAgIGlmICh0aGlzLnByb2dyZXNzQ2FsbGJhY2spIHtcbiAgICAgICAgICAgIGlmIChpbmRleCAhPT0gdW5kZWZpbmVkKSB7XG4gICAgICAgICAgICAgIHRoaXMucHJvZ3Jlc3NDYWxsYmFjayh7XG4gICAgICAgICAgICAgICAgaW5kZXg6IGluZGV4LFxuICAgICAgICAgICAgICAgIHZhbHVlOiBldnQubG9hZGVkIC8gZXZ0LnRvdGFsLFxuICAgICAgICAgICAgICAgIGxvYWRlZDogZXZ0LmxvYWRlZCxcbiAgICAgICAgICAgICAgICB0b3RhbDogZXZ0LnRvdGFsXG4gICAgICAgICAgICAgIH0pO1xuICAgICAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICAgICAgdGhpcy5wcm9ncmVzc0NhbGxiYWNrKHtcbiAgICAgICAgICAgICAgICB2YWx1ZTogZXZ0LmxvYWRlZCAvIGV2dC50b3RhbCxcbiAgICAgICAgICAgICAgICBsb2FkZWQ6IGV2dC5sb2FkZWQsXG4gICAgICAgICAgICAgICAgdG90YWw6IGV2dC50b3RhbFxuICAgICAgICAgICAgICB9KTtcbiAgICAgICAgICAgIH1cbiAgICAgICAgICB9XG4gICAgICAgIH0pO1xuICAgICAgICAvLyBNYW5hZ2UgbmV0d29yayBlcnJvcnNcbiAgICAgICAgcmVxdWVzdC5hZGRFdmVudExpc3RlbmVyKCdlcnJvcicsIGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHJlamVjdChuZXcgRXJyb3IoJ05ldHdvcmsgRXJyb3InKSk7XG4gICAgICAgIH0pO1xuXG4gICAgICAgIHJlcXVlc3Quc2VuZCgpO1xuICAgICAgfSk7XG4gICAgcmV0dXJuIHByb21pc2U7XG4gIH1cblxuICAvKipcbiAgICogQGZ1bmN0aW9uIC0gR2V0IHRoZSBjYWxsYmFjayBmdW5jdGlvbiB0byBnZXQgdGhlIHByb2dyZXNzIG9mIGZpbGUgbG9hZGluZyBwcm9jZXNzLlxuICAgKiBUaGlzIGlzIG9ubHkgZm9yIHRoZSBmaWxlIGxvYWRpbmcgcHJvZ3Jlc3MgYXMgZGVjb2RlQXVkaW9EYXRhIGRvZXNuJ3RcbiAgICogZXhwb3NlIGEgZGVjb2RlIHByb2dyZXNzIHZhbHVlLlxuICAgKiBAcmV0dXJucyB7TG9hZGVyfnByb2dyZXNzQ2FsbGJhY2t9XG4gICAqL1xuICBnZXQgcHJvZ3Jlc3NDYWxsYmFjaygpIHtcbiAgICByZXR1cm4gdGhpcy5wcm9ncmVzc0NiO1xuICB9XG5cbiAgLyoqXG4gICAqIEBmdW5jdGlvbiAtIFNldCB0aGUgY2FsbGJhY2sgZnVuY3Rpb24gdG8gZ2V0IHRoZSBwcm9ncmVzcyBvZiBmaWxlIGxvYWRpbmcgcHJvY2Vzcy5cbiAgICogVGhpcyBpcyBvbmx5IGZvciB0aGUgZmlsZSBsb2FkaW5nIHByb2dyZXNzIGFzIGRlY29kZUF1ZGlvRGF0YSBkb2Vzbid0XG4gICAqIGV4cG9zZSBhIGRlY29kZSBwcm9ncmVzcyB2YWx1ZS5cbiAgICogQHBhcmFtIHtMb2FkZXJ+cHJvZ3Jlc3NDYWxsYmFja30gY2FsbGJhY2sgLSBUaGUgY2FsbGJhY2sgdGhhdCBoYW5kbGVzIHRoZSByZXNwb25zZS5cbiAgICovXG4gIHNldCBwcm9ncmVzc0NhbGxiYWNrKGNhbGxiYWNrKSB7XG4gICAgdGhpcy5wcm9ncmVzc0NiID0gY2FsbGJhY2s7XG4gIH1cbn1cbiJdfQ==
