@@ -11,6 +11,8 @@ function throwIfMissing() {
 
 var audioContext;
 
+window.AudioContext = (window.AudioContext || window.webkitAudioContext);
+
 try {
   audioContext = new window.AudioContext();
 } catch (e) {}

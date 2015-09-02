@@ -1,8 +1,3 @@
-/**
- * Gets called if a parameter is missing and the expression
- * specifying the default value is evaluated.
- * @function
- */
 "use strict";
 
 var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
@@ -11,6 +6,11 @@ var _createClass = require("babel-runtime/helpers/create-class")["default"];
 
 var _core = require("babel-runtime/core-js")["default"];
 
+/**
+ * Gets called if a parameter is missing and the expression
+ * specifying the default value is evaluated.
+ * @function
+ */
 function throwIfMissing() {
   throw new Error("Missing parameter");
 }
