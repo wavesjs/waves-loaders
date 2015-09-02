@@ -12,9 +12,10 @@
     "postbundle": "npm run uglify",
     "uglify": "node ./bin/scripts.js --uglify",
     "watch": "node ./bin/scripts.js --watch",
-    "test": "tac6",
+    "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
     "pretest": "npm run hint",
-    "hint": "jshint ./es6; true"
+    "hint": "jshint ./es6; true",
+    "coverage": "browserify -t [ babelify --blacklist regenerator ] -t coverify tests/*.js | testling -u --no-show | coverify --json -o coverage.json && node ./bin/scripts.js --cover-report -i coverage.json"
   },
   "license": "BSD-3",
   "repository": {
@@ -28,17 +29,17 @@
     "devel": true
   },
   "dependencies": {
-    "babel-runtime": "4.7.6"
+    "babel-runtime": "5.8.20"
   },
   "devDependencies": {
-    "babel": "^4.5.0",
-    "browserify": "^9.0.3",
-    "chai": "^2.3.0",
-    "fs-extra": "^0.16.3",
+    "cli-color": "^1.0.0",
+    "fs-extra": "^0.23.1",
     "jshint": "^2.6.0",
+    "minimist": "^1.2.0",
+    "node-string-pad": "0.0.4",
     "node-watch": "^0.3.4",
     "sinon": "^1.14.1",
-    "tac6": "git://github.com/ircam-rnd/tac6.git#master",
-    "uglify-js": "^2.4.16"
+    "tape": "^4.2.0",
+    "uglify-js": "^2.4.24"
   }
 }

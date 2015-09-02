@@ -3,7 +3,7 @@
  * specifying the default value is evaluated.
  * @function
  */
- function throwIfMissing() {
+function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
@@ -13,27 +13,26 @@
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
- class Loader {
-
+export default class Loader {
   /**
    * @constructs
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
    */
-   constructor(responseType = undefined) {
+  constructor(responseType = undefined) {
     this.responseType = responseType;
     // rename to `onProgress` ?
     this.progressCb = undefined;
   }
 
   /**
-   * @function - Method for a promise based file loading.
+   * Method for a promise based file loading.
    * Internally switch between loadOne and loadAll.
    * @public
    * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
    * @returns {Promise}
    */
-   load(fileURLs = throwIfMissing()) {
-    if (fileURLs === undefined) throw (new Error("load needs at least a url to load"));
+  load(fileURLs = throwIfMissing()) {
+    if (fileURLs === undefined) throw (new Error('load needs at least a url to load'));
     if (Array.isArray(fileURLs)) {
       return this.loadAll(fileURLs);
     } else {
@@ -47,7 +46,7 @@
    * @param {string} fileURL - The URL of the file to load.
    * @returns {Promise}
    */
-   loadOne(fileURL) {
+  loadOne(fileURL) {
     return this.fileLoadingRequest(fileURL);
   }
 
@@ -57,9 +56,9 @@
    * @param {string[]} fileURLs - The URLs array of the files to load.
    * @returns {Promise}
    */
-   loadAll(fileURLs) {
+  loadAll(fileURLs) {
     var urlsCount = fileURLs.length,
-    promises = [];
+      promises = [];
 
     for (var i = 0; i < urlsCount; ++i) {
       promises.push(this.fileLoadingRequest(fileURLs[i], i));
@@ -75,21 +74,19 @@
    * @param {string} [index] - The index of the file in the array of files to load
    * @returns {Promise}
    */
-   fileLoadingRequest(url, index) {
+  fileLoadingRequest(url, index) {
     var promise = new Promise(
       (resolve, reject) => {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.index = index;
-        if(this.responseType){
+        if (this.responseType) {
           request.responseType = this.responseType;
-        }
-        else{
+        } else {
           var suffix = '.json';
-          if(url.indexOf(suffix, this.length - suffix.length) !== -1){
+          if (url.indexOf(suffix, this.length - suffix.length) !== -1) {
             request.responseType = 'json';
-          }
-          else {
+          } else {
             request.responseType = 'arraybuffer';
           }
         }
@@ -125,13 +122,13 @@
         });
         // Manage network errors
         request.addEventListener('error', function() {
-          reject(new Error("Network Error"));
+          reject(new Error('Network Error'));
         });
 
         request.send();
       });
-return promise;
-}
+    return promise;
+  }
 
   /**
    * @function - Get the callback function to get the progress of file loading process.
@@ -139,7 +136,7 @@ return promise;
    * expose a decode progress value.
    * @returns {Loader~progressCallback}
    */
-   get progressCallback() {
+  get progressCallback() {
     return this.progressCb;
   }
 
@@ -149,10 +146,7 @@ return promise;
    * expose a decode progress value.
    * @param {Loader~progressCallback} callback - The callback that handles the response.
    */
-   set progressCallback(callback) {
+  set progressCallback(callback) {
     this.progressCb = callback;
   }
-
 }
-
-module.exports = Loader;

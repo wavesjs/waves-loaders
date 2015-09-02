@@ -1,4 +1,5 @@
-var Loader = require('./loader');
+import Loader from './loader';
+
 
 /**
  * Gets called if a parameter is missing and the expression
@@ -9,7 +10,7 @@ function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
-var audioContext;
+let audioContext;
 
 window.AudioContext = (window.AudioContext || window.webkitAudioContext);
 
@@ -17,15 +18,14 @@ try {
   audioContext = new window.AudioContext();
 } catch (e) {}
 
+
 /**
  * AudioBufferLoader
  * @class
  * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
  * Inherit from Loader class
  */
-
-class AudioBufferLoader extends Loader {
-
+export default class AudioBufferLoader extends Loader {
   /**
    * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
@@ -92,23 +92,23 @@ class AudioBufferLoader extends Loader {
    * @returns {Promise}
    */
   decodeAudioData(arraybuffer) {
-    if(arraybuffer instanceof ArrayBuffer){
-    return new Promise((resolve, reject) => {
-      audioContext.decodeAudioData(
-        arraybuffer, // returned audio data array
-        (buffer) => {
-          if (this.options.wrapAroundExtension === 0) resolve(buffer);
-          else resolve(this.__wrapAround(buffer));
-        }, (error) => {
-          reject(new Error("DecodeAudioData error"));
-        }
-      );
-    });
-  }else{
-    return new Promise((resolve, reject) => {
-      resolve(arraybuffer);
-    });
-  }
+    if (arraybuffer instanceof ArrayBuffer) {
+      return new Promise((resolve, reject) => {
+        audioContext.decodeAudioData(
+          arraybuffer, // returned audio data array
+          (buffer) => {
+            if (this.options.wrapAroundExtension === 0) resolve(buffer);
+            else resolve(this.__wrapAround(buffer));
+          }, (error) => {
+            reject(new Error("DecodeAudioData error"));
+          }
+        );
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(arraybuffer);
+      });
+    }
   }
 
   /**
@@ -119,13 +119,13 @@ class AudioBufferLoader extends Loader {
    */
   __wrapAround(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate;
+
     var outBuffer = audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate);
     var arrayChData, arrayOutChData;
 
     for (var channel = 0; channel < inBuffer.numberOfChannels; channel++) {
       arrayChData = inBuffer.getChannelData(channel);
       arrayOutChData = outBuffer.getChannelData(channel);
-      console.log(arrayOutChData);
 
       arrayOutChData.forEach(function(sample, index) {
         if (index < inBuffer.length) arrayOutChData[index] = arrayChData[index];
@@ -135,7 +135,4 @@ class AudioBufferLoader extends Loader {
 
     return outBuffer;
   }
-
 }
-
-module.exports = AudioBufferLoader;
