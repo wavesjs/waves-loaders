@@ -19,14 +19,12 @@ try {
 
 /**
  * AudioBufferLoader
- * @class
- * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
- * Inherit from Loader class
+ * Promise based implementation of XMLHttpRequest Level 2 for GET method and decode audio data for arraybuffer.
  */
 export default class AudioBufferLoader extends Loader {
   /**
-   * @constructs
    * Set the responseType to 'arraybuffer' and initialize options.
+   * @param {string} [responseType="arraybuffer"]
    */
   constructor(responseType = 'arraybuffer') {
     super(responseType);
@@ -38,10 +36,9 @@ export default class AudioBufferLoader extends Loader {
   }
 
   /**
-   * @function - Method for promise audio file loading and decoding.
+   * Method for promise audio file loading and decoding.
    * @param {(string|string[])} fileURLs - The URL(s) of the audio files to load. Accepts a URL pointing to the file location or an array of URLs.
-   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining
-   * at the end of the returned AudioBuffer
+   * @param {{wrapAroundExtension: number}} [options] - Object with a wrapAroundExtension key which set the length, in seconds to be copied from the begining at the end of the returned AudioBuffer
    * @returns {Promise}
    */
   load(fileURLs = throwIfMissing(), options = {}) {
@@ -51,7 +48,7 @@ export default class AudioBufferLoader extends Loader {
   }
 
   /**
-   * @function - Load a single audio file, decode it in an AudioBuffer, return a Promise
+   * Load a single audio file, decode it in an AudioBuffer, return a Promise
    * @private
    * @param {string} fileURL - The URL of the audio file location to load.
    * @returns {Promise}
@@ -66,7 +63,7 @@ export default class AudioBufferLoader extends Loader {
   }
 
   /**
-   * @function - Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
+   * Load all audio files at once in a single array, decode them in an array of AudioBuffers, and return a Promise.
    * @private
    * @param {string[]} fileURLs - The URLs array of the audio files to load.
    * @returns {Promise}
@@ -84,7 +81,7 @@ export default class AudioBufferLoader extends Loader {
   }
 
   /**
-   * @function - Decode Audio Data, return a Promise
+   * Decode Audio Data, return a Promise
    * @private
    * @param {arraybuffer} - The arraybuffer of the loaded audio file to be decoded.
    * @returns {Promise}
@@ -110,7 +107,7 @@ export default class AudioBufferLoader extends Loader {
   }
 
   /**
-   * @function - WrapAround, copy the begining input buffer to the end of an output buffer
+   * WrapAround, copy the begining input buffer to the end of an output buffer
    * @private
    * @param {arraybuffer} inBuffer {arraybuffer} - The input buffer
    * @returns {arraybuffer} - The processed buffer (with frame copied from the begining to the end)

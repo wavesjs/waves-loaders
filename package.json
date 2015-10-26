@@ -29,7 +29,7 @@
     "devel": true
   },
   "dependencies": {
-    "babel-runtime": "5.3.3"
+    "babel-runtime": "5.8.20"
   },
   "devDependencies": {
     "cli-color": "^1.0.0",

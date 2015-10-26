@@ -9,9 +9,7 @@ function throwIfMissing() {
 
 
 /**
- * Loader
- * @class
- * @classdesc Promise based implementation of XMLHttpRequest Level 2 for GET method.
+ * Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
 export default class Loader {
   /**
@@ -19,8 +17,14 @@ export default class Loader {
    * @param {string} [responseType=""] - responseType's value, "text" (equal to ""), "arraybuffer", "blob", "document" or "json"
    */
   constructor(responseType = undefined) {
+    /**
+     * @type {string}
+     */
     this.responseType = responseType;
     // rename to `onProgress` ?
+    /**
+     * @type {function}
+     */
     this.progressCb = undefined;
   }
 
@@ -41,7 +45,7 @@ export default class Loader {
   }
 
   /**
-   * @function - Load a single file
+   * Load a single file
    * @private
    * @param {string} fileURL - The URL of the file to load.
    * @returns {Promise}
@@ -51,7 +55,7 @@ export default class Loader {
   }
 
   /**
-   * @function - Load all files at once in a single array and return a Promise
+   * Load all files at once in a single array and return a Promise
    * @private
    * @param {string[]} fileURLs - The URLs array of the files to load.
    * @returns {Promise}
@@ -68,7 +72,7 @@ export default class Loader {
   }
 
   /**
-   * @function - Load a file asynchronously, return a Promise.
+   * Load a file asynchronously, return a Promise.
    * @private
    * @param {string} url - The URL of the file to load
    * @param {string} [index] - The index of the file in the array of files to load
@@ -131,20 +135,20 @@ export default class Loader {
   }
 
   /**
-   * @function - Get the callback function to get the progress of file loading process.
+   * Get the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
-   * @returns {Loader~progressCallback}
+   * @type {function}
    */
   get progressCallback() {
     return this.progressCb;
   }
 
   /**
-   * @function - Set the callback function to get the progress of file loading process.
+   * Set the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
-   * @param {Loader~progressCallback} callback - The callback that handles the response.
+   * @type {function} callback - The callback that handles the response.
    */
   set progressCallback(callback) {
     this.progressCb = callback;
