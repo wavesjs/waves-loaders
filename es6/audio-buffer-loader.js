@@ -10,7 +10,9 @@ function throwIfMissing() {
   throw new Error('Missing parameter');
 }
 
-var audioContext;
+let audioContext;
+
+window.AudioContext = (window.AudioContext || window.webkitAudioContext);
 
 try {
   audioContext = new window.AudioContext();
