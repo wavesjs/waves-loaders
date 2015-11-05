@@ -1,6 +1,6 @@
 const test = require('tape');
 
-import SuperLoader from '../es6/super-loader';
+import SuperLoader from '../src/super-loader';
 
 
 const json = './tests/assets/test.json';

@@ -1,6 +1,6 @@
 const test = require('tape');
 
-import Loader from '../es6/loader';
+import Loader from '../src/loader';
 
 
 const json = './tests/assets/test.json';

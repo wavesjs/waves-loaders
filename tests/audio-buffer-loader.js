@@ -1,7 +1,7 @@
 const test = require('tape');
 const sinon = require('sinon');
 
-import AudioBufferLoader from '../es6/audio-buffer-loader';
+import AudioBufferLoader from '../src/audio-buffer-loader';
 
 
 var audioContext = new AudioContext();

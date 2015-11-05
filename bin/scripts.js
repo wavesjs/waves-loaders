@@ -1,23 +1,22 @@
+#!/usr/bin/env node
 var pkg = require('../package.json');
 var childProcess = require('child_process');
 var util = require('util');
-// devDependencies
+var path = require('path');
+
 var babel = require('babel');
 var browserify = require('browserify');
 var fse = require('fs-extra');
 var nodeWatch = require('node-watch');
 var uglifyJS = require('uglify-js');
 
-var clc = require('cli-color');
-var fs = require("fs");
-var minimist = require('minimist');
-var pad = require('node-string-pad');
-var pkg = require('../package.json');
+'use strict';
 
 // CONFIG
 // -----------------------------------------------
-var srcDir = 'es6';
+var srcDir = 'src';
 var distDir = 'dist';
+var cwd = process.cwd();
 
 // options for babel
 var babelOptions = {
@@ -41,6 +40,14 @@ var NC    = '\033[0m'; // No Color
 // COMMAND INTERPRETER
 // -----------------------------------------------
 var command = process.argv[2];
+
+// arguments - create a key value object with next arguments
+var args = process.argv.slice(3);
+var argv = {};
+for (var i = 0; i < args.length; i += 2) {
+  argv[args[i]] = args[i + 1];
+}
+
 // execute the correct function given the script
 switch (command) {
   case '--watch':
@@ -56,7 +63,14 @@ switch (command) {
     transpileAll();
     break;
   case '--cover-report':
-    coverReport();
+    coverReport(argv['-i']);
+    break;
+  case '--doc':
+    generateDoc();
+    break;
+  case '--dev-test':
+    var result = testGitMasterBranch();
+    console.log(result);
     break;
 }
 
@@ -65,13 +79,14 @@ switch (command) {
 
 // create filename from src to dist
 function createTargetName(filename) {
-  // replace source dir with target dir and '.es6.js' to '.js'
-  return filename.replace(new RegExp('^' + srcDir), distDir).replace('.es6.js', '.js');
+  // replace source dir with target dir
+  return filename.replace(new RegExp('^' + srcDir), distDir);
 }
 
 // create filename from `pck.main` to `umd` version
 function getUmdName() {
-  return pkg.main.replace('.js', '.umd.js');
+  var filename = path.basename(pkg.main);
+  return filename.replace('.js', '.umd.js');
 }
 
 // create filename from `umd` to `min` version
@@ -79,8 +94,73 @@ function getMinName() {
   return getUmdName().replace('.umd.js', '.min.js');
 }
 
+function padRight(input, size, str) {
+  str = str || ' ';
+  while (input.toString().length < size) {
+    input = input + ' ';
+  }
+  return input;
+}
+
+function isGitMasterBranch() {
+  var branch = childProcess.execSync('git symbolic-ref HEAD');
+  return branch.toString().search('refs/heads/master') !== -1;
+}
+
 // SCRIPTS
 // -----------------------------------------------
+
+function generateDoc() {
+  // check if in master
+  if (!isGitMasterBranch()) {
+    var msg = red + '=> you must be in master branch to run the `doc` command' + NC;
+    return console.log(msg);
+  }
+
+  var execSync = childProcess.execSync;
+  // prevent loosing non-comitted work
+  execSync('git stash save');
+  // delete current gh-pages branch if exists
+  try { execSync('git branch -D gh-pages'); } catch (err) {}
+  // create gh-pages branch
+  execSync('git checkout -b gh-pages');
+  // run esdoc
+  execSync('esdoc -c ' + path.join(cwd, 'esdoc.json'));
+  console.log('Created documentation');
+  // rm * but doc/ examples/ README.md
+  var files = fse.readdirSync(cwd);
+  var toKeep = [
+    '.git',
+    '.gitignore',
+    'bin',
+    'doc',
+    'examples',
+    'node_modules',
+    'README.md',
+    'esdoc.json'
+  ];
+
+  toKeep.push(getUmdName());
+  toKeep.push(getMinName());
+
+  files.forEach(function(file) {
+    if (toKeep.indexOf(file) !== -1) { return; }
+    fse.removeSync(file);
+    console.log('delete ' + file);
+  });
+
+  fse.copySync('doc', '.');
+  console.log('copy doc into ' + cwd);
+
+  fse.removeSync('doc');
+
+  execSync('git add -A');
+  execSync('git commit -am "updated documentation"');
+  execSync('git push origin gh-pages --force');
+  execSync('git checkout master');
+  execSync('git branch -D gh-pages');
+  try { execSync('git stash pop'); } catch(err) {}
+}
 
 // watch source dir
 function watch() {
@@ -98,7 +178,8 @@ function bundle() {
   try {
     b.bundle().pipe(fse.createWriteStream(target));
     // is not called at the right place - streams are async
-    console.log(util.format(green + '=> "%s" successfully created' + NC, target));
+    var msg = green + '=> "%s" successfully created' + NC;
+    console.log(util.format(msg, target));
   } catch(e) {
     return console.log(err.message);
   }
@@ -114,9 +195,10 @@ function uglify() {
   fse.outputFile(target, res.code, function(err, res) {
     if (err) { return console.log(err.message); }
 
-    console.log(util.format(green + '=> "%s" successfully created' + NC, target));
-    // reminder
-    console.log(util.format(red + '==> THINK ABOUT UPDATING VERSION [npm --help version] <==' + NC));
+    var msg = green + '=> "%s" successfully created' + NC;
+    console.log(util.format(msg, target));
+    // ask
+    console.log(red + '==> THINK ABOUT UPDATING VERSION [npm --help version] <==' + NC);
   });
 }
 
@@ -141,7 +223,7 @@ function transpileAll() {
   });
 }
 
-// transpile one file or several files in serial
+// transpile one file or several files sequencially
 // @param `stack` is a workaround for babel which has some kind of leak and
 // cannot transpile several files in parallel without being messy with sourceMaps.
 // Using the Sync method crash the entire script each time there is an error in
@@ -155,7 +237,8 @@ function transpile(src, stack) {
     fse.outputFile(target, result.code, function(err) {
       if (err) { return console.error(err.message); }
 
-      console.log(util.format(green + '=> "%s" successfully transpiled to "%s"' + NC, src, target));
+      var msg = green + '=> "%s" successfully transpiled to "%s"' + NC;
+      console.log(util.format(msg, src, target));
 
       // next
       if (stack && stack.length) {
@@ -165,36 +248,35 @@ function transpile(src, stack) {
   });
 }
 
-// Cover report
-function coverReport() {
-  'use strict';
-
-  var argv = minimist(process.argv.slice(3));
+// cover report
+function coverReport(input) {
   var chunks = [];
-  var uncovered = clc.red.bold;
-  var covered = clc.green;
-  var f = fs.readFileSync(argv['i']);
-  var json = JSON.parse(f);
-  Object.keys(json).forEach(function(key){
-    if(json[key].length > 0){
-      console.log(key);
-      var notCovered = {};
-      for(var i=0; i<json[key].length;i++ ){
-        var line = json[key][i]['lineNum'];
-        var range = json[key][i].lines[0].range;
-        notCovered[line] = range;
+  var coverageFile = fse.readFileSync(input);
+  var coverageJson = JSON.parse(coverageFile);
+
+  Object.keys(coverageJson).forEach(function(filename, index) {
+    if (coverageJson[filename].length === 0) { return; }
+    console.log('\n> coverage of: ' + filename + '\n');
+
+    var notCovered = {};
+    var file = fse.readFileSync(filename, 'utf8').split('\n');
+
+    // trace reported lines
+    coverageJson[filename].forEach(function(currentFileCoverage) {
+      var line = currentFileCoverage['lineNum'];
+      var range = currentFileCoverage.lines[0].range;
+      notCovered[line] = range;
+    });
+
+    // log the whole file with colors according to reporting
+    file.forEach(function(line, index) {
+      var prefix = padRight(index + 1, 6);
+
+      if (notCovered[index + 1]) {
+        console.log(prefix + ' ' + red + line + NC);
+      } else {
+        console.log(prefix + ' ' + green + line + NC);
       }
-      var file = fs.readFileSync(key, 'utf8')
-      file = file.split('\n');
-      for(var i=0; i<file.length; i++){
-        var line = file[i];
-        if(notCovered[i]){
-          console.log(pad((i+1).toString(), 6)+' '+uncovered(line));
-        }else{
-          console.log(pad((i+1).toString(), 6)+' '+covered(line));
-        }
-      };
-    }
+    });
   });
 }
-

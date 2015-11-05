@@ -1,16 +1,14 @@
 'use strict';
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
-
 var _get = require('babel-runtime/helpers/get')['default'];
+
+var _inherits = require('babel-runtime/helpers/inherits')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
-
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
@@ -24,6 +22,8 @@ var _audioBufferLoader2 = _interopRequireDefault(_audioBufferLoader);
  */
 
 var SuperLoader = (function (_AudioBufferLoader) {
+  _inherits(SuperLoader, _AudioBufferLoader);
+
   /**
    * Use composition to setup appropriate file loaders
    */
@@ -35,11 +35,9 @@ var SuperLoader = (function (_AudioBufferLoader) {
     // bypass AudioBufferLoader constructor. This is bad but it works.
   }
 
-  _inherits(SuperLoader, _AudioBufferLoader);
-
   return SuperLoader;
 })(_audioBufferLoader2['default']);
 
 exports['default'] = SuperLoader;
 module.exports = exports['default'];
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVzNi9zdXBlci1sb2FkZXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7OztpQ0FBOEIsdUJBQXVCOzs7Ozs7Ozs7SUFPaEMsV0FBVzs7Ozs7QUFJbkIsV0FKUSxXQUFXLEdBSWhCOzBCQUpLLFdBQVc7O0FBSzVCLCtCQUxpQixXQUFXLDZDQUt0QixJQUFJLEVBQUU7O0dBRWI7O1lBUGtCLFdBQVc7O1NBQVgsV0FBVzs7O3FCQUFYLFdBQVciLCJmaWxlIjoiZXM2L3N1cGVyLWxvYWRlci5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBBdWRpb0J1ZmZlckxvYWRlciBmcm9tICcuL2F1ZGlvLWJ1ZmZlci1sb2FkZXInO1xuXG5cbi8qKlxuICogU3VwZXJMb2FkZXJcbiAqIEhlbHBlciB0byBsb2FkIG11bHRpcGxlIHR5cGUgb2YgZmlsZXMsIGFuZCBnZXQgdGhlbSBpbiB0aGVpciB1c2VmdWwgdHlwZSwganNvbiBmb3IganNvbiBmaWxlcywgQXVkaW9CdWZmZXIgZm9yIGF1ZGlvIGZpbGVzLlxuICovXG5leHBvcnQgZGVmYXVsdCBjbGFzcyBTdXBlckxvYWRlciBleHRlbmRzIEF1ZGlvQnVmZmVyTG9hZGVyIHtcbiAgLyoqXG4gICAqIFVzZSBjb21wb3NpdGlvbiB0byBzZXR1cCBhcHByb3ByaWF0ZSBmaWxlIGxvYWRlcnNcbiAgICovXG4gIGNvbnN0cnVjdG9yKCkge1xuICAgIHN1cGVyKG51bGwpO1xuICAgIC8vIGJ5cGFzcyBBdWRpb0J1ZmZlckxvYWRlciBjb25zdHJ1Y3Rvci4gVGhpcyBpcyBiYWQgYnV0IGl0IHdvcmtzLlxuICB9XG59XG4iXX0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9zdXBlci1sb2FkZXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7aUNBQThCLHVCQUF1Qjs7Ozs7Ozs7O0lBT2hDLFdBQVc7WUFBWCxXQUFXOzs7Ozs7QUFJbkIsV0FKUSxXQUFXLEdBSWhCOzBCQUpLLFdBQVc7O0FBSzVCLCtCQUxpQixXQUFXLDZDQUt0QixJQUFJLEVBQUU7O0dBRWI7O1NBUGtCLFdBQVc7OztxQkFBWCxXQUFXIiwiZmlsZSI6InNyYy9zdXBlci1sb2FkZXIuanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgQXVkaW9CdWZmZXJMb2FkZXIgZnJvbSAnLi9hdWRpby1idWZmZXItbG9hZGVyJztcblxuXG4vKipcbiAqIFN1cGVyTG9hZGVyXG4gKiBIZWxwZXIgdG8gbG9hZCBtdWx0aXBsZSB0eXBlIG9mIGZpbGVzLCBhbmQgZ2V0IHRoZW0gaW4gdGhlaXIgdXNlZnVsIHR5cGUsIGpzb24gZm9yIGpzb24gZmlsZXMsIEF1ZGlvQnVmZmVyIGZvciBhdWRpbyBmaWxlcy5cbiAqL1xuZXhwb3J0IGRlZmF1bHQgY2xhc3MgU3VwZXJMb2FkZXIgZXh0ZW5kcyBBdWRpb0J1ZmZlckxvYWRlciB7XG4gIC8qKlxuICAgKiBVc2UgY29tcG9zaXRpb24gdG8gc2V0dXAgYXBwcm9wcmlhdGUgZmlsZSBsb2FkZXJzXG4gICAqL1xuICBjb25zdHJ1Y3RvcigpIHtcbiAgICBzdXBlcihudWxsKTtcbiAgICAvLyBieXBhc3MgQXVkaW9CdWZmZXJMb2FkZXIgY29uc3RydWN0b3IuIFRoaXMgaXMgYmFkIGJ1dCBpdCB3b3Jrcy5cbiAgfVxufVxuIl19
