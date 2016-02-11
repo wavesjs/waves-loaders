@@ -1,5 +1,5 @@
 {
-  "name": "wavejs-loaders",
+  "name": "loaders",
   "homepage": "https://github.com/Parisson/loaders",
   "main": ["waves-loaders.umd.js", "waves-loaders.min.js"],
   "ignore": [
