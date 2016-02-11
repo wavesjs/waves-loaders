@@ -1,0 +1,21 @@
+{
+  "name": "wavejs-loaders",
+  "homepage": "https://github.com/Parisson/loaders",
+  "main": ["waves-loaders.umd.js", "waves-loaders.min.js"],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "bin",
+    "dist",
+    "examples",
+    "doc",
+    "src",
+    "tests",
+    "AUTHORS",
+    "LICENCE",
+    "README.md",
+    "esdoc.js",
+    "package.json"
+  ]
+}
