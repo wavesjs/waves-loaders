@@ -1,6 +1,6 @@
 {
   "name": "loaders",
-  "homepage": "https://github.com/Parisson/loaders",
+  "homepage": "https://github.com/wavesjs/loaders",
   "main": ["waves-loaders.umd.js", "waves-loaders.min.js"],
   "ignore": [
     "**/.*",
