@@ -4,33 +4,30 @@
 
 ### Example
 
-Load loaders.js in your html file by using:
+Load `waves-loaders` in your html file by using:
 
 ```html
-    <script src="loaders.js"></script>
+<script src="waves-loaders.umd.js"></script>
 ```
 
 ```js
-  // We need an audio context to decode the file
-  // By default,the loaders search for audioContext in the window.
-  var audioContext = new AudioContext();
+// we need an audio context to decode the file
+// by default,the loaders search for audiocontext in the window.
+var audioContext = new AudioContext();
+// load the file passing the path
+var myAudioBufferLoader = new loaders.AudioBufferLoader();
 
-  // Load the file passing the path
-  var myAudioBufferLoader = new loaders.AudioBufferLoader();
-  myAudioBufferLoader.progressCallback = function(obj){
-    // Do something with the progress value obj
-    // obj: {value:.., total:..., loaded:...}
-    // value is loaded/total
-  }
-  myAudioBufferLoader.load('sound/file/url').then(
-      function(buffer){
-        // Do something with the loaded audio buffer
-      },
-      function(error){
-        // Catch an error during the loading or decodeAudioData process
-      }
-  );
+myAudioBufferLoader.progressCallback = function(obj){
+  // do something with the progress value obj
+  // obj: {value:.., total:..., loaded:...}
+  // value is loaded/total
+}
 
+myAudioBufferLoader.load('sound/file/url').then(function(buffer) {
+  // do something with the loaded audio buffer
+}).catch(function(error) {
+  // catch an error during the loading or decodeAudioData process
+});
 ```
 
 Use the same ```load``` method to load multiple files, by passing

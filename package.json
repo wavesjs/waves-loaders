@@ -2,7 +2,7 @@
   "name": "waves-loaders",
   "version": "0.1.2",
   "description": "AudioBuffer loader and other loader utilities module",
-  "main": "dist/waves-loaders.js",
+  "main": "dist/index.js",
   "standalone": "wavesLoaders",
   "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
   "scripts": {
