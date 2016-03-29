@@ -22,15 +22,12 @@ Load loaders.js in your html file by using:
     // obj: {value:.., total:..., loaded:...}
     // value is loaded/total
   }
-  myAudioBufferLoader.load('sound/file/url').then(
-      function(buffer){
-        // Do something with the loaded audio buffer
-      },
-      function(error){
-        // Catch an error during the loading or decodeAudioData process
-      }
-  );
-
+  
+  myAudioBufferLoader.load('sound/file/url').then(function(buffer){
+    // Do something with the loaded audio buffer
+  }).catch(function(err) {
+    console.log(err.message);
+  });
 ```
 
 Use the same ```load``` method to load multiple files, by passing
