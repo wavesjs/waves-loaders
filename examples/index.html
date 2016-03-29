@@ -1,27 +1,24 @@
 <!doctype html>
 <html>
 <head>
-  <script src="../loaders.min.js"></script>
+  <script src="../waves-loaders.min.js"></script>
   <script>
-
-  // We need an audio context to decode the file
-  // By default, buffer-loader search for audioContext in the window.
+  // we need an audio context to decode the file
+  // by default, buffer-loader search for audiocontext in the window.
   var audioContext = new AudioContext();
 
-  // Load the file passing the path
-  var myAudioBufferLoader = new loaders.AudioBufferLoader();
+  // load the file passing the path
+  var myAudioBufferLoader = new wavesLoaders.AudioBufferLoader();
   myAudioBufferLoader.progressCallback = function(val){
     console.log(val);
   }
-  myAudioBufferLoader.load('../tests/synth.wav').then(
-      function(buffer){
-        // Do something with the loaded audio buffer
-        console.log(buffer);
-      },
-      function(error){
-        // Catch an error during the loading or decodeAudioData process
-        console.log(error);
-      })
+  myAudioBufferLoader.load('../tests/assets/guitar.wav').then(function(buffer){
+    // do something with the loaded audio buffer
+    console.log(buffer);
+  }).catch(function(error){
+    // catch an error during the loading or decodeAudioData process
+    console.log(error);
+  });
   </script>
 </body>
 </html>
