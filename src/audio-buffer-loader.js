@@ -34,7 +34,16 @@ export default class AudioBufferLoader extends Loader {
       "wrapAroundExtension": 0
     };
     this.responseType = responseType;
+    this.audioContext = audioContext;
+  }
 
+  /**
+   * Allow to set the audio context that should be used in order to decode
+   * the file and create the AudioBuffer.
+   * @param {AudioContext} audioContext
+   */
+  setAudioContext(audioContext) {
+    this.audioContext = audioContext;
   }
 
   /**
@@ -91,7 +100,7 @@ export default class AudioBufferLoader extends Loader {
   decodeAudioData(arraybuffer) {
     if (arraybuffer instanceof ArrayBuffer) {
       return new Promise((resolve, reject) => {
-        audioContext.decodeAudioData(
+        this.audioContext.decodeAudioData(
           arraybuffer, // returned audio data array
           (buffer) => {
             if (this.options.wrapAroundExtension === 0) resolve(buffer);
@@ -117,7 +126,7 @@ export default class AudioBufferLoader extends Loader {
   __wrapAround(inBuffer) {
     var length = inBuffer.length + this.options.wrapAroundExtension * inBuffer.sampleRate;
 
-    var outBuffer = audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate);
+    var outBuffer = this.audioContext.createBuffer(inBuffer.numberOfChannels, length, inBuffer.sampleRate);
     var arrayChData, arrayOutChData;
 
     for (var channel = 0; channel < inBuffer.numberOfChannels; channel++) {

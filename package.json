@@ -8,6 +8,7 @@
   "scripts": {
     "bundle": "node ./bin/runner --bundle",
     "transpile": "node ./bin/runner --transpile",
+    "prewatch": "npm run transpile",
     "watch": "node ./bin/runner --watch",
 
     "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
