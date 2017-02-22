@@ -12,7 +12,7 @@ export default class Loader {
      * @private
      */
     this.responseType = responseType;
-    // rename to `onProgress` ?
+
     /**
      * @type {function}
      * @private
