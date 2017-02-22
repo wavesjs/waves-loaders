@@ -133,6 +133,14 @@ export default class Loader {
   }
 
   /**
+   * Alternative API to set the progress callback.
+   * @type {function} callback - The callback that handles the response.
+   */
+  onProgress(callback) {
+    this.progressCb = callback;
+  }
+
+  /**
    * Get the callback function to get the progress of file loading process.
    * This is only for the file loading progress as decodeAudioData doesn't
    * expose a decode progress value.
