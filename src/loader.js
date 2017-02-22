@@ -36,12 +36,13 @@ export default class Loader {
    * @returns {Promise}
    */
   load(fileURLs = throwIfMissing()) {
-    if (fileURLs === undefined) throw (new Error('load needs at least a url to load'));
-    if (Array.isArray(fileURLs)) {
+    if (fileURLs === undefined)
+      throw (new Error('load needs at least a url to load'));
+
+    if (Array.isArray(fileURLs))
       return this.loadAll(fileURLs);
-    } else {
+    else
       return this.loadOne(fileURLs);
-    }
   }
 
   /**
@@ -61,12 +62,9 @@ export default class Loader {
    * @returns {Promise}
    */
   loadAll(fileURLs) {
-    var urlsCount = fileURLs.length,
-      promises = [];
-
-    for (var i = 0; i < urlsCount; ++i) {
-      promises.push(this.fileLoadingRequest(fileURLs[i], i));
-    }
+    const promises = fileUrls.map((fileURL, index) => {
+      return this.fileLoadingRequest(fileURL, iindex);
+    });
 
     return Promise.all(promises);
   }
@@ -79,59 +77,58 @@ export default class Loader {
    * @returns {Promise}
    */
   fileLoadingRequest(url, index) {
-    var promise = new Promise(
-      (resolve, reject) => {
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.index = index;
-        if (this.responseType) {
-          request.responseType = this.responseType;
-        } else {
-          var suffix = '.json';
-          if (url.indexOf(suffix, this.length - suffix.length) !== -1) {
-            request.responseType = 'json';
-          } else {
-            request.responseType = 'arraybuffer';
-          }
-        }
-        request.addEventListener('load', function() {
-          // Test request.status value, as 404 will also get there
-          // Test request.status === 0 for cordova internal ajax calls
-          if (request.status === 200 || request.status === 304 || request.status === 0) {
-            // Hack for iOS 7, to remove as soon as possible
-            if (this.responseType === 'json' && typeof(request.response) === 'string') {
-              request.response = JSON.parse(request.response);
-            }
-            resolve(request.response);
-          } else {
-            reject(new Error(request.statusText));
-          }
-        });
-        request.addEventListener('progress', (evt) => {
-          if (this.progressCallback) {
-            if (index !== undefined) {
-              this.progressCallback({
-                index: index,
-                value: evt.loaded / evt.total,
-                loaded: evt.loaded,
-                total: evt.total
-              });
-            } else {
-              this.progressCallback({
-                value: evt.loaded / evt.total,
-                loaded: evt.loaded,
-                total: evt.total
-              });
-            }
-          }
-        });
-        // Manage network errors
-        request.addEventListener('error', function() {
-          reject(new Error('Network Error'));
-        });
+    const promise = new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.index = index;
 
-        request.send();
+      if (this.responseType) {
+        request.responseType = this.responseType;
+      } else {
+        var suffix = '.json';
+        if (url.indexOf(suffix, this.length - suffix.length) !== -1) {
+          request.responseType = 'json';
+        } else {
+          request.responseType = 'arraybuffer';
+        }
+      }
+
+      request.addEventListener('load', function() {
+        // Test request.status value, as 404 will also get there
+        // Test request.status === 0 for cordova internal ajax calls
+        if (request.status === 200 || request.status === 304 || request.status === 0) {
+          // Hack for iOS 7, to remove as soon as possible
+          if (this.responseType === 'json' && typeof(request.response) === 'string')
+            request.response = JSON.parse(request.response);
+
+          resolve(request.response);
+        } else {
+          reject(new Error(request.statusText));
+        }
       });
+
+      request.addEventListener('progress', (evt) => {
+        if (this.progressCallback) {
+          const event = {
+            value: evt.loaded / evt.total,
+            loaded: evt.loaded,
+            total: evt.total
+          };
+
+          if (index !== undefined)
+            event.index = index;
+
+          this.progressCallback(event);
+        }
+      });
+      // Manage network errors
+      request.addEventListener('error', function() {
+        reject(new Error('Network Error'));
+      });
+
+      request.send();
+    });
+
     return promise;
   }
 
