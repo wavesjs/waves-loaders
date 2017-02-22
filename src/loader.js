@@ -1,14 +1,4 @@
 /**
- * Gets called if a parameter is missing and the expression
- * specifying the default value is evaluated.
- * @function
- */
-function throwIfMissing() {
-  throw new Error('Missing parameter');
-}
-
-
-/**
  * Promise based implementation of XMLHttpRequest Level 2 for GET method.
  */
 export default class Loader {
@@ -19,11 +9,13 @@ export default class Loader {
   constructor(responseType = undefined) {
     /**
      * @type {string}
+     * @private
      */
     this.responseType = responseType;
     // rename to `onProgress` ?
     /**
      * @type {function}
+     * @private
      */
     this.progressCb = undefined;
   }
@@ -35,9 +27,9 @@ export default class Loader {
    * @param {(string|string[])} fileURLs - The URL(s) of the files to load. Accepts a URL pointing to the file location or an array of URLs.
    * @returns {Promise}
    */
-  load(fileURLs = throwIfMissing()) {
+  load(fileURLs) {
     if (fileURLs === undefined)
-      throw (new Error('load needs at least a url to load'));
+      throw (new Error('Invalid fileURLs parameter: load method needs at least a url to load'));
 
     if (Array.isArray(fileURLs))
       return this.loadAll(fileURLs);
