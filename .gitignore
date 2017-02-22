@@ -4,3 +4,5 @@ coverage1.json
 npm-debug.log
 .DS_Store
 coverage.json
+
+dist/
