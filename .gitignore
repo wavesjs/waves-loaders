@@ -5,4 +5,7 @@ npm-debug.log
 .DS_Store
 coverage.json
 
+# develop only
 dist/
+waves-loaders.min.js
+waves-loaders.umd.js

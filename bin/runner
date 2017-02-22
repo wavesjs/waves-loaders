@@ -118,11 +118,21 @@ function watchFiles(srcDirectory, distDirectory) {
   });
 }
 
-
 function transpileFiles(srcDirectory, distDirectory, callback) {
   _getFileList(srcDirectory, function(files) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
     transpiler.transpile(undefined, files, callback);
+  });
+}
+
+function bundle(distDirectory) {
+  var entryPoint = path.join(distDirectory, 'index.js');
+  var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
+
+  transpileFiles(srcDirectory, distDirectory, function() {
+    transpiler.bundle(entryPoint, umdTarget, function() {
+      transpiler.uglify(umdTarget, minTarget);
+    });
   });
 }
 
@@ -150,6 +160,13 @@ switch (command) {
    */
   case '--transpile':
     transpileFiles(srcDirectory, distDirectory);
+    break;
+
+  /**
+   * Transpile all files in `src` from es6 to es5.
+   */
+  case '--bundle':
+    bundle(distDirectory);
     break;
 }
 

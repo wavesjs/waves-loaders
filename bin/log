@@ -17,6 +17,24 @@ function getDeltaTime(time) {
 }
 
 var log = {
+  bundleStart: function(dest) {
+    var msg = prefix + (toRel(dest) + ': bundle start').yellow;
+  },
+
+  bundleSuccess: function(dest, startTime) {
+    var time = getDeltaTime(startTime);
+    var msg = prefix + '%s: successfully created (%sms)'.green;
+
+    console.log(msg, toRel(dest), time);
+  },
+
+  bundleError: function(dest, err) {
+    var msg = prefix + '%s: bundle error'.red;
+
+    console.log(msg, toRel(dest));
+    console.log('> ' + err.message);
+  },
+
   transpileSuccess: function(src, dest, startTime) {
     var time = getDeltaTime(startTime);
     var msg = prefix + '%s: successfully transpiled to "%s" (%sms)'.green;
