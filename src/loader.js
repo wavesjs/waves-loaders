@@ -54,8 +54,8 @@ export default class Loader {
    * @returns {Promise}
    */
   loadAll(fileURLs) {
-    const promises = fileUrls.map((fileURL, index) => {
-      return this.fileLoadingRequest(fileURL, iindex);
+    const promises = fileURLs.map((fileURL, index) => {
+      return this.fileLoadingRequest(fileURL, index);
     });
 
     return Promise.all(promises);

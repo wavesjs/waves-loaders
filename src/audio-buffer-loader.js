@@ -103,7 +103,7 @@ export default class AudioBufferLoader extends Loader {
   loadAll(fileURLs) {
     return super.loadAll(fileURLs)
       .then((arraybuffers) => {
-        const promises = arrayBuffers.map((arrayBuffer) => {
+        const promises = arraybuffers.map((arraybuffer) => {
           return this.decodeAudioData(arraybuffer);
         });
 
@@ -133,7 +133,7 @@ export default class AudioBufferLoader extends Loader {
 
       return promise;
     } else {
-      return new Promise.resolve(arraybuffer);
+      return Promise.resolve(arraybuffer);
     }
   }
 
