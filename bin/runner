@@ -4,20 +4,19 @@ var watch = require('watch');
 var path = require('path');
 var pkg = require('../package.json');
 var util = require('util');
+var klaw = require('klaw');
 
 var javascripts = require('./javascripts');
 var cwd = process.cwd();
 
 'use strict';
 
+
 /**
- * Options for babel transpiling.
+ * Options for babel transpiling (cf .babelrc).
  */
-var babelOptions = {
-  sourceMap: 'inline',
-  presets: ['es2015'],
-  plugins: ['transform-runtime', 'transform-es2015-modules-commonjs'],
-};
+var babelrc = fse.readFileSync(path.join(cwd, '.babelrc'));
+var babelOptions = JSON.parse(babelrc);
 
 /**
  * Options for watch.
@@ -26,7 +25,7 @@ var watchOptions = {
   ignoreDotFiles: true,
   ignoreUnreadableDir: true,
   ignoreNotPermitted: true,
-  interval: 2000, // watch internally use `fs.watchFile`
+  interval: 1, // watch internally use `fs.watchFile`
 };
 
 /**
@@ -85,7 +84,7 @@ function isAllowed(filename, ensureFile) {
 function _getFileList(folder, callback) {
   var files = [];
 
-  fse.walk(folder)
+  klaw(folder)
     .on('data', function(item) {
       if (item.stats.isFile() && isAllowed(item.path))
         files.push(item.path);

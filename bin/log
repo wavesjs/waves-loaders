@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var pkg = require('../package.json');
 var colors = require('colors');
-var ora = require('ora');
 var path = require('path');
 
 'use strict';
@@ -17,31 +16,21 @@ function getDeltaTime(time) {
   return new Date().getTime() - time;
 }
 
-var spinners = {};
-
 var log = {
   bundleStart: function(dest) {
     var msg = prefix + (toRel(dest) + ': bundle start').yellow;
-    var spinner = ora({ color: 'white', text: msg });
-    spinner.start();
-
-    spinners[dest] = spinner;
   },
 
   bundleSuccess: function(dest, startTime) {
-    var spinner = spinners[dest];
     var time = getDeltaTime(startTime);
     var msg = prefix + '%s: successfully created (%sms)'.green;
 
-    spinner.stop();
     console.log(msg, toRel(dest), time);
   },
 
   bundleError: function(dest, err) {
-    var spinner = spinners[dest];
     var msg = prefix + '%s: bundle error'.red;
 
-    spinner.stop();
     console.log(msg, toRel(dest));
     console.log('> ' + err.message);
   },
@@ -64,11 +53,13 @@ var log = {
   uglifySuccess: function(src, dest, startTime) {
     var time = getDeltaTime(startTime);
     var msg = prefix + '%s: successfully uglified to "%s" (%sms)'.green;
+
     console.log(msg, toRel(src), toRel(dest), time);
   },
 
   deleteFile: function(filename) {
     var msg = prefix + '%s: successfully removed'.yellow;
+
     console.log(msg, toRel(filename));
   }
 };
