@@ -14,7 +14,7 @@
     "prewatch": "npm run transpile",
     "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
     "transpile": "node ./bin/runner --transpile",
-    "version": "npm run transpile && npm run doc && git add docs",
+    "version": "npm run transpile",
     "watch": "node ./bin/runner --watch"
   },
   "license": "BSD-3",

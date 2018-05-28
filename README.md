@@ -1,11 +1,11 @@
-## waves-loaders
+## `waves-loaders`
 
-> AudioBuffer loader and other loader utilities module
+> module for loading `AudioBuffer` and other loading utilities.
 
 ### Installation
 
-```shell
-npm install [--save] waves-js/waves-loaders
+```
+npm install [--save] waves-loaders
 ```
 
 ### Example
@@ -13,19 +13,13 @@ npm install [--save] waves-js/waves-loaders
 ```js
 import * as loaders from 'waves-loaders';
 
-// load the file passing the path
-const myAudioBufferLoader = new loaders.AudioBufferLoader();
+const loader = new loaders.AudioBufferLoader();
+loader.onProgress(progress => { /* { value:.., total:..., loaded:... } */ });
 
-myAudioBufferLoader.onProgress((obj) => {
-  // do something with the progress value obj
-  // obj: { value:.., total:..., loaded:... }
-  // value is loaded/total
-});
-
-myAudioBufferLoader.load('sound/file/url')
-  .then((buffer) => {
-    // do something with the loaded audio buffer
-  }).catch((err) => console.error(err.stack));
+async function init() {
+  await buffer = loader.load('sound/file/url');
+  // do something with `buffer`
+}
 ```
 
 Use the same `load` method to load multiple files, by passing
@@ -34,6 +28,7 @@ The progress is then an object, eg. `{ index: 4, value: 0.2, total:999, loaded:1
 and value, between 0.0 and 1, corresponds to the file loading progress.
 
 ## License
+
 This module is released under the [BSD-3-Clause license](http://opensource.org/licenses/BSD-3-Clause).
 
 ## Acknowledgments
