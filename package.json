@@ -7,13 +7,15 @@
   "author": "Samuel Goldszmidt <samuel.goldszmidt@gmail.com>",
   "scripts": {
     "bundle": "node ./bin/runner --bundle",
-    "transpile": "node ./bin/runner --transpile",
-    "prewatch": "npm run transpile",
-    "watch": "node ./bin/runner --watch",
-    "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
-    "pretest": "npm run hint",
+    "coverage": "browserify -t [ babelify --blacklist regenerator ] -t coverify tests/*.js | testling -u --no-show | coverify --json -o coverage.json && node ./bin/scripts.js --cover-report -i coverage.json",
+    "deploy": "np --yolo",
     "hint": "jshint ./src; true",
-    "coverage": "browserify -t [ babelify --blacklist regenerator ] -t coverify tests/*.js | testling -u --no-show | coverify --json -o coverage.json && node ./bin/scripts.js --cover-report -i coverage.json"
+    "pretest": "npm run hint",
+    "prewatch": "npm run transpile",
+    "test": "browserify -t [ babelify --blacklist regenerator ] tests/*.js |  testling -u --no-show",
+    "transpile": "node ./bin/runner --transpile",
+    "version": "npm run transpile && npm run doc && git add docs",
+    "watch": "node ./bin/runner --watch"
   },
   "license": "BSD-3",
   "repository": {
@@ -27,24 +29,25 @@
     "devel": true
   },
   "dependencies": {
-    "babel-runtime": "^6.23.0"
+    "babel-runtime": "^6.26.0",
+    "np": "^3.0.1"
   },
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "browserify": "^14.1.0",
-    "colors": "^1.1.2",
-    "coverify": "^1.4.0",
-    "esdoc": "^0.5.2",
-    "fs-extra": "^2.0.0",
-    "jshint": "^2.9.4",
-    "klaw": "^1.3.1",
-    "sinon": "^1.17.7",
-    "tape": "^4.6.3",
+    "babel-preset-es2015": "^6.24.1",
+    "browserify": "^16.2.2",
+    "colors": "^1.3.0",
+    "coverify": "^1.5.0",
+    "esdoc": "^1.1.0",
+    "fs-extra": "^6.0.1",
+    "jshint": "^2.9.5",
+    "klaw": "^2.1.1",
+    "sinon": "^5.0.10",
+    "tape": "^4.9.0",
     "testling": "^1.7.1",
-    "uglify-js": "^2.6.2",
+    "uglify-js": "^3.3.27",
     "watch": "^1.0.2"
   }
 }
