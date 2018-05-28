@@ -29,8 +29,7 @@
     "devel": true
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "np": "^3.0.1"
+    "babel-runtime": "^6.26.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -44,6 +43,7 @@
     "fs-extra": "^6.0.1",
     "jshint": "^2.9.5",
     "klaw": "^2.1.1",
+    "np": "^3.0.1",
     "sinon": "^5.0.10",
     "tape": "^4.9.0",
     "testling": "^1.7.1",
