@@ -19,8 +19,8 @@ const silentBuffer = new Uint32Array([
 
 const noop = () => {};
 
+// @todo - review to allow to use external audioContext
 let decodeAudioData = audioContext.decodeAudioData;
-
 const promise = audioContext.decodeAudioData(silentBuffer, noop, noop);
 // implement non promised base decode audio data
 if (!promise) {
