@@ -1,20 +1,23 @@
-## `waves-loaders`
+# `waves-loaders`
 
-> module for loading `AudioBuffer` and other loading utilities.
+> module for loading WebAudio buffers (and other loading utilities).
 
-### Installation
+## Installation
 
 ```
 npm install [--save] waves-loaders
 ```
 
-### Example
+## Example
+
+__loading one file__
 
 ```js
 import * as loaders from 'waves-loaders';
 
 const loader = new loaders.AudioBufferLoader();
-loader.onProgress(progress => { /* { value:.., total:..., loaded:... } */ });
+loader.onProgress(progress => console.log(progress));
+// { value:.., total:..., loaded:... }
 
 async function init() {
   await buffer = loader.load('sound/file/url');
@@ -22,10 +25,18 @@ async function init() {
 }
 ```
 
-Use the same `load` method to load multiple files, by passing
-an array of urls `['url/to/file1', 'url/to/file2', ...]`.
-The progress is then an object, eg. `{ index: 4, value: 0.2, total:999, loaded:1}`, where index corresponds to the file index in the array of files,
-and value, between 0.0 and 1, corresponds to the file loading progress.
+__loading multiple files__
+
+```js
+import * as loaders from 'waves-loaders';
+
+const loader = new loaders.AudioBufferLoader();
+
+async function init() {
+  await buffers = loader.load(['sound/file-1', 'sound/file-1']);
+  // do something with `buffers[0]` and `buffers[1]`
+}
+```
 
 ## License
 
