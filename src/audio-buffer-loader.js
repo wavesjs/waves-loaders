@@ -89,7 +89,7 @@ export default class AudioBufferLoader extends Loader {
    */
   loadOne(fileURL) {
     return super.loadOne(fileURL)
-      .then(this.decodeAudioData)
+      .then(arraybuffer => this.decodeAudioData(arraybuffer, fileURL))
       .catch((err) => { throw err; });
   }
 
@@ -103,8 +103,9 @@ export default class AudioBufferLoader extends Loader {
   loadAll(fileURLs) {
     return super.loadAll(fileURLs)
       .then((arraybuffers) => {
-        const promises = arraybuffers.map((arraybuffer) => {
-          return this.decodeAudioData(arraybuffer);
+        const promises = arraybuffers.map((arraybuffer, index) => {
+          const fileURL = fileURLs[index];
+          return this.decodeAudioData(arraybuffer, fileURL);
         });
 
         return Promise.all(promises);
@@ -118,7 +119,7 @@ export default class AudioBufferLoader extends Loader {
    * @param {arraybuffer} - The arraybuffer of the loaded audio file to be decoded.
    * @returns {Promise}
    */
-  decodeAudioData(arraybuffer) {
+  decodeAudioData(arraybuffer, fileURL) {
     if (arraybuffer instanceof ArrayBuffer) {
       const promise = decodeAudioData.call(audioContext, arraybuffer)
 
@@ -129,7 +130,9 @@ export default class AudioBufferLoader extends Loader {
 
           return Promise.resolve(buffer);
         })
-        .catch((err) => { throw new Error('Unable to decode audio data') });
+        .catch((err) => {
+          throw new Error(`Unable to decode file ${fileURL}`);
+        });
 
       return promise;
     } else {
